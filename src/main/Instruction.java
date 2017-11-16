@@ -44,7 +44,7 @@ public class Instruction {
         } else {
             throw new InstructionException("Operator " + operator.name() + " not implemented yet!");
         }
-        setOperator(this.operator);
+        setOperator(operator);
         setOperands(operands);
     }
 

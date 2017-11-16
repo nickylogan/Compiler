@@ -60,7 +60,7 @@ public class Mapper {
     }
     public static void convertToMachineCode(ArrayList<Instruction> instructions) {
         for(Instruction instruction: instructions){
-            System.out.println(convertToMachineCodeLine(instruction));
+            System.out.println(Integer.decode(convertToMachineCodeLine(instruction)));
         }
     }
 }
