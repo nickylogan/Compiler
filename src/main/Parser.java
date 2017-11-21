@@ -38,12 +38,12 @@ public class Parser {
         				int resIndex = ((Register) res).ordinal();
         				int valIndex = Register.isRegister(val);
         				if(resIndex != valIndex) // not same register
-        					instructions.add(new Instruction(Operator.MOVR, Register.getRegister(ind), (Register)res));
+        					instructions.add(new Instruction(MOVR, Register.getRegister(ind), (Register)res));
         			}
         			else if(res instanceof Integer) {
         				// syntax: register = integer
         				int numericVal = ((Integer)res).intValue();
-        				instructions.add(new Instruction(Operator.MOVI, Register.getRegister(ind), new Immediate(numericVal)));
+        				instructions.add(new Instruction(MOVI, Register.getRegister(ind), new Immediate(numericVal)));
         			}
         			else {
         				// TODO Variable
