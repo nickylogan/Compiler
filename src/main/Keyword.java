@@ -15,26 +15,6 @@ public enum Keyword {
 		this.setKeyword(keyword);
 		this.setType(type);
 	}
-	
-	public static Keyword getToken(String s) {
-		switch(s) {
-			case "if":			return Keyword.IF;
-			case "while":		return Keyword.WHILE;
-			case "endif":		return Keyword.ENDIF; 
-			case "endwhile":	return Keyword.ENDWHILE;
-			case "endprogram":	return Keyword.ENDPROGRAM;
-			default:			return null;
-		}
-	}
-	
-	public static boolean contains(String val) {
-		for(Keyword c : Keyword.values()) {
-			if(c.name().equalsIgnoreCase(val)) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
 
 	public String getKeyword() {
 		return keyword;
