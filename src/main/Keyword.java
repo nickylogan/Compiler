@@ -32,3 +32,4 @@ public enum Keyword {
 		this.type = type;
 	}
 }
+
