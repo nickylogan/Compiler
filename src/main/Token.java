@@ -1,19 +1,15 @@
 package main;
 
 public enum Token {
-	
 	ADD("+", Token.ADD_SUB), SUB("-", Token.ADD_SUB),
-		MUL("*", Token.MUL_DIV), DIV("/", Token.MUL_DIV), MOD("%", Token.MUL_DIV),
-	LE("<", Token.LOGICAL), GE(">", Token.LOGICAL), EQ("=", Token.ASSIGN),
+	MUL("*", Token.MUL_DIV), DIV("/", Token.MUL_DIV),
 	LB("(", Token.PRE), RB(")", Token.PRE);
 	
 	private String keyword;
 	private int type;
 	public final static int ADD_SUB = 0;
 	public final static int MUL_DIV = 1;
-	public final static int LOGICAL = 2;
-	public final static int ASSIGN = 3;
-	public final static int PRE = 4;
+	public final static int PRE = 2;
 	
 	Token(String keyword, int type) {
 		setKeyword(keyword);
@@ -42,12 +38,8 @@ public enum Token {
 			case "-":	return Token.SUB;
 			case "*":	return Token.MUL; 
 			case "/":	return Token.DIV;
-			case "%":	return Token.MOD;
 			case "(":	return Token.LB;
 			case ")":	return Token.RB;
-			case "<":	return Token.LE;
-			case ">":	return Token.GE;
-			case "=":	return Token.EQ;
 			default:	return null;
 		}
 	}
