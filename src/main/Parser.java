@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
+import static main.Operator.*;
 
 public class Parser {
 	private static ArrayList<Instruction> instructions = new ArrayList<Instruction>();
@@ -71,10 +72,10 @@ public class Parser {
        
         ArrayList<String> line = new ArrayList<String>(Arrays.asList(splitted));
         
-        for(String s1 : splitted) {
+        /*for(String s1 : splitted) {
         	System.out.print(s1 + " ");
         }
-        System.out.println("");
+        System.out.println("");*/
         
         return line;
 	}
@@ -149,10 +150,10 @@ public class Parser {
 				reverse = true;
 			}
 			switch(token.getKeyword()) {
-				case "+":	instructions.add(new Instruction(Operator.ADDI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
-				case "-":	instructions.add(new Instruction(Operator.SUBI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
-				case "*":	instructions.add(new Instruction(Operator.MULI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
-				case "/":	instructions.add(new Instruction(Operator.DIVI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
+				case "+":	instructions.add(new Instruction(ADDI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
+				case "-":	instructions.add(new Instruction(SUBI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
+				case "*":	instructions.add(new Instruction(MULI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
+				case "/":	instructions.add(new Instruction(DIVI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
 			}
 			if(reverse) {
 				if(token.getKeyword().equals("-")) {
@@ -167,10 +168,10 @@ public class Parser {
 		}
 		else if(val1 instanceof Register && val2 instanceof Register) {
 			switch(token.getKeyword()) {
-				case "+":	instructions.add(new Instruction(Operator.ADD, (Register)val2, (Register)val2, (Register)val1)); break;
-				case "-":	instructions.add(new Instruction(Operator.SUB, (Register)val2, (Register)val2, (Register)val1)); break;
-				case "*":	instructions.add(new Instruction(Operator.MUL, (Register)val2, (Register)val2, (Register)val1)); break;
-				case "/":	instructions.add(new Instruction(Operator.DIV, (Register)val2, (Register)val2, (Register)val1)); break;
+				case "+":	instructions.add(new Instruction(ADD, (Register)val2, (Register)val2, (Register)val1)); break;
+				case "-":	instructions.add(new Instruction(SUB, (Register)val2, (Register)val2, (Register)val1)); break;
+				case "*":	instructions.add(new Instruction(MUL, (Register)val2, (Register)val2, (Register)val1)); break;
+				case "/":	instructions.add(new Instruction(DIV, (Register)val2, (Register)val2, (Register)val1)); break;
 			}
 			return val2;
 		}
