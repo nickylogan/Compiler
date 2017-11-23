@@ -5,12 +5,15 @@ import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Stack;
 import static main.Operator.*;
 
 public class Parser {
 	private static ArrayList<Instruction> instructions = new ArrayList<Instruction>();
 	private static HashMap<String, Integer> variables = new HashMap<String, Integer>(); // TODO Variable
+	private static HashSet<Register> usedRegisters = new HashSet<Register>();
+	private static HashSet<Register> tempUsedRegisters = new HashSet<Register>();
 	
 	/**
 	 * Convert to assembly code per line
@@ -22,11 +25,13 @@ public class Parser {
 		ArrayList<String> line = splitToTokens(s);
 		
         if(Keyword.contains(line.get(0))) {
+        	
         	// TODO Conditional branches
         }
         else {
         	String val = line.get(0);
-        	if(!isNumeric(val)) {
+        	String assignSymbol = line.get(1);
+        	if(!isNumeric(val) || !assignSymbol.equals("=")) {
         		// syntax: val = res
         		Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())));
         			
@@ -54,9 +59,10 @@ public class Parser {
         		}
         	}
         	else {
-        		throw new ParserException("Incorrect syntax at line " + index);
+        		throw new ParserException("Incorrect syntax at statement " + index);
         	}
         }
+        tempUsedRegisters.clear();
 		return instructions;
 	}
 	
@@ -110,7 +116,9 @@ public class Parser {
 			}
 			else if(Register.isRegister(s) != -1){
 				int index = Register.isRegister(s);
-				values.push(Register.getRegister(index));
+				Register r = Register.getRegister(index);
+				values.push(r);
+				usedRegisters.add(r);
 			}
 			else {
 				// TODO Variable
@@ -133,47 +141,53 @@ public class Parser {
 	 */
 	public static Object applyOp(Token token, Object val1, Object val2) {
 		if(val1 instanceof Integer && val2 instanceof Integer) {
+			Integer res = 0;
 			switch(token.getKeyword()) {
-				case "+":	return ((Integer)val1 + (Integer)val2);
-				case "-":	return ((Integer)val1 + (Integer)val2);
-				case "*":	return ((Integer)val1 * (Integer)val2);
-				case "/":	return ((Integer)val1 / (Integer)val2);
+				case "+":	res = ((Integer)val2 + (Integer)val1); break;
+				case "-":	res = ((Integer)val2 - (Integer)val1); break;
+				case "*":	res = ((Integer)val2 * (Integer)val1); break;
+				case "/":	res = ((Integer)val2 / (Integer)val1); break;
 			}
+			if(res < 0)
+				throw new ParserException("Negative numbers not supported");
+			else
+				return res;
 		}
-		else if((val1 instanceof Register && val2 instanceof Integer) || (val2 instanceof Register && val1 instanceof Number)) {
-			boolean reverse = false;
-			// val1 is register, val2 is number
-			if(val1 instanceof Register) {
-				Object temp = val1;
-				val1 = val2;
-				val2 = temp;
-				reverse = true;
-			}
+		else if(val2 instanceof Register && val1 instanceof Integer) {
+			Register r = getUnusedRegister();
+			tempUsedRegisters.add(r);
 			switch(token.getKeyword()) {
-				case "+":	instructions.add(new Instruction(ADDI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
-				case "-":	instructions.add(new Instruction(SUBI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
-				case "*":	instructions.add(new Instruction(MULI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
-				case "/":	instructions.add(new Instruction(DIVI, (Register)val2, (Register)val2, new Immediate((int)val1))); break;
+				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val2, new Immediate((int)val1))); break;
+				case "-":	instructions.add(new Instruction(SUBI, r, (Register)val2, new Immediate((int)val1))); break;
+				case "*":	instructions.add(new Instruction(MULI, r, (Register)val2, new Immediate((int)val1))); break;
+				case "/":	instructions.add(new Instruction(DIVI, r, (Register)val2, new Immediate((int)val1))); break;
 			}
-			if(reverse) {
-				if(token.getKeyword().equals("-")) {
-					// TODO fix subtract - example: 5 - R1
-					//instructions.add(new Instruction(Operator.MULI, (Register)val2, (Register)val2, new Immediate((int)(-1))));
-				}
-				else if(token.getKeyword().equals("/")) {
-					// TODO Divide - example: 5 / R1
-				}
+			return r;
+		}
+		else if(val1 instanceof Register && val2 instanceof Integer) {
+			Register r1 = getUnusedRegister();
+			tempUsedRegisters.add(r1);
+			Register r2 = getUnusedRegister();
+			switch(token.getKeyword()) {
+				case "+":	instructions.add(new Instruction(ADDI, r1, (Register)val2, new Immediate((int)val1))); break;
+				case "*":	instructions.add(new Instruction(MULI, r1, (Register)val2, new Immediate((int)val1))); break;
+				case "-":	instructions.add(new Instruction(MOVI, r2, new Immediate((int)val2)));
+							instructions.add(new Instruction(SUB, r1, r2, r1)); break;
+				case "/":	instructions.add(new Instruction(MOVI, r2, new Immediate((int)val2)));
+							instructions.add(new Instruction(DIV, r1, r2, r1)); break;
 			}
-			return val2;
+			return r1;
 		}
 		else if(val1 instanceof Register && val2 instanceof Register) {
+			Register r = getUnusedRegister();
+			tempUsedRegisters.add(r);
 			switch(token.getKeyword()) {
-				case "+":	instructions.add(new Instruction(ADD, (Register)val2, (Register)val2, (Register)val1)); break;
-				case "-":	instructions.add(new Instruction(SUB, (Register)val2, (Register)val2, (Register)val1)); break;
-				case "*":	instructions.add(new Instruction(MUL, (Register)val2, (Register)val2, (Register)val1)); break;
-				case "/":	instructions.add(new Instruction(DIV, (Register)val2, (Register)val2, (Register)val1)); break;
+				case "+":	instructions.add(new Instruction(ADD, r, (Register)val2, (Register)val1)); break;
+				case "-":	instructions.add(new Instruction(SUB, r, (Register)val2, (Register)val1)); break;
+				case "*":	instructions.add(new Instruction(MUL, r, (Register)val2, (Register)val1)); break;
+				case "/":	instructions.add(new Instruction(DIV, r, (Register)val2, (Register)val1)); break;
 			}
-			return val2;
+			return r;
 		}
 		else if(val1 instanceof Variable && val2 instanceof Variable) {
 			// TODO Variable
@@ -188,7 +202,17 @@ public class Parser {
 			// TODO Variable
 			return null;
 		}
-		return null;
+	}
+	
+	
+	private static Register getUnusedRegister() {
+		Register r = null;
+		for(int i = 0; i < 16; ++i) {
+			r = Register.getRegister(i);
+		}
+		if(r == null)
+			throw new ParserException("Out of memory");
+		return r;
 	}
 	
 	/**
@@ -209,5 +233,13 @@ public class Parser {
 
 	public static void setVariables(HashMap<String, Integer> variables) {
 		Parser.variables = variables;
+	}
+
+	public static HashSet<Register> getUsedRegisters() {
+		return usedRegisters;
+	}
+
+	public static void setUsedRegisters(HashSet<Register> usedRegisters) {
+		Parser.usedRegisters = usedRegisters;
 	}
 }
