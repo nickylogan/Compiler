@@ -6,4 +6,10 @@ public enum Register implements Operand {
     public String getCode(){
         return Integer.toHexString(ordinal());
     }
+    public static int isRegister(String value){
+        return valueOf(value).ordinal();
+    }
+    public static Register getRegister(int id){
+        return values()[id];
+    }
 }
