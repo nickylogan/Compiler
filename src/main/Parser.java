@@ -92,8 +92,8 @@ public class Parser {
 	 * @return object to be moved into first value
 	 */
 	private static Object addAssignInstruction(ArrayList<String> tokens) {
-		Stack<Object> values = new Stack<Object>();
-		Stack<Token> operands = new Stack<Token>();
+		Stack<Object> values = new Stack<>();
+		Stack<Token> operands = new Stack<>();
 		
 		int size = tokens.size();
 		for(int i = 0; i < size; ++i) {
