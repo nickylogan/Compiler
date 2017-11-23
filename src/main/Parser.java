@@ -74,7 +74,7 @@ public class Parser {
 	private static ArrayList<String> splitToTokens(String s) {
 		s = s.replaceAll(" +", "");
         s = s.substring(0, s.length()-1);
-        String splitted[] = s.split("(?=[-+*/()<>]|(?<![<>=])=)|(?<=[-+*/()]|[<>=](?!=))");
+        String splitted[] = s.split("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))");
        
         ArrayList<String> line = new ArrayList<String>(Arrays.asList(splitted));
         
