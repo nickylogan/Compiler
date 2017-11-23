@@ -12,8 +12,6 @@ import static main.Operator.*;
 public class Parser {
 	private static ArrayList<Instruction> instructions = new ArrayList<Instruction>();
 	private static HashMap<String, Integer> variables = new HashMap<String, Integer>(); // TODO Variable
-	private static HashSet<Register> usedRegisters = new HashSet<Register>();
-	private static HashSet<Register> tempUsedRegisters = new HashSet<Register>();
 	
 	/**
 	 * Convert to assembly code per line
@@ -29,12 +27,16 @@ public class Parser {
         	// TODO Conditional branches
         }
         else {
+        	// remove semicolon if assign statement
+        	String last = line.get(line.size() - 1);
+        	line.set(line.size() - 1, last.substring(0, last.length() - 1));
+        	
         	String val = line.get(0);
         	String assignSymbol = line.get(1);
         	if(!isNumeric(val) || !assignSymbol.equals("=")) {
         		// syntax: val = res
         		Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())));
-        			
+        		
         		if(Register.isRegister(val) != -1) {
         			int ind = Register.isRegister(val);
         			
@@ -62,7 +64,6 @@ public class Parser {
         		throw new ParserException("Incorrect syntax at statement " + index);
         	}
         }
-        tempUsedRegisters.clear();
 		return instructions;
 	}
 	
@@ -73,7 +74,6 @@ public class Parser {
 	 */
 	private static ArrayList<String> splitToTokens(String s) {
 		s = s.replaceAll(" +", "");
-        s = s.substring(0, s.length()-1);
         String splitted[] = s.split("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))");
        
         ArrayList<String> line = new ArrayList<String>(Arrays.asList(splitted));
@@ -117,8 +117,9 @@ public class Parser {
 			else if(Register.isRegister(s) != -1){
 				int index = Register.isRegister(s);
 				Register r = Register.getRegister(index);
+				if(r.equals(Register.R15))
+					throw new ParserException("Cannot use reserved register");
 				values.push(r);
-				usedRegisters.add(r);
 			}
 			else {
 				// TODO Variable
@@ -154,8 +155,7 @@ public class Parser {
 				return res;
 		}
 		else if(val2 instanceof Register && val1 instanceof Integer) {
-			Register r = getUnusedRegister();
-			tempUsedRegisters.add(r);
+			Register r = Register.R15;
 			switch(token.getKeyword()) {
 				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val2, new Immediate((int)val1))); break;
 				case "-":	instructions.add(new Instruction(SUBI, r, (Register)val2, new Immediate((int)val1))); break;
@@ -165,22 +165,19 @@ public class Parser {
 			return r;
 		}
 		else if(val1 instanceof Register && val2 instanceof Integer) {
-			Register r1 = getUnusedRegister();
-			tempUsedRegisters.add(r1);
-			Register r2 = getUnusedRegister();
+			Register r = Register.R15;
 			switch(token.getKeyword()) {
-				case "+":	instructions.add(new Instruction(ADDI, r1, (Register)val2, new Immediate((int)val1))); break;
-				case "*":	instructions.add(new Instruction(MULI, r1, (Register)val2, new Immediate((int)val1))); break;
-				case "-":	instructions.add(new Instruction(MOVI, r2, new Immediate((int)val2)));
-							instructions.add(new Instruction(SUB, r1, r2, r1)); break;
-				case "/":	instructions.add(new Instruction(MOVI, r2, new Immediate((int)val2)));
-							instructions.add(new Instruction(DIV, r1, r2, r1)); break;
+				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val2, new Immediate((int)val1))); break;
+				case "*":	instructions.add(new Instruction(MULI, r, (Register)val2, new Immediate((int)val1))); break;
+				case "-":	instructions.add(new Instruction(MOVI, r, new Immediate((int)val2)));
+							instructions.add(new Instruction(SUB, r, r, (Register)val1)); break;
+				case "/":	instructions.add(new Instruction(MOVI, r, new Immediate((int)val2)));
+							instructions.add(new Instruction(DIV, r, r, (Register)val1)); break;
 			}
-			return r1;
+			return r;
 		}
 		else if(val1 instanceof Register && val2 instanceof Register) {
-			Register r = getUnusedRegister();
-			tempUsedRegisters.add(r);
+			Register r = Register.R15;
 			switch(token.getKeyword()) {
 				case "+":	instructions.add(new Instruction(ADD, r, (Register)val2, (Register)val1)); break;
 				case "-":	instructions.add(new Instruction(SUB, r, (Register)val2, (Register)val1)); break;
@@ -204,17 +201,6 @@ public class Parser {
 		}
 	}
 	
-	
-	private static Register getUnusedRegister() {
-		Register r = null;
-		for(int i = 0; i < 16; ++i) {
-			r = Register.getRegister(i);
-		}
-		if(r == null)
-			throw new ParserException("Out of memory");
-		return r;
-	}
-	
 	/**
 	 * Check if string is a number or not
 	 * @param s
@@ -233,13 +219,5 @@ public class Parser {
 
 	public static void setVariables(HashMap<String, Integer> variables) {
 		Parser.variables = variables;
-	}
-
-	public static HashSet<Register> getUsedRegisters() {
-		return usedRegisters;
-	}
-
-	public static void setUsedRegisters(HashSet<Register> usedRegisters) {
-		Parser.usedRegisters = usedRegisters;
 	}
 }

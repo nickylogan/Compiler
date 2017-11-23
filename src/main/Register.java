@@ -6,9 +6,15 @@ public enum Register implements Operand {
     public String getCode(){
         return Integer.toHexString(ordinal());
     }
+    
     public static int isRegister(String value){
-        return valueOf(value).ordinal();
+        try {
+			return valueOf(value).ordinal();
+		} catch (Exception e) {
+			return -1;
+		}
     }
+    
     public static Register getRegister(int id){
         return values()[id];
     }
