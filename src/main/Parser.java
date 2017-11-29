@@ -163,7 +163,6 @@ public class Parser {
 	    				default: 	throw new ParserException("Incorrect syntax at statement " + index);
 	    			}
 					instructions.add(insIndex++, ins);
-					System.out.println(k.equals(Keyword.WHILE));
 	    			if(k.equals(Keyword.IF)) {
 	    				ifPos.push(new MarkerInstruction(ins, tempToken));
 	    				if(Token.logType(tempToken) == 1) {
@@ -263,6 +262,8 @@ public class Parser {
 					tempIns = ifPos.peek().elseIns;
     				if(ifPos.peek().hasElse) {
     					mainPos = instructions.indexOf(tempIns) + 2;
+    					int tempPos = instructions.size() + 1;
+    					modifyInstruction(tempIns, tempPos);
     				}
     				else {
     					mainPos = instructions.indexOf(tempMainIns) + 3;
@@ -398,10 +399,10 @@ public class Parser {
        
         ArrayList<String> line = new ArrayList<String>(Arrays.asList(splitted));
         
-        for(String s1 : splitted) {
+        /*for(String s1 : splitted) {
         	System.out.print(s1 + " ");
         }
-        System.out.println("");
+        System.out.println("");*/
         
         return line;
 	}
