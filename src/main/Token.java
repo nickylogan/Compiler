@@ -3,13 +3,20 @@ package main;
 public enum Token {
 	ADD("+", Token.ADD_SUB), SUB("-", Token.ADD_SUB),
 	MUL("*", Token.MUL_DIV), DIV("/", Token.MUL_DIV),
-	LB("(", Token.PRE), RB(")", Token.PRE);
+	LB("(", Token.PRE), RB(")", Token.PRE),
+	LT("<", Token.LOG1), GT(">", Token.LOG1),
+	LE("<=", Token.LOG2), GE(">=", Token.LOG2),
+	EQ("==", Token.LOG2), NEQ("!=", Token.LOG2),
+	T("true", Token.LOG3), F("false", Token.LOG3);
 	
 	private String keyword;
 	private int type;
 	public final static int ADD_SUB = 0;
 	public final static int MUL_DIV = 1;
 	public final static int PRE = 2;
+	public final static int LOG1 = 3;
+	public final static int LOG2 = 4;
+	public final static int LOG3 = 5;
 	
 	Token(String keyword, int type) {
 		setKeyword(keyword);
@@ -34,13 +41,21 @@ public enum Token {
 	
 	public static Token getToken(String s) {
 		switch(s) {
-			case "+":	return Token.ADD;
-			case "-":	return Token.SUB;
-			case "*":	return Token.MUL; 
-			case "/":	return Token.DIV;
-			case "(":	return Token.LB;
-			case ")":	return Token.RB;
-			default:	return null;
+			case "+":		return Token.ADD;
+			case "-":		return Token.SUB;
+			case "*":		return Token.MUL; 
+			case "/":		return Token.DIV;
+			case "(":		return Token.LB;
+			case ")":		return Token.RB;
+			case "<":		return Token.LT;
+			case ">":		return Token.GT;
+			case "<=":		return Token.LE;
+			case ">=":		return Token.GE;
+			case "==":		return Token.EQ;
+			case "!=":		return Token.NEQ;
+			case "true":	return Token.T;
+			case "false":	return Token.F;
+			default:		return null;
 		}
 	}
 	
@@ -76,5 +91,17 @@ public enum Token {
 	
 	private static boolean isMulDiv(Token t) {
 		return (t.getType() == Token.MUL_DIV);
+	}
+	
+	public static int logType(Token t) {
+		if(t.getType() == Token.LOG1) {
+			return 1;
+		}
+		else if(t.getType() == Token.LOG2) {
+			return 2;
+		}
+		else {
+			return 3;
+		}
 	}
 }
