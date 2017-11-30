@@ -1,5 +1,5 @@
 R5 = R7 + 8 * 9;
-if (R1 >= R6)
+if (x >= y)
 	R1 = 5 + 8;
 	if(false)
 		R1 = R1 + 6;
@@ -7,7 +7,7 @@ if (R1 >= R6)
 		R2 = R5;
 	endif
 else
-	if(R6 != R5)
+	if(R5 != 6)
 		R6 = R7 + 10;
 	else
 		R8 = R5 + R9;

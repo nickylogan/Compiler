@@ -10,10 +10,12 @@ import static main.Operator.*;
 
 public class Parser {
 	private static ArrayList<Instruction> instructions = new ArrayList<Instruction>();
-	private static HashMap<String, Integer> variables = new HashMap<String, Integer>(); // TODO Variable
+	private static HashMap<String, VariableLocation> variables = new HashMap<String, VariableLocation>();
 	private static Stack<MarkerInstruction> ifPos = new Stack<MarkerInstruction>();
 	private static Stack<MarkerInstruction> whilePos = new Stack<MarkerInstruction>();
 	private static int insIndex = 0;
+	public final static int LINE_SIZE = 4;
+	public final static int LINE_INIT_POS = 100;
 	
 	private static class MarkerInstruction {
 		Instruction mainIns;
@@ -110,7 +112,11 @@ public class Parser {
 	    				instructions.add(insIndex++, new Instruction(MOVI, Register.R15, new Immediate(x1)));
 	    			}
 	    			else {
-	    				// TODO variable
+	    				Register r = Register.R15;
+	    				VariableLocation varLocation = initVariable(val1.toString());
+	    	    		instructions.add(insIndex++, new Instruction(MOVI, r, new Immediate(varLocation)));
+	    	    		Memory varMemory = new Memory(r, new Immediate(0));
+	    	    		instructions.add(insIndex++, new Instruction(MOVM, r, varMemory));
 	    			}
 	    			r1 = "R15";
 	    		}
@@ -124,7 +130,11 @@ public class Parser {
 	    				instructions.add(insIndex++, new Instruction(MOVI, Register.R14, new Immediate(x2)));
 	    			}
 	    			else {
-	    				// TODO variable
+	    				Register r = Register.R14;
+	    				VariableLocation varLocation = initVariable(val2.toString());
+	    	    		instructions.add(insIndex++, new Instruction(MOVI, r, new Immediate(varLocation)));
+	    	    		Memory varMemory = new Memory(r, new Immediate(0));
+	    	    		instructions.add(insIndex++, new Instruction(MOVM, r, varMemory));
 	    			}
 	    			r2 = "R14";
 	    		}
@@ -189,7 +199,8 @@ public class Parser {
 				throw new ParserException("Incorrect syntax at statement " + index);
 			
 			if(val.equalsIgnoreCase("true")) {
-				Instruction ins = new Instruction(JMP, new Immediate(instructions.size() + 2));
+				Instruction ins = new Instruction(JMP, new Immediate(0));
+				modifyInstruction(ins, (instructions.size() + 2));
 				instructions.add(insIndex++, ins);
 				if(k.equals(Keyword.IF)) {
 					ifPos.push(new MarkerInstruction(ins, Token.T));
@@ -198,7 +209,8 @@ public class Parser {
 				}
 			}
 			else if(val.equalsIgnoreCase("false")) {
-				Instruction ins = new Instruction(JMP, new Immediate(instructions.size() + 2));
+				Instruction ins = new Instruction(JMP, new Immediate(0));
+				modifyInstruction(ins, (instructions.size() + 2));
 				instructions.add(insIndex++, ins);
 				if(k.equals(Keyword.IF)) {
 					ifPos.push(new MarkerInstruction(ins, Token.F));
@@ -254,28 +266,28 @@ public class Parser {
     		Token tempToken = (isIf)? ifPos.peek().token : whilePos.peek().token;
     		if(Token.logType(tempToken) == 1) {
     			// TODO fix
-    			Instruction tempIns;
+    			Instruction tempElseIns;
     			Instruction tempMainIns;
 				int mainPos;
     			if(isIf) {
         			tempMainIns = ifPos.peek().mainIns;
-					tempIns = ifPos.peek().elseIns;
+					tempElseIns = ifPos.peek().elseIns;
     				if(ifPos.peek().hasElse) {
-    					mainPos = instructions.indexOf(tempIns) + 2;
+    					mainPos = instructions.indexOf(tempElseIns) + 2;
     					int tempPos = instructions.size() + 1;
-    					modifyInstruction(tempIns, tempPos);
+    					modifyInstruction(tempElseIns, tempPos);
     				}
     				else {
     					mainPos = instructions.indexOf(tempMainIns) + 3;
     					int tempPos = instructions.size() + 1;
-    					modifyInstruction(tempIns, tempPos);
+    					modifyInstruction(tempElseIns, tempPos);
     				}
 					modifyInstruction(tempMainIns, mainPos);
     				ifPos.pop();
     			}
     			else {
         			tempMainIns = whilePos.peek().mainIns;
-    				tempIns = whilePos.peek().elseIns;
+    				tempElseIns = whilePos.peek().elseIns;
     				mainPos = instructions.indexOf(tempMainIns)+1;
     				instructions.add(insIndex++, new Instruction(JMP, new Immediate(mainPos)));
     				
@@ -283,7 +295,7 @@ public class Parser {
 					modifyInstruction(tempMainIns, mainPos);
 
 					int tempPos = instructions.size() + 1;
-					modifyInstruction(tempIns, tempPos);
+					modifyInstruction(tempElseIns, tempPos);
     				
     				ArrayList<Instruction> tempBreak = whilePos.pop().breakIns;
     				int size = tempBreak.size();
@@ -360,27 +372,37 @@ public class Parser {
     		// syntax: val = res
     		Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())));
     		
-    		if(Register.isRegister(val) != -1) {
-    			int ind = Register.isRegister(val);
+    		boolean isRegister = (Register.isRegister(val) != -1);
+    		Register r;
+    		if(isRegister)
+    			r = Register.getRegister(Register.isRegister(val));
+    		else
+    			r = Register.R15;
     			
-    			if(res instanceof Register) {
-    				// syntax: register1 = register2
-    				int resIndex = ((Register) res).ordinal();
-    				int valIndex = Register.isRegister(val);
-    				if(resIndex != valIndex) // not same register
-    					instructions.add(insIndex++, new Instruction(MOVR, Register.getRegister(ind), (Register)res));
-    			}
-    			else if(res instanceof Integer) {
-    				// syntax: register = integer
-    				int numericVal = ((Integer)res).intValue();
-    				instructions.add(insIndex++, new Instruction(MOVI, Register.getRegister(ind), new Immediate(numericVal)));
-    			}
-    			else {
-    				// TODO Variable
-    			}
+    		if(res instanceof Register) {
+    			// syntax: register1 = register2
+    			int resIndex = ((Register) res).ordinal();
+    			int valIndex = Register.isRegister(val);
+    			if(resIndex != valIndex) // not same register
+    				instructions.add(insIndex++, new Instruction(MOVR, r, (Register)res));
+    		}
+    		else if(res instanceof Integer) {
+    			// syntax: register = integer
+    			int numericVal = ((Integer)res).intValue();
+    			instructions.add(insIndex++, new Instruction(MOVI, r, new Immediate(numericVal)));
     		}
     		else {
-    			// TODO Variable
+    			VariableLocation varLocation = initVariable(res.toString());
+    			instructions.add(insIndex++, new Instruction(MOVI, Register.R15, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(Register.R15, new Immediate(0));
+    			instructions.add(insIndex++, new Instruction(MOVM, r, varMemory));
+    		}
+    		
+    		if(!isRegister) {
+    			VariableLocation varLocation = initVariable(val.toString());
+    			instructions.add(insIndex++, new Instruction(MOVI, Register.R15, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(Register.R15, new Immediate(0));
+    			instructions.add(insIndex++, new Instruction(MOV, varMemory, r));
     		}
     	}
     	else {
@@ -413,8 +435,8 @@ public class Parser {
 	 * @return object to be moved into first value
 	 */
 	private static Object addAssignInstruction(ArrayList<String> tokens) {
-		Stack<Object> values = new Stack<>();
-		Stack<Token> operands = new Stack<>();
+		Stack<Object> values = new Stack<Object>();
+		Stack<Token> operands = new Stack<Token>();
 		
 		int size = tokens.size();
 		for(int i = 0; i < size; ++i) {
@@ -446,7 +468,7 @@ public class Parser {
 				values.push(r);
 			}
 			else {
-				// TODO Variable
+				values.push(s);
 			}
 		}
 		
@@ -514,13 +536,33 @@ public class Parser {
 			}
 			return r;
 		}
-		else if(val1 instanceof Variable && val2 instanceof Variable) {
-			// TODO Variable
-			return null;
-		}
 		else {
-			// TODO Variable
-			return null;
+			if(val1 instanceof String) {
+				Register r = Register.R15;
+				VariableLocation varLocation = initVariable(val1.toString());
+    			instructions.add(insIndex++, new Instruction(MOVI, r, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(r, new Immediate(0));
+    			instructions.add(insIndex++, new Instruction(MOVM, r, varMemory));
+    			val1 = r;
+			}
+			if(val2 instanceof String) {
+				Register r = Register.R14;
+				VariableLocation varLocation = initVariable(val2.toString());
+    			instructions.add(insIndex++, new Instruction(MOVI, r, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(r, new Immediate(0));
+    			instructions.add(insIndex++, new Instruction(MOVM, r, varMemory));
+    			val2 = r;
+			}
+			return applyOp(token, val1, val2);
+		}
+	}
+	
+	public static void modifyVarLocations(int n) {
+		int i = LINE_INIT_POS;
+		for(String s : variables.keySet()) {
+			VariableLocation temp = variables.get(s);
+			temp.setValue(i + (n * LINE_SIZE));
+			i++;
 		}
 	}
 	
@@ -533,8 +575,19 @@ public class Parser {
 		else {
 			operands.remove(2);
 		}
-		operands.add(new Immediate(pos));
+		operands.add(new Immediate(LINE_INIT_POS + ((pos - 1) * LINE_SIZE)));
 		ins.setOperands(operands);
+	}
+	
+	private static VariableLocation initVariable(String varName) {
+		if(variables.containsKey(varName)) {
+			return variables.get(varName);
+		}
+		else {
+			VariableLocation i = new VariableLocation(0);
+			variables.put(varName, i);
+			return i;
+		}
 	}
 	
 	/**
@@ -549,11 +602,11 @@ public class Parser {
 		return s.length() == pos.getIndex();
 	}
 	
-	public static HashMap<String, Integer> getVariables() {
+	public static HashMap<String, VariableLocation> getVariables() {
 		return variables;
 	}
 
-	public static void setVariables(HashMap<String, Integer> variables) {
+	public static void setVariables(HashMap<String, VariableLocation> variables) {
 		Parser.variables = variables;
 	}
 }

@@ -1,25 +1,37 @@
 package main;
 
 public class Immediate implements Operand{
-    private int value;
+    private VariableLocation value;
+    
+    public Immediate(VariableLocation value) {
+    	setValue(value);
+    }
+    
     public Immediate(Immediate other){
-        setValue(other.value);
+        setValue(other.getValue());
     }
+    
     public Immediate(Integer value){
-        setValue(value);
+        this.value = new VariableLocation(value.intValue());
     }
+    
     public Immediate(int value){
-        setValue(value);
+    	this.value = new VariableLocation(value);
     }
-
-    public int getValue() {
-        return value;
+    
+    public VariableLocation getValue() {
+    	return value;
+    }
+    
+    public void setValue(VariableLocation value) {
+    	this.value = value;
     }
 
     public void setValue(Integer value) {
-        this.value = value;
+        this.value.setValue(value);
     }
+    
     public void setValue(int value){
-        this.value = value;
+    	this.value.setValue(value);
     }
 }

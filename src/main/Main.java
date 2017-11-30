@@ -29,6 +29,8 @@ public class Main {
             instructions = Parser.convertToAssemblyCode(l, i+1);
         }
         
+        Parser.modifyVarLocations(instructions.size());
+        
         printAssemblyCode(instructions);
         Mapper.convertToMachineCode(instructions);
     }
@@ -57,7 +59,7 @@ public class Main {
     private static void printAssemblyCode(ArrayList<Instruction> instructions) {
         for(int i = 0; i < instructions.size(); ++i) {
         	Instruction ins = instructions.get(i);
-        	System.out.println("[" + (i+1) + "] " + ins.toString());
+        	System.out.println("[" + ((i * Parser.LINE_SIZE) + Parser.LINE_INIT_POS) + "] " + ins.toString());
         }
     }
     
