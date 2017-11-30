@@ -58,9 +58,11 @@ public class Mapper {
 
         return sb.toString();
     }
-    public static void convertToMachineCode(ArrayList<Instruction> instructions) {
-        for(Instruction instruction: instructions){
-            System.out.println(Integer.decode(convertToMachineCodeLine(instruction)));
+    public static String convertToMachineCode(ArrayList<Instruction> instructions) {
+        String s = "";
+    	for(Instruction instruction: instructions){
+            s += (Integer.decode(convertToMachineCodeLine(instruction))).toString() + "\n";
         }
+    	return s;
     }
 }
