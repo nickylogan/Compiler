@@ -1,7 +1,5 @@
 package main;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -56,6 +54,11 @@ public class Instruction {
         this.operands.clear();
         this.operands.addAll(Arrays.asList(operands));
     }
+    
+    public void setOperands(ArrayList<Operand> operands) {
+    	this.operands.clear();
+    	this.operands.addAll(operands);
+    }
 
     public ArrayList<Operand> getOperands() {
         return new ArrayList<>(operands);
@@ -63,5 +66,20 @@ public class Instruction {
 
     public Operator getOperator() {
         return operator;
+    }
+    
+    public String toString() {
+    	String s = operator.name();
+    	int size = operands.size();
+    	for(int i = 0; i < size; ++i) {
+    		Operand o = operands.get(i);
+    		if(o instanceof Register) {
+    			s += " " + ((Register)o).name();
+    		}
+    		else if(o instanceof Immediate) {
+    			s += " " + ((Immediate)o).getValue();
+    		}
+    	}
+    	return s;
     }
 }

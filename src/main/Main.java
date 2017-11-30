@@ -22,12 +22,14 @@ public class Main {
     	
         ArrayList<Instruction> instructions = new ArrayList<>();
         String lines[] = pseudocode.split("\\r?\\n");
+        
         int size = lines.length;
         for(int i = 0; i < size; ++i) {
         	String l = lines[i];
             instructions = Parser.convertToAssemblyCode(l, i+1);
         }
         
+        printAssemblyCode(instructions);
         Mapper.convertToMachineCode(instructions);
     }
     
@@ -36,13 +38,27 @@ public class Main {
     	BufferedReader br = new BufferedReader(new FileReader(file));
     	String curLine = br.readLine();
     	while (curLine != null) {
-    		s += curLine;
-    		if(curLine.endsWith(";"))
+    		// remove tabs
+    		while(curLine.startsWith("\t")) {
+    			curLine = curLine.substring(1, curLine.length());
+    		}
+    		// check if comment or not
+    		if(!curLine.startsWith("//")) {
+    			s += curLine;
+    			//if(curLine.endsWith(";"))
     			s += "\n";
+    		}
     		curLine = br.readLine();
     	}
     	br.close();
     	return s;
+    }
+    
+    private static void printAssemblyCode(ArrayList<Instruction> instructions) {
+        for(int i = 0; i < instructions.size(); ++i) {
+        	Instruction ins = instructions.get(i);
+        	System.out.println("[" + (i+1) + "] " + ins.toString());
+        }
     }
     
     private static void testInstructions(ArrayList<Instruction> instructions) {
