@@ -15,7 +15,7 @@ public class Parser {
 	private static Stack<MarkerInstruction> whilePos = new Stack<MarkerInstruction>();
 	private static int insIndex = 0;
 	public final static int LINE_SIZE = 4;
-	public final static int LINE_INIT_POS = 100;
+	public final static int LINE_INIT_POS = 0;
 	
 	private static class MarkerInstruction {
 		Instruction mainIns;
@@ -141,8 +141,7 @@ public class Parser {
 	    		else {
 	    			r2 = val2;
 	    		}
-	    		
-	    		ArrayList<String> newLine = new ArrayList<String>(Arrays.asList("if", "(", r1, op, r2, ")"));
+	    		ArrayList<String> newLine = new ArrayList<String>(Arrays.asList(line.get(0), "(", r1, op, r2, ")"));
 	    		begCondConvertToAssembly(newLine, index, false);
 	    	}
 	    	else {
@@ -150,11 +149,12 @@ public class Parser {
 	    		Register r2 = Register.getRegister(Register.isRegister(val2));
 	    		Token tempToken = null;
 	    		if(isFirstTry && (r1.equals(Register.R15) || r2.equals(Register.R15) ||
-	    								r1.equals(Register.R14) || r2.equals(Register.R14)))
+	    				r1.equals(Register.R14) || r2.equals(Register.R14) || r1.equals(Register.R13) || r2.equals(Register.R13)))
 	    			throw new ParserException("Cannot use reserved register");
 	    		else {
 	    			Instruction ins = null;
 	    			Instruction elseIns = null;
+	    			boolean isIf = k.equals(Keyword.IF);
 	    			switch(op) {
 	    				case "<":	ins = new Instruction(JLT, r1, r2, new Immediate(0));
 	    							elseIns = new Instruction(JMP, new Immediate(0));
@@ -162,9 +162,9 @@ public class Parser {
 	    				case ">":	ins = new Instruction(JGT, r1, r2, new Immediate(0));
 									elseIns = new Instruction(JMP, new Immediate(0));
 	    							tempToken = Token.getToken(">"); break;
-	    				case "<=":	ins = new Instruction(JLT, r1, r2, new Immediate(0));
+	    				case "<=":	ins = new Instruction(JGT, r1, r2, new Immediate(0));
 	    							tempToken = Token.getToken("<="); break;
-	    				case ">=":	ins = new Instruction(JGT, r1, r2, new Immediate(0));
+	    				case ">=":	ins = new Instruction(JLT, r1, r2, new Immediate(0));
 	    							tempToken = Token.getToken(">="); break;
 	    				case "==":	ins = new Instruction(JNE, r1, r2, new Immediate(0));
 	    							tempToken = Token.getToken("=="); break;
@@ -173,7 +173,7 @@ public class Parser {
 	    				default: 	throw new ParserException("Incorrect syntax at statement " + index);
 	    			}
 					instructions.add(insIndex++, ins);
-	    			if(k.equals(Keyword.IF)) {
+	    			if(isIf) {
 	    				ifPos.push(new MarkerInstruction(ins, tempToken));
 	    				if(Token.logType(tempToken) == 1) {
 	    					ifPos.peek().elseIns = elseIns;
@@ -289,7 +289,10 @@ public class Parser {
         			tempMainIns = whilePos.peek().mainIns;
     				tempElseIns = whilePos.peek().elseIns;
     				mainPos = instructions.indexOf(tempMainIns)+1;
-    				instructions.add(insIndex++, new Instruction(JMP, new Immediate(mainPos)));
+    				
+    				Instruction ins = new Instruction(JMP, new Immediate(0));
+    				modifyInstruction(ins, mainPos);
+    				instructions.add(insIndex++, ins);
     				
     				mainPos = instructions.indexOf(tempMainIns) + 3;
 					modifyInstruction(tempMainIns, mainPos);
@@ -312,7 +315,10 @@ public class Parser {
     			else {
     				tempIns = whilePos.peek().mainIns;
     				int mainPos = instructions.indexOf(tempIns)+1;
-    				instructions.add(insIndex++, new Instruction(JMP, new Immediate(mainPos)));
+    				
+    				Instruction ins = new Instruction(JMP, new Immediate(0));
+    				modifyInstruction(ins, mainPos);
+    				instructions.add(insIndex++, ins);
     				
     				ArrayList<Instruction> tempBreak = whilePos.pop().breakIns;
     				int size = tempBreak.size();
@@ -347,7 +353,9 @@ public class Parser {
     				}
     				else {
     					int mainPos = instructions.indexOf(tempIns)+1;
-    					instructions.add(insIndex++, new Instruction(JMP, new Immediate(mainPos)));
+    					Instruction ins =  new Instruction(JMP, new Immediate(0));
+    					modifyInstruction(ins, mainPos);
+    					instructions.add(insIndex++, ins);
     				}
     				ArrayList<Instruction> tempBreak = whilePos.pop().breakIns;
     				int size = tempBreak.size();
@@ -400,8 +408,8 @@ public class Parser {
     		
     		if(!isRegister) {
     			VariableLocation varLocation = initVariable(val.toString());
-    			instructions.add(insIndex++, new Instruction(MOVI, Register.R15, new Immediate(varLocation)));
-    			Memory varMemory = new Memory(Register.R15, new Immediate(0));
+    			instructions.add(insIndex++, new Instruction(MOVI, Register.R13, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(Register.R13, new Immediate(0));
     			instructions.add(insIndex++, new Instruction(MOV, varMemory, r));
     		}
     	}
@@ -463,7 +471,7 @@ public class Parser {
 			else if(Register.isRegister(s) != -1){
 				int index = Register.isRegister(s);
 				Register r = Register.getRegister(index);
-				if(r.equals(Register.R15) || r.equals(Register.R14))
+				if(r.equals(Register.R15) || r.equals(Register.R14) || r.equals(Register.R13))
 					throw new ParserException("Cannot use reserved register");
 				values.push(r);
 			}

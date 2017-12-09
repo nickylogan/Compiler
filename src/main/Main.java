@@ -1,8 +1,10 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import static main.Operator.*;
@@ -32,7 +34,13 @@ public class Main {
         Parser.modifyVarLocations(instructions.size());
         
         printAssemblyCode(instructions);
-        Mapper.convertToMachineCode(instructions);
+        String s = Mapper.convertToMachineCode(instructions);
+        System.out.print(s);
+        try {
+			writeFile("src/main/output.mcd", s);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     public static String getString(File file) throws IOException {
@@ -62,6 +70,13 @@ public class Main {
         	System.out.println("[" + ((i * Parser.LINE_SIZE) + Parser.LINE_INIT_POS) + "] " + ins.toString());
         }
     }
+    
+    public static void writeFile(String fileName, String text) throws IOException {
+    	File file = new File (fileName);
+    	BufferedWriter out = new BufferedWriter(new FileWriter(file)); 
+    	out.write(text);
+    	out.close();
+	}
     
     private static void testInstructions(ArrayList<Instruction> instructions) {
     	instructions.add(new Instruction(MOVI, R1, new Immediate(56)));

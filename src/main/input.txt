@@ -1,18 +1,7 @@
-R5 = R7 + 8 * 9;
-if (x >= y)
-	R1 = 5 + 8;
-	if(false)
-		R1 = R1 + 6;
-		else
-		R2 = R5;
-	endif
-else
-	if(R5 != 6)
-		R6 = R7 + 10;
-	else
-		R8 = R5 + R9;
-	endif
-	R10 = R1 + R10 + 5;
-	R1 = R1 + 5;
-endif
+x = 0;
+y = 10;
+while (x > 5)
+	R10 = x + y;
+	x = x + 1;
+endwhile
 endprogram
