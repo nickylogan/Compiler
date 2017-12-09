@@ -12,7 +12,7 @@ public class Immediate implements Operand{
     }
     
     public Immediate(Integer value){
-        this.value = new VariableLocation(value.intValue());
+        this.value = new VariableLocation(value);
     }
     
     public Immediate(int value){

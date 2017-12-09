@@ -2,23 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9e2d57a-0c43-46fc-bb41-a78d42c9de32" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/InstructionNodes/IfNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/InstructionNodes/InstructionNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/InstructionNodes/MultipleInstructionNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/InstructionNodes/SimpleInstructionNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/InstructionNodes/Test.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/InstructionNodes/WhileNode.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/description.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/project-template.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Immediate.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Instruction.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/InstructionException.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Main.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Mapper.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/MapperException.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Memory.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Operand.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Operator.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Register.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/IntegerValue.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/tester/IfNode.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/tester/InstructionNode.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/tester/SimpleInstructionNode.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/tester/WhileNode.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Immediate.class" afterPath="$PROJECT_DIR$/out/production/Compiler/main/Immediate.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Instruction.class" afterPath="$PROJECT_DIR$/out/production/Compiler/main/Instruction.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Main.class" afterPath="$PROJECT_DIR$/out/production/Compiler/main/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Mapper.class" afterPath="$PROJECT_DIR$/out/production/Compiler/main/Mapper.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Compiler/main/Register.class" afterPath="$PROJECT_DIR$/out/production/Compiler/main/Register.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/InstructionNodes/IfNode.java" afterPath="$PROJECT_DIR$/src/statement/IfNode.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/InstructionNodes/InstructionNode.java" afterPath="$PROJECT_DIR$/src/statement/StatementNode.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/InstructionNodes/MultipleInstructionNode.java" afterPath="$PROJECT_DIR$/src/statement/MultipleStatementNode.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/InstructionNodes/SimpleInstructionNode.java" afterPath="$PROJECT_DIR$/src/statement/SimpleStatementNode.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/InstructionNodes/Test.java" afterPath="$PROJECT_DIR$/src/statement/Test.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/InstructionNodes/WhileNode.java" afterPath="$PROJECT_DIR$/src/statement/WhileNode.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/Immediate.java" afterPath="$PROJECT_DIR$/src/main/Immediate.java" />
     </list>
     <ignored path="out/" />
@@ -36,11 +43,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1721">
+              <caret line="15" column="41" lean-forward="false" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="Immediate.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/Immediate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="448">
-              <caret line="24" column="4" lean-forward="true" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+            <state relative-caret-position="56">
+              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
               <folding>
                 <element signature="e#300#301#0" expanded="true" />
                 <element signature="e#356#357#0" expanded="true" />
@@ -52,78 +71,49 @@
       <file leaf-file-name="Token.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/Token.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="56">
-              <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+            <state relative-caret-position="224">
+              <caret line="8" column="48" lean-forward="false" selection-start-line="8" selection-start-column="48" selection-end-line="8" selection-end-column="48" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Mapper.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/Mapper.java">
+      <file leaf-file-name="SimpleStatementNode.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/statement/SimpleStatementNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="616">
-              <caret line="63" column="9" lean-forward="false" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="9" />
-              <folding />
+            <state relative-caret-position="280">
+              <caret line="10" column="29" lean-forward="false" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#231#232#0" expanded="true" />
+                <element signature="e#268#269#0" expanded="true" />
+                <element signature="e#303#304#0" expanded="true" />
+                <element signature="e#353#354#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SimpleInstructionNode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/InstructionNodes/SimpleInstructionNode.java">
+      <file leaf-file-name="Parser.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/Parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="-2940">
+              <caret line="92" column="35" lean-forward="false" selection-start-line="92" selection-start-column="35" selection-end-line="92" selection-end-column="35" />
+              <folding>
+                <element signature="e#302#315#0" expanded="true" />
+                <element signature="e#392#418#0" expanded="true" />
+                <element signature="e#480#499#0" expanded="true" />
+                <element signature="e#564#583#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MultipleInstructionNode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/InstructionNodes/MultipleInstructionNode.java">
+      <file leaf-file-name="MultipleStatementNode.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/statement/MultipleStatementNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="InstructionNode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/InstructionNodes/InstructionNode.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WhileNode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/InstructionNodes/WhileNode.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IfNode.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/InstructionNodes/IfNode.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/InstructionNodes/Test.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="551">
-              <caret line="43" column="13" lean-forward="false" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
+            <state relative-caret-position="435">
+              <caret line="19" column="53" lean-forward="false" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -131,12 +121,50 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="input.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/input.txt">
+      <file leaf-file-name="StatementNode.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/statement/StatementNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="364">
+              <caret line="17" column="41" lean-forward="false" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WhileNode.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/statement/WhileNode.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="196">
+              <caret line="7" column="35" lean-forward="false" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IfNode.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/statement/IfNode.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="25" column="19" lean-forward="false" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/statement/Test.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="551">
+              <caret line="43" column="13" lean-forward="false" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -182,10 +210,8 @@
         <option value="$PROJECT_DIR$/src/main/Instruction.java" />
         <option value="$PROJECT_DIR$/src/main/Mapper.java" />
         <option value="$PROJECT_DIR$/src/main/Register.java" />
-        <option value="$PROJECT_DIR$/src/main/Token.java" />
         <option value="$PROJECT_DIR$/src/main/Variable.java" />
         <option value="$PROJECT_DIR$/src/main/VariableMemory.java" />
-        <option value="$PROJECT_DIR$/src/main/Parser.java" />
         <option value="$PROJECT_DIR$/src/main/Keyword.java" />
         <option value="$PROJECT_DIR$/src/tester/InstructionNode.java" />
         <option value="$PROJECT_DIR$/src/tester/SimpleInstructionNode.java" />
@@ -193,10 +219,17 @@
         <option value="$PROJECT_DIR$/src/main/Main.java" />
         <option value="$PROJECT_DIR$/src/tester/WhileNode.java" />
         <option value="$PROJECT_DIR$/src/main/IntegerValue.java" />
-        <option value="$PROJECT_DIR$/src/main/Immediate.java" />
         <option value="$PROJECT_DIR$/src/InstructionNodes/IfNode.java" />
         <option value="$PROJECT_DIR$/src/InstructionNodes/test.txt" />
         <option value="$PROJECT_DIR$/src/InstructionNodes/Test.java" />
+        <option value="$PROJECT_DIR$/src/main/Immediate.java" />
+        <option value="$PROJECT_DIR$/src/statement/SimpleStatementNode.java" />
+        <option value="$PROJECT_DIR$/src/statement/StatementNode.java" />
+        <option value="$PROJECT_DIR$/src/statement/MultipleStatementNode.java" />
+        <option value="$PROJECT_DIR$/src/main/Parser.java" />
+        <option value="$PROJECT_DIR$/src/main/Token.java" />
+        <option value="$PROJECT_DIR$/src/statement/WhileNode.java" />
+        <option value="$PROJECT_DIR$/src/statement/IfNode.java" />
       </list>
     </option>
   </component>
@@ -239,6 +272,23 @@
             <path>
               <item name="Compiler" type="b2602c69:ProjectViewProjectNode" />
               <item name="Compiler" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compiler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compiler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compiler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="statement" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -328,16 +378,23 @@
       <workItem from="1510761155803" duration="2668000" />
       <workItem from="1510792970472" duration="2407000" />
       <workItem from="1512001833244" duration="4193000" />
-      <workItem from="1512824674929" duration="1637000" />
+      <workItem from="1512824674929" duration="7729000" />
     </task>
+    <task id="LOCAL-00001" summary="Instruction Nodes">
+      <created>1512826981050</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1512826981050</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33727000" />
+    <option name="totallyTimeSpent" value="39819000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -351,7 +408,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2627027" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2627027" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -373,8 +430,9 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.50216216" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -384,16 +442,16 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297619" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32497013" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32497013" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.49783784" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25351351" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2627027" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
@@ -429,6 +487,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Instruction Nodes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Instruction Nodes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -728,42 +790,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Parser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28">
-          <caret line="289" column="21" lean-forward="false" selection-start-line="289" selection-start-column="21" selection-end-line="289" selection-end-column="21" />
-          <folding>
-            <element signature="e#302#315#0" expanded="true" />
-            <element signature="e#392#418#0" expanded="true" />
-            <element signature="e#480#499#0" expanded="true" />
-            <element signature="e#564#583#0" expanded="true" />
-            <element signature="e#846#859#0" expanded="true" />
-            <element signature="e#1964#1972#0" expanded="true" />
-            <element signature="e#2123#2131#0" expanded="true" />
-            <element signature="e#3488#3496#0" expanded="true" />
-            <element signature="e#5133#5141#0" expanded="true" />
-            <element signature="e#15466#15474#0" expanded="true" />
-            <element signature="e#15930#15938#0" expanded="true" />
-            <element signature="e#15977#15984#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28">
-          <caret line="15" column="41" lean-forward="false" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Mapper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
-          <caret line="63" column="9" lean-forward="false" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="9" />
-          <folding />
+        <state relative-caret-position="672">
+          <caret line="65" column="17" lean-forward="false" selection-start-line="65" selection-start-column="17" selection-end-line="65" selection-end-column="17" />
+          <folding>
+            <marker date="1512827013692" expanded="true" signature="3690:3696" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -771,14 +804,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Token.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -807,47 +832,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/InstructionNodes/SimpleInstructionNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/InstructionNodes/MultipleInstructionNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/InstructionNodes/InstructionNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/InstructionNodes/WhileNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/InstructionNodes/IfNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/InstructionNodes/Test.java">
+    <entry file="file://$PROJECT_DIR$/src/statement/Test.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="551">
           <caret line="43" column="13" lean-forward="false" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
@@ -857,10 +842,95 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1721">
+          <caret line="15" column="41" lean-forward="false" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/statement/StatementNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="17" column="41" lean-forward="false" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/statement/MultipleStatementNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="19" column="53" lean-forward="false" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/statement/SimpleStatementNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="10" column="29" lean-forward="false" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#231#232#0" expanded="true" />
+            <element signature="e#268#269#0" expanded="true" />
+            <element signature="e#303#304#0" expanded="true" />
+            <element signature="e#353#354#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Parser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2940">
+          <caret line="92" column="35" lean-forward="false" selection-start-line="92" selection-start-column="35" selection-end-line="92" selection-end-column="35" />
+          <folding>
+            <element signature="e#302#315#0" expanded="true" />
+            <element signature="e#392#418#0" expanded="true" />
+            <element signature="e#480#499#0" expanded="true" />
+            <element signature="e#564#583#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Token.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="8" column="48" lean-forward="false" selection-start-line="8" selection-start-column="48" selection-end-line="8" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/statement/WhileNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="7" column="35" lean-forward="false" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/statement/IfNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="25" column="19" lean-forward="false" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Immediate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="24" column="4" lean-forward="true" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+        <state relative-caret-position="56">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
           <folding>
             <element signature="e#300#301#0" expanded="true" />
             <element signature="e#356#357#0" expanded="true" />
