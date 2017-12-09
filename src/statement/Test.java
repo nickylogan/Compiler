@@ -1,4 +1,4 @@
-package InstructionNodes;
+package statement;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,19 +17,19 @@ public class Test {
             e.printStackTrace();
         }
         String lines[] = code.split("\\r?\\n");
-        InstructionNode root = new MultipleInstructionNode();
-        InstructionNode parent = root;
+        StatementNode root = new MultipleStatementNode();
+        StatementNode parent = root;
         System.out.println(parent);
         for (String s : lines) {
             s = s.replaceAll(" +", "");
             if (s.matches("([A-Za-z][A-Za-z0-9]*+)(=)([0-9]+|[A-Za-z][A-Za-z0-9]*+)")) {
-                SimpleInstructionNode ins = new SimpleInstructionNode();
+                SimpleStatementNode ins = new SimpleStatementNode();
                 System.out.println(ins);
-                System.out.println((MultipleInstructionNode) parent);
-                ((MultipleInstructionNode) parent).addInstruction(ins);
+                System.out.println((MultipleStatementNode) parent);
+                ((MultipleStatementNode) parent).addInstruction(ins);
             } else if (s.matches("(if)[(]([0-9]+|[A-Za-z][A-Za-z0-9]*+)(<|<=|>=|>|==)([0-9]+|[A-Za-z][A-Za-z0-9]*+)[)](then)")) {
                 IfNode ifNode = new IfNode();
-                ((MultipleInstructionNode) parent).addInstruction(ifNode);
+                ((MultipleStatementNode) parent).addInstruction(ifNode);
                 parent = ifNode.getTrueChild();
             } else if (s.matches("else")) {
                 parent = ((IfNode) parent.getParent()).createFalseChild();
