@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -8,27 +10,84 @@
 <?import javafx.scene.layout.*?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <TableView fx:id="table" prefHeight="525.0" prefWidth="600.0">
-        <columns>
-          <TableColumn fx:id="num" prefWidth="54.0" resizable="false" />
-          <TableColumn fx:id="code" prefWidth="545.0" resizable="false" />
-        </columns>
-      </TableView>
-      <HBox prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Label text="Code">
-               <HBox.margin>
-                  <Insets left="5.0" right="5.0" top="7.0" />
-               </HBox.margin>
-            </Label>
-            <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="547.0">
-               <HBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </HBox.margin>
-            </TextField>
-         </children>
-      </HBox>
-   </children>
-</VBox>
+<fx:root style="-fx-background-color: #282C34;" type="TabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <Tab closable="false" text="Pseudocode">
+         <content>
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0" prefWidth="646.0" style="-fx-background-color: #282C34;">
+               <children>
+                  <TableView fx:id="pTable" prefHeight="525.0" prefWidth="611.0" style="-fx-background-color: transparent;">
+                    <columns>
+                      <TableColumn fx:id="pNum" prefWidth="54.0" resizable="false" text="Line" />
+                      <TableColumn fx:id="pseudocode" prefWidth="591.0" resizable="false" />
+                    </columns>
+                  </TableView>
+                  <Separator prefWidth="200.0" />
+                  <HBox prefHeight="40.0" prefWidth="600.0">
+                     <children>
+                        <Label text="Code" textFill="#e4e4ff">
+                           <HBox.margin>
+                              <Insets left="5.0" right="5.0" top="7.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="Consolas" size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="585.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #ABB2BF;">
+                           <HBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="Monospaced Regular" size="12.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </Tab>
+      <Tab closable="false" text="Assembly Code with Address">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="adTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
+                     <columns>
+                        <TableColumn fx:id="adNum" prefWidth="54.0" resizable="false" text="Address" />
+                        <TableColumn fx:id="address" prefWidth="591.0" resizable="false" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab closable="false" text="Machine Code (Hexa)">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="hTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
+                     <columns>
+                        <TableColumn fx:id="hNum" prefWidth="54.0" resizable="false" text="Address" />
+                        <TableColumn fx:id="hexa" prefWidth="591.0" resizable="false" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab closable="false" text="Machine Code (Decimal)">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="decTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
+                     <columns>
+                        <TableColumn fx:id="decNum" prefWidth="54.0" resizable="false" text="Address" />
+                        <TableColumn fx:id="decimal" prefWidth="591.0" resizable="false" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+   </tabs>
+</fx:root>
