@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="table" prefHeight="525.0" prefWidth="600.0">
+        <columns>
+          <TableColumn fx:id="num" prefWidth="54.0" resizable="false" />
+          <TableColumn fx:id="code" prefWidth="545.0" resizable="false" />
+        </columns>
+      </TableView>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="Code">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" top="7.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="547.0">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+   </children>
+</VBox>
