@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<<<<<<< HEAD
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
+=======
+>>>>>>> 8ade199fe05630ceffd0a53e4665d6ad0601db7b
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -10,6 +13,7 @@
 <?import javafx.scene.layout.*?>
 
 
+<<<<<<< HEAD
 <fx:root style="-fx-background-color: #282C34;" type="TabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab closable="false" text="Pseudocode">
@@ -91,3 +95,29 @@
       </Tab>
    </tabs>
 </fx:root>
+=======
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="table" prefHeight="525.0" prefWidth="600.0">
+        <columns>
+          <TableColumn fx:id="num" prefWidth="54.0" resizable="false" />
+          <TableColumn fx:id="code" prefWidth="545.0" resizable="false" />
+        </columns>
+      </TableView>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="Code">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" top="7.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="547.0">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+   </children>
+</VBox>
+>>>>>>> 8ade199fe05630ceffd0a53e4665d6ad0601db7b
