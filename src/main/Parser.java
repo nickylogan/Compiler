@@ -120,7 +120,7 @@ public class Parser {
         return instructions;
     }
 
-    public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int index) {
+    public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int lineNumber) {
         instructions = new ArrayList<Instruction>();
 
         // remove semicolon if assign statement
@@ -132,7 +132,7 @@ public class Parser {
 
         if (!isNumeric(val) || !assignSymbol.equals("=")) {
             // syntax: val = res
-            Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())));
+            Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())), lineNumber);
 
             boolean isRegister = (Register.isRegister(val) != -1);
             Register r;
@@ -144,14 +144,14 @@ public class Parser {
             if (res instanceof Register) {
                 // syntax: register1 = register2
                 int resIndex = ((Register) res).ordinal();
-                int valIndex = Register.isRegister(val);
+                int valIndex = r.ordinal();
                 if (resIndex != valIndex) // not same register
                     instructions.add(new Instruction(MOVR, r, (Register) res));
             } else if (res instanceof Integer) {
                 // syntax: register = integer
                 int numericVal = (Integer) res;
                 instructions.add(new Instruction(MOVI, r, new Immediate(numericVal)));
-            } else {
+            } else if (((String) res).matches("[A-Za-z][A-Za-z0-9]*")) {
                 VariableLocation varLocation = initVariable(res.toString());
 //                instructions.add(new Instruction(MOVI, Register.R14, new Immediate(varLocation)));
                 Memory varMemory = new Memory(Register.R15, new Immediate(varLocation));
@@ -165,7 +165,7 @@ public class Parser {
                 instructions.add(new Instruction(MOV, varMemory, r));
             }
         } else {
-            throw new ParserException("Incorrect syntax at statement " + index);
+            throw new ParserException("Incorrect syntax at statement " + lineNumber);
         }
 
         return instructions;
@@ -177,7 +177,7 @@ public class Parser {
      * @param tokens - ArrayList of string from splitted line
      * @return object to be moved into first value
      */
-    private static Object addAssignInstruction(ArrayList<String> tokens) {
+    private static Object addAssignInstruction(ArrayList<String> tokens, int lineNumber) {
         Stack<Object> values = new Stack<Object>();
         Stack<Token> operands = new Stack<Token>();
 
@@ -205,8 +205,10 @@ public class Parser {
                 if (Register.isReserved(r))
                     throw new ParserException("Cannot use reserved register");
                 values.push(r);
-            } else {
+            } else if(s.matches("[A-Za-z][A-Za-z0-9]*")){
                 values.push(s);
+            } else {
+            	throw new ParserException("Incorrect syntax at statement " + lineNumber);
             }
         }
 
@@ -303,7 +305,7 @@ public class Parser {
             }
             return r;
         } else {
-            if (val1 instanceof String) {
+            if (val1 instanceof String && ((String)val1).matches("[A-Za-z][A-Za-z0-9]*")) {
                 Register r = Register.R14;
                 VariableLocation varLocation = initVariable(val1.toString());
 //                instructions.add(new Instruction(MOVI, r, new Immediate(varLocation)));
@@ -311,7 +313,7 @@ public class Parser {
                 instructions.add(new Instruction(MOVM, r, varMemory));
                 val1 = r;
             }
-            if (val2 instanceof String) {
+            if (val2 instanceof String && ((String)val2).matches("[A-Za-z][A-Za-z0-9]*")) {
                 Register r = Register.R13;
                 VariableLocation varLocation = initVariable(val2.toString());
 //                instructions.add(new Instruction(MOVI, r, new Immediate(varLocation)));
@@ -344,26 +346,6 @@ public class Parser {
             variables.put(varName, i);
             return i;
         }
-    }
-
-    public static void modifyVarLocations(int n) {
-        for (String s : variables.keySet()) {
-            VariableLocation temp = variables.get(s);
-            temp.setValue(LINE_INIT_POS + (n * LINE_SIZE));
-            n++;
-        }
-    }
-
-    private static void modifyInstruction(Instruction ins, int pos) {
-        Operator op = ins.getOperator();
-        ArrayList<Operand> operands = ins.getOperands();
-        if (op.equals(Operator.JMP)) {
-            operands.remove(0);
-        } else {
-            operands.remove(2);
-        }
-        operands.add(new Immediate(LINE_INIT_POS + ((pos - 1) * LINE_SIZE)));
-        ins.setOperands(operands);
     }
 
     public static HashMap<String, VariableLocation> getVariables() {
