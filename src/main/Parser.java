@@ -31,7 +31,7 @@ public class Parser {
     	
     	if(!isNumeric(val) || !assignSymbol.equals("=")) {
     		// syntax: val = res
-    		Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())));
+    		Object res = addAssignInstruction(new ArrayList<String>(line));
     		
     		boolean isRegister = (Register.isRegister(val) != -1);
     		Register r;
