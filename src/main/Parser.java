@@ -25,15 +25,15 @@ public class Parser {
 		instructions = new ArrayList<Instruction>();
 		
 		// remove semicolon if assign statement
-    	String last = line.get(line.size() - 1);
-    	line.set(line.size() - 1, last.substring(0, last.length() - 1));
+    	//String last = line.get(line.size() - 1);
+    	//line.set(line.size() - 1, last.substring(0, last.length() - 1));
     	
     	String val = line.get(0);
     	String assignSymbol = line.get(1);
     	
     	if(!isNumeric(val) || !assignSymbol.equals("=")) {
     		// syntax: val = res
-    		Object res = addAssignInstruction(new ArrayList<String>(line));
+    		Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())));
     		
     		boolean isRegister = (Register.isRegister(val) != -1);
     		Register r;
@@ -87,6 +87,7 @@ public class Parser {
 		int size = tokens.size();
 		for(int i = 0; i < size; ++i) {
 			String s = tokens.get(i);
+			System.out.println(tokens.get(i));
 			if(s.equals("")) {
 				continue;
 			}
@@ -163,8 +164,8 @@ public class Parser {
 			// example: 5 (val2) - R1 (val1)
 			Register r = Register.R15;
 			switch(token.getKeyword()) {
-				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val2, new Immediate((int)val1))); break;
-				case "*":	instructions.add(new Instruction(MULI, r, (Register)val2, new Immediate((int)val1))); break;
+				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val1, new Immediate((int)val2))); break;
+				case "*":	instructions.add(new Instruction(MULI, r, (Register)val1, new Immediate((int)val2))); break;
 				case "-":	instructions.add(new Instruction(MOVI, r, new Immediate((int)val2)));
 							instructions.add(new Instruction(SUB, r, r, (Register)val1)); break;
 				case "/":	instructions.add(new Instruction(MOVI, r, new Immediate((int)val2)));
