@@ -1,5 +1,6 @@
 package GUI;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -19,34 +21,54 @@ public class CodeController extends TabPane implements Initializable {
     @FXML
     private TextField codeLine;
     @FXML
-    private TableColumn pNum;
+    private TableColumn<Integer, String> pNum;
     @FXML
-    private TableColumn pseudocode;
+    private TableColumn<ArrayList<Text>, String> pseudocode;
     @FXML
-    private TableColumn adNum;
+    private TableColumn<Integer, String> adNum;
     @FXML
-    private TableColumn address;
+    private TableColumn<ArrayList<Text>, String> address;
     @FXML
-    private TableColumn hNum;
+    private TableColumn<Integer, String> hNum;
     @FXML
-    private TableColumn hexa;
+    private TableColumn<ArrayList<Text>, String> hexa;
     @FXML
-    private TableColumn decNum;
+    private TableColumn<Integer, String> decNum;
     @FXML
-    private TableColumn decimal;
+    private TableColumn<ArrayList<Text>, String> decimal;
     @FXML
-    private TableView pTable;
+    private TableView<CodeLine> pTable;
     @FXML
-    private TableView adTable;
+    private TableView<CodeLine> adTable;
     @FXML
-    private TableView hTable;
+    private TableView<CodeLine> hTable;
     @FXML
-    private TableView decTable;
+    private TableView<CodeLine> decTable;
 
     private String code;
     private ColorParser cp;
-    private int line = 0;
-    private ObservableList<ArrayList<Text>> codes;
+    private Integer line = 0;
+    private static ArrayList<String> rawCode;
+    private ObservableList<CodeLine> codes;
+    private ObservableList<CodeLine> cAddress;
+    private ObservableList<CodeLine> cHexa;
+    private ObservableList<CodeLine> cDec;
+
+    public static ArrayList<String> getRawCode() {
+        return rawCode;
+    }
+
+    public void setcAddress(ObservableList<CodeLine> cAddress) {
+        this.cAddress = cAddress;
+    }
+
+    public void setcHexa(ObservableList<CodeLine> cHexa) {
+        this.cHexa = cHexa;
+    }
+
+    public void setcDec(ObservableList<CodeLine> cDec) {
+        this.cDec = cDec;
+    }
 
     public CodeController() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Code.fxml"));
@@ -64,12 +86,39 @@ public class CodeController extends TabPane implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         codeLine.setOnAction(e -> {
             code = codeLine.getText();
+            rawCode.add(code);
             cp = new ColorParser(code);
-            ArrayList<Text> tempAL;
-            tempAL = new ArrayList<>(cp.getColoredText());
-            Text temp = new Text();
-            line++;
-            // TODO: 12-Dec-17 masukkin data ke table..
+            codes.add(new CodeLine(line, cp.getColoredText()));
+            setPTable();
         });
     }
+
+    public void setPTable () {
+        pNum.setCellValueFactory(new PropertyValueFactory<>("pNum"));
+        pseudocode.setCellValueFactory(new PropertyValueFactory<>("pseudocode"));
+        pTable.getItems().clear();
+        pTable.getItems().addAll(codes);
+    }
+
+    public void setAdTable () {
+        adNum.setCellValueFactory(new PropertyValueFactory<>("adNum"));
+        address.setCellValueFactory(new PropertyValueFactory<>("address"));
+        adTable.getItems().clear();
+        adTable.getItems().addAll(cAddress);
+    }
+
+    public void setHTable () {
+        hNum.setCellValueFactory(new PropertyValueFactory<>("hNum"));
+        hexa.setCellValueFactory(new PropertyValueFactory<>("hexa"));
+        hTable.getItems().clear();
+        hTable.getItems().addAll(cHexa);
+    }
+
+    public void setDecTable () {
+        decNum.setCellValueFactory(new PropertyValueFactory<>("decNum"));
+        decimal.setCellValueFactory(new PropertyValueFactory<>("decimal"));
+        decTable.getItems().clear();
+        decTable.getItems().addAll(cDec);
+    }
+
 }

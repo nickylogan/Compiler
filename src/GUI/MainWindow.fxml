@@ -13,23 +13,23 @@
         <menus>
           <Menu mnemonicParsing="false">
             <items>
-              <MenuItem mnemonicParsing="false" text="New">
+              <MenuItem fx:id="newFile" mnemonicParsing="false" text="New">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Save">
+                  <MenuItem fx:id="save" mnemonicParsing="false" text="Save">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Open">
+                  <MenuItem fx:id="open" mnemonicParsing="false" text="Open">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Close">
+                  <MenuItem fx:id="close" mnemonicParsing="false" text="Close">
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -45,12 +45,12 @@
           </Menu>
           <Menu mnemonicParsing="false">
             <items>
-              <MenuItem mnemonicParsing="false" text="Undo">
+              <MenuItem fx:id="undo" mnemonicParsing="false" text="Undo">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Redo">
+                  <MenuItem fx:id="redo" mnemonicParsing="false" text="Redo">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -85,7 +85,7 @@
                   </StackPane>
                </graphic>
                <items>
-                  <MenuItem mnemonicParsing="false" text="Compile">
+                  <MenuItem fx:id="compile" mnemonicParsing="false" text="Compile">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="F10" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator>

@@ -3,16 +3,13 @@ package GUI;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import main.Keyword;
-import main.ParserException;
-import statement.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class ColorParser {
     private ArrayList<Text> coloredText;
     private Text t;
+    private int tab = 0;
 
     public ColorParser(String input) {
         color(input);
@@ -36,8 +33,15 @@ public class ColorParser {
             else if (anArr.matches("[A-Za-z][A-Za-z0-9]*")) varColor(anArr);
             else if (anArr.matches("[0-9]+")) numColor(anArr);
             else if (anArr.matches("[-+*/]|[<>!=]?[=]|[<>]")) operatorColor(anArr);
-            else if (anArr.matches("(end)?(while|if)|endprogram|break|continue")) keywordColor(anArr);
+            else if (anArr.matches("(end)?(while|if)|endprogram|break|continue")) {
+                keywordColor(anArr);
+                if (anArr.matches("(while|if)")) tab++;
+                else tab--;
+            }
             else defColor(anArr);
+        }
+        for (int i = 0; i<tab; i++) {
+            coloredText.add(0, new Text("\t"));
         }
     }
 
