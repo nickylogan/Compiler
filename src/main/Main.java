@@ -40,16 +40,6 @@ public class Main {
             Instruction in = instructions.get(i);
             System.out.println("[" + ((i * 4) / 10) + ((i * 4) % 10) + "] " + in);
         }
-        System.out.println();
-        ArrayList<String> hex = Mapper.convertToHexString(instructions);
-        for(String s : hex){
-            System.out.println(s);
-        }
-        System.out.println();
-        ArrayList<Long> longs = Mapper.convertHexStringToMachineCode(hex);
-        for(Long  l : longs){
-            System.out.println(l);
-        }
 
 
 //        instructions.size();
