@@ -17,7 +17,7 @@ public class SimpleStatementNode extends StatementNode {
 
         String split[] = getLine().split("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))");
         ArrayList<String> tokens = new ArrayList<>(Arrays.asList(split));
-
+        System.out.println(tokens);
         instructions = Parser.parseAssignStatement(tokens, getLineNumber());
         ArrayList<InstructionOffset> instructionOffset = new ArrayList<>();
         int i = 0;

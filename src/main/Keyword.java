@@ -3,6 +3,7 @@ package main;
 public enum Keyword {
 	IF("if", Keyword.BEGIN), WHILE("while", Keyword.BEGIN),
 	ELSE("else", Keyword.END), BREAK("break", Keyword.END),
+	CONTINUE("continue", Keyword.END),
 	ENDIF("endif", Keyword.END), ENDWHILE("endwhile", Keyword.END),
 	ENDPROGRAM("endprogram", Keyword.EXIT);
 
@@ -31,7 +32,8 @@ public enum Keyword {
 			case "while":		return Keyword.WHILE;
 			case "else":		return Keyword.ELSE;
 			case "break":		return Keyword.BREAK;
-			case "endif":		return Keyword.ENDIF; 
+			case "continue":    return Keyword.CONTINUE;
+			case "endif":		return Keyword.ENDIF;
 			case "endwhile":	return Keyword.ENDWHILE;
 			case "endprogram":	return Keyword.ENDPROGRAM;
 			default:			return null;
