@@ -49,6 +49,7 @@ public class WhileNode extends StatementNode {
             }
 
             boolean normal = !(operator == Token.NEQ || operator == Token.GE || operator == Token.LE);
+//            System.out.println("normal = " + normal);
 
             if (ss[2].matches("[0-9]+") && ss[4].matches("[0-9]+")) {
                 deterministic = true;
@@ -77,19 +78,20 @@ public class WhileNode extends StatementNode {
                         aBoolean = false;
                 }
             } else if (Register.isRegister(ss[2]) != -1 && Register.isRegister(ss[4]) != -1) {
-                Register r1 = Register.valueOf(ss[2]);
-                Register r2 = Register.valueOf(ss[4]);
+//                System.out.println(ss[2]+ " "+ss[4]);
+                Register r1 = Register.getValue(ss[2]);
+                Register r2 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1) || Register.isReserved(r2))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 main = new Instruction(op, r1, r2, normal ? whileLabel : endLabel);
             } else if (Register.isRegister(ss[2]) != -1 && ss[4].matches("[0-9]+")) {
-                Register r1 = Register.valueOf(ss[2]);
+                Register r1 = Register.getValue(ss[2]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 helper1 = new Instruction(Operator.MOVI, Register.R14, new Immediate(Integer.parseInt(ss[4])));
                 main = new Instruction(op, r1, Register.R14, normal ? whileLabel : endLabel);
             } else if (Register.isRegister(ss[2]) != -1 && ss[4].matches("[A-Za-z][A-Za-z0-9]*")) {
-                Register r1 = Register.valueOf(ss[2]);
+                Register r1 = Register.getValue(ss[2]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 VariableLocation varLocation = Parser.initVariable(ss[4]);
@@ -97,7 +99,7 @@ public class WhileNode extends StatementNode {
                 helper1 = new Instruction(Operator.MOVM, Register.R14, mem);
                 main = new Instruction(op, r1, Register.R14, normal ? whileLabel : endLabel);
             } else if (ss[2].matches("[A-Za-z][A-Za-z0-9]*") && Register.isRegister(ss[4]) != -1) {
-                Register r1 = Register.valueOf(ss[4]);
+                Register r1 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 VariableLocation varLocation = Parser.initVariable(ss[2]);
@@ -119,7 +121,7 @@ public class WhileNode extends StatementNode {
                 helper2 = new Instruction(Operator.MOVM, Register.R14, mem2);
                 main = new Instruction(op, Register.R13, Register.R14, normal ? whileLabel : endLabel);
             } else if (ss[2].matches("[0-9]+") && Register.isRegister(ss[4]) != -1) {
-                Register r1 = Register.valueOf(ss[4]);
+                Register r1 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 helper1 = new Instruction(Operator.MOVI, Register.R14, new Immediate(Integer.parseInt(ss[2])));
@@ -192,7 +194,7 @@ public class WhileNode extends StatementNode {
                 for(Immediate i : start) i.setValue(whileStartLabel.getIntValue());
                 for(Immediate i : end) i.setValue(endLabel.getIntValue());
             } else {
-                whileLabel.setValue(index);
+                whileLabel.setValue(index+1);
                 ArrayList<InstructionOffset> childArr = children.parse();
                 ArrayList<Immediate> end = new ArrayList<>();
                 ArrayList<Immediate> start = new ArrayList<>();

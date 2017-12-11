@@ -1,6 +1,8 @@
-while (x > 5)
-while (a < b)
-a=5+a
-endwhile
-endwhile
-endprogram
+a = 7
+b = 5
+c = 0
+if(a>b)
+    c = a
+else
+    c = b
+endif

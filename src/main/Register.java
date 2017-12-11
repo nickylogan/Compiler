@@ -23,4 +23,8 @@ public enum Register implements Operand {
     public static Register getRegister(int id) {
         return values()[id];
     }
+
+    public static Register getValue(String s){
+        return valueOf(s.toUpperCase());
+    }
 }

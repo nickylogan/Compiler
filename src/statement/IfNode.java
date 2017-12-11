@@ -75,19 +75,19 @@ public class IfNode extends StatementNode {
                         aBoolean = false;
                 }
             } else if (Register.isRegister(ss[2]) != -1 && Register.isRegister(ss[4]) != -1) {
-                Register r1 = Register.valueOf(ss[2]);
-                Register r2 = Register.valueOf(ss[4]);
+                Register r1 = Register.getValue(ss[2]);
+                Register r2 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1) || Register.isReserved(r2))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 main = new Instruction(op, r1, r2, ifLabel);
             } else if (Register.isRegister(ss[2]) != -1 && ss[4].matches("[0-9]+")) {
-                Register r1 = Register.valueOf(ss[2]);
+                Register r1 = Register.getValue(ss[2]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 helper1 = new Instruction(Operator.MOVI, Register.R14, new Immediate(Integer.parseInt(ss[4])));
                 main = new Instruction(op, r1, Register.R14, ifLabel);
             } else if (Register.isRegister(ss[2]) != -1 && ss[4].matches("[A-Za-z][A-Za-z0-9]*")) {
-                Register r1 = Register.valueOf(ss[2]);
+                Register r1 = Register.getValue(ss[2]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 VariableLocation varLocation = Parser.initVariable(ss[4]);
@@ -95,7 +95,7 @@ public class IfNode extends StatementNode {
                 helper1 = new Instruction(Operator.MOVM, Register.R14, mem);
                 main = new Instruction(op, r1, Register.R14, ifLabel);
             } else if (ss[2].matches("[A-Za-z][A-Za-z0-9]*") && Register.isRegister(ss[4]) != -1) {
-                Register r1 = Register.valueOf(ss[4]);
+                Register r1 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 VariableLocation varLocation = Parser.initVariable(ss[2]);
@@ -117,7 +117,7 @@ public class IfNode extends StatementNode {
                 helper2 = new Instruction(Operator.MOVM, Register.R14, mem2);
                 main = new Instruction(op, Register.R13, Register.R14, ifLabel);
             } else if (ss[2].matches("[0-9]+") && Register.isRegister(ss[4]) != -1) {
-                Register r1 = Register.valueOf(ss[4]);
+                Register r1 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1))
                     throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
                 helper1 = new Instruction(Operator.MOVI, Register.R14, new Immediate(Integer.parseInt(ss[2])));
@@ -167,20 +167,24 @@ public class IfNode extends StatementNode {
                 res.addAll(trueArr);
                 res.add(new InstructionOffset(exit, index++));
                 ifLabel.setValue(index);
-                ArrayList<InstructionOffset> falseArr = falseChild.parse();
-                for (InstructionOffset instructionOffset : falseArr) {
-                    instructionOffset.setOffset(instructionOffset.getOffset() + index);
+                if(falseChild!=null) {
+                    ArrayList<InstructionOffset> falseArr = falseChild.parse();
+                    for (InstructionOffset instructionOffset : falseArr) {
+                        instructionOffset.setOffset(instructionOffset.getOffset() + index);
+                    }
+                    index += falseArr.size();
+                    res.addAll(falseArr);
                 }
-                index += falseArr.size();
-                res.addAll(falseArr);
                 endLabel.setValue(index);
             } else {
-                ArrayList<InstructionOffset> falseArr = falseChild.parse();
-                for (InstructionOffset instructionOffset : falseArr) {
-                    instructionOffset.setOffset(instructionOffset.getOffset() + index);
+                if(falseChild!=null) {
+                    ArrayList<InstructionOffset> falseArr = falseChild.parse();
+                    for (InstructionOffset instructionOffset : falseArr) {
+                        instructionOffset.setOffset(instructionOffset.getOffset() + index);
+                    }
+                    index += falseArr.size();
+                    res.addAll(falseArr);
                 }
-                index += falseArr.size();
-                res.addAll(falseArr);
                 res.add(new InstructionOffset(exit, index++));
                 ifLabel.setValue(index);
                 ArrayList<InstructionOffset> trueArr = trueChild.parse();

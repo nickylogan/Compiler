@@ -69,15 +69,19 @@ public class Instruction {
     }
     
     public String toString() {
-    	StringBuilder s = new StringBuilder(operator.name());
+    	StringBuilder s = new StringBuilder(operator.name()+" ");
     	int size = operands.size();
-        for (Operand o : operands) {
+        for (int i = 0; i<operands.size(); ++i) {
+            Operand o = operands.get(i);
             if (o instanceof Register) {
-                s.append(" ").append(((Register) o).name());
+                if(i>0) s.append(",");
+                s.append(((Register) o).name());
             } else if (o instanceof Immediate) {
-                s.append(" ").append(((Immediate) o).getValue());
+                if(i>0) s.append(",");
+                s.append(((Immediate) o).getValue());
             } else if (o instanceof Memory){
-                s.append(" [").append(((Memory) o).getRegister().name()).append("+").append(((Memory) o).getImmediate().getValue()).append("]");
+                if(i>0) s.append(",");
+                s.append("[").append(((Memory) o).getRegister().name()).append("+").append(((Memory) o).getImmediate().getValue()).append("]");
             }
         }
     	return s.toString();
