@@ -40,7 +40,7 @@ public class Parser {
     		if(isRegister)
     			r = Register.getRegister(Register.isRegister(val));
     		else
-    			r = Register.R15;
+    			r = Register.R14;
     			
     		if(res instanceof Register) {
     			// syntax: register1 = register2
@@ -56,15 +56,15 @@ public class Parser {
     		}
     		else {
     			VariableLocation varLocation = initVariable(res.toString());
-    			instructions.add(new Instruction(MOVI, Register.R15, new Immediate(varLocation)));
-    			Memory varMemory = new Memory(Register.R15, new Immediate(0));
+    			instructions.add(new Instruction(MOVI, Register.R14, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(Register.R14, new Immediate(0));
     			instructions.add(new Instruction(MOVM, r, varMemory));
     		}
     		
     		if(!isRegister) {
     			VariableLocation varLocation = initVariable(val);
-    			instructions.add(new Instruction(MOVI, Register.R13, new Immediate(varLocation)));
-    			Memory varMemory = new Memory(Register.R13, new Immediate(0));
+    			instructions.add(new Instruction(MOVI, Register.R12, new Immediate(varLocation)));
+    			Memory varMemory = new Memory(Register.R12, new Immediate(0));
     			instructions.add(new Instruction(MOV, varMemory, r));
     		}
     	}
@@ -151,7 +151,7 @@ public class Parser {
 		}
 		else if(val2 instanceof Register && val1 instanceof Integer) {
 			// example: R1 (val2) - 5 (val1)
-			Register r = Register.R15;
+			Register r = Register.R14;
 			switch(token.getKeyword()) {
 				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val2, new Immediate((int)val1))); break;
 				case "-":	instructions.add(new Instruction(SUBI, r, (Register)val2, new Immediate((int)val1))); break;
@@ -162,7 +162,7 @@ public class Parser {
 		}
 		else if(val1 instanceof Register && val2 instanceof Integer) {
 			// example: 5 (val2) - R1 (val1)
-			Register r = Register.R15;
+			Register r = Register.R14;
 			switch(token.getKeyword()) {
 				case "+":	instructions.add(new Instruction(ADDI, r, (Register)val1, new Immediate((int)val2))); break;
 				case "*":	instructions.add(new Instruction(MULI, r, (Register)val1, new Immediate((int)val2))); break;
@@ -174,7 +174,7 @@ public class Parser {
 			return r;
 		}
 		else if(val1 instanceof Register && val2 instanceof Register) {
-			Register r = Register.R15;
+			Register r = Register.R14;
 			switch(token.getKeyword()) {
 				case "+":	instructions.add(new Instruction(ADD, r, (Register)val2, (Register)val1)); break;
 				case "-":	instructions.add(new Instruction(SUB, r, (Register)val2, (Register)val1)); break;
@@ -185,7 +185,7 @@ public class Parser {
 		}
 		else {
 			if(val1 instanceof String) {
-				Register r = Register.R15;
+				Register r = Register.R14;
 				VariableLocation varLocation = initVariable(val1.toString());
     			instructions.add(new Instruction(MOVI, r, new Immediate(varLocation)));
     			Memory varMemory = new Memory(r, new Immediate(0));
@@ -193,7 +193,7 @@ public class Parser {
     			val1 = r;
 			}
 			if(val2 instanceof String) {
-				Register r = Register.R14;
+				Register r = Register.R13;
 				VariableLocation varLocation = initVariable(val2.toString());
     			instructions.add(new Instruction(MOVI, r, new Immediate(varLocation)));
     			Memory varMemory = new Memory(r, new Immediate(0));
