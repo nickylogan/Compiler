@@ -2,6 +2,7 @@ package main;
 
 import statement.*;
 
+import javax.swing.plaf.nimbus.State;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -42,15 +43,19 @@ public class Main {
             line = line.replaceAll(" +|[;]|\\t", "");
             System.out.println(line);
             if (line.matches("[A-Za-z][A-Za-z0-9]*=([A-Za-z][A-Za-z0-9]*|[0-9]+|[-+*/()])+")) {
+                System.out.println("assignment");
                 SimpleStatementNode statementNode = new SimpleStatementNode(line, i + 1);
                 parent.addStatement(statementNode);
-            } else if (line.matches("if\\(([0-9]+|[A-Za-z][A-Za-z0-9]*+)(<|<=|>=|>|==|!=)([0-9]+|[A-Za-z][A-Za-z0-9]*+)|true|false\\)")) {
+            } else if (line.matches("if[(](([0-9]+|[A-Za-z][A-Za-z0-9]*+)(<|<=|>=|>|==|!=)([0-9]+|[A-Za-z][A-Za-z0-9]*+)|true|false)[)]")) {
+                System.out.println("if");
                 IfNode ifNode = new IfNode(line, i + 1);
                 parent.addStatement(ifNode);
                 parent = ifNode.getTrueChild();
             } else if (line.matches("else")) {
+                System.out.println("else");
                 parent = ((IfNode) parent.getParent()).createFalseChild();
             } else if (line.matches("endif")) {
+                System.out.println("endif");
                 StatementNode st = parent;
                 while (st != null && !(st instanceof IfNode)) {
                     st = st.getParent();
@@ -59,11 +64,13 @@ public class Main {
                     throw new ParserException("endif statement without if at line " + (i + 1));
                 }
                 parent = (MultipleStatementNode) st.getParent();
-            } else if (line.matches("while")) {
+            } else if (line.matches("while[(](([0-9]+|[A-Za-z][A-Za-z0-9]*)(<|<=|>=|>|==|!=)([0-9]+|[A-Za-z][A-Za-z0-9]*)|true|false)[)]")) {
+                System.out.println("while");
                 WhileNode whileNode = new WhileNode(line, i + 1);
                 parent.addStatement(whileNode);
                 parent = whileNode.getChildren();
             } else if (line.matches("endwhile")) {
+                System.out.println("endwhile");
                 StatementNode st = parent;
                 while (st != null && !(st instanceof WhileNode)) {
                     st = st.getParent();
@@ -73,17 +80,33 @@ public class Main {
                 }
                 parent = (MultipleStatementNode) st.getParent();
             } else if (line.matches("break")) {
-                if (parent.getParent() instanceof WhileNode) {
-                    parent.addStatement(new KeywordStatement(Keyword.BREAK, i + 1));
-                } else {
+                System.out.println("break");
+                StatementNode st = parent;
+                while (st != null && !(st instanceof WhileNode)) {
+                    st = st.getParent();
+                }
+                if (st == null) {
                     throw new ParserException("break statement without while at line " + (i + 1));
                 }
+                parent.addStatement(new KeywordStatement(Keyword.BREAK, i + 1));
+            } else if (line.matches("continue")) {
+                System.out.println("continue");
+                StatementNode st = parent;
+                while (st != null && !(st instanceof WhileNode)) {
+                    st = st.getParent();
+                }
+                if (st == null) {
+                    throw new ParserException("break statement without while at line " + (i + 1));
+                }
+                parent.addStatement(new KeywordStatement(Keyword.BREAK, i + 1));
             }
         }
         instructions = root.parse();
+        for(InstructionOffset io : instructions){
+            System.out.println("[" + io.getOffset() + "] " + io.getInstruction());
+        }
 
-
-        instructions.size();
+//        instructions.size();
 
 //        Parser.modifyVarLocations(instructions.size());
 

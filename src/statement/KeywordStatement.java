@@ -1,7 +1,6 @@
 package statement;
 
-import main.InstructionOffset;
-import main.Keyword;
+import main.*;
 
 import java.util.ArrayList;
 
@@ -21,6 +20,16 @@ public class KeywordStatement extends StatementNode {
 
     @Override
     public ArrayList<InstructionOffset> parse() {
-        return null;
+        ArrayList<InstructionOffset> ins = new ArrayList<>();
+        InstructionOffset in = null;
+        if(keyword==Keyword.BREAK){
+            in = new InstructionOffset(new Instruction(Operator.JMP, new Immediate(0)), 0);
+            in.setLabel("break");
+        } else if (keyword == Keyword.CONTINUE){
+            in = new InstructionOffset(new Instruction(Operator.JMP, new Immediate(0)), 0);
+            in.setLabel("continue");
+        }
+        ins.add(in);
+        return ins;
     }
 }

@@ -22,6 +22,10 @@ public class Immediate implements Operand{
     public VariableLocation getValue() {
     	return value;
     }
+
+    public int getIntValue(){
+        return value.getValue();
+    }
     
     public void setValue(VariableLocation value) {
     	this.value = value;
