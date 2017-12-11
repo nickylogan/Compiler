@@ -58,11 +58,42 @@ public class Mapper {
 
         return sb.toString();
     }
-    public static String convertToMachineCode(ArrayList<Instruction> instructions) {
-        String s = "";
-    	for(Instruction instruction: instructions){
-            s += (Integer.decode(convertToMachineCodeLine(instruction))).toString() + "\n";
+
+    private static Long hexStringToLong (String s) {
+        String digits = "0123456789ABCDEF";
+        s = s.toUpperCase();
+        long val = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            int d = digits.indexOf(c);
+            val = 16*val + d;
         }
-    	return s;
+        return new Long(val);
     }
+
+
+    public static ArrayList<String> convertToHexString(ArrayList<Instruction> instructions) {
+        ArrayList<String> instructions_hex = new ArrayList<String>();
+        int s = instructions.size();
+        instructions_hex.ensureCapacity(s);
+        for (int i=0; i<s; i++) {
+            instructions_hex.set(i,convertToMachineCodeLine(instructions.get(i)));
+        }
+        return instructions_hex;
+    }
+
+    public static ArrayList<Long> convertHexStringToMachineCode (ArrayList<String> instruction_hex) {
+        ArrayList<Long> machine_code = new ArrayList<Long>();
+        int s = instruction_hex.size();
+        machine_code.ensureCapacity(s);
+        for (int i=0; i<s; i++) {
+            machine_code.set(i,hexStringToLong(instruction_hex.get(i)));
+        }
+        return machine_code;
+    }
+
+    public static ArrayList<Long> convertToMachineCode(ArrayList<Instruction> instructions) {
+        return convertHexStringToMachineCode(convertToHexString(instructions));
+    }
+
 }
