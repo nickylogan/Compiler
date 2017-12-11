@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<<<<<<< HEAD
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
-=======
->>>>>>> 8ade199fe05630ceffd0a53e4665d6ad0601db7b
-<?import javafx.geometry.*?>
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<<<<<<< HEAD
 <fx:root style="-fx-background-color: #282C34;" type="TabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab closable="false" text="Pseudocode">
@@ -22,8 +14,8 @@
                <children>
                   <TableView fx:id="pTable" prefHeight="525.0" prefWidth="611.0" style="-fx-background-color: transparent;">
                     <columns>
-                      <TableColumn fx:id="pNum" prefWidth="54.0" resizable="false" text="Line" />
-                      <TableColumn fx:id="pseudocode" prefWidth="591.0" resizable="false" />
+                      <TableColumn fx:id="pNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Line" />
+                      <TableColumn fx:id="pseudocode" prefWidth="591.0" resizable="false" sortable="false" />
                     </columns>
                   </TableView>
                   <Separator prefWidth="200.0" />
@@ -37,7 +29,7 @@
                               <Font name="Consolas" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="585.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #ABB2BF;">
+                        <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="585.0" promptText="Input code here. Press enter to submit the code." style="-fx-background-color: #FFFFFF; -fx-border-color: #ABB2BF;">
                            <HBox.margin>
                               <Insets left="5.0" top="5.0" />
                            </HBox.margin>
@@ -57,8 +49,8 @@
                <children>
                   <TableView fx:id="adTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
                      <columns>
-                        <TableColumn fx:id="adNum" prefWidth="54.0" resizable="false" text="Address" />
-                        <TableColumn fx:id="address" prefWidth="591.0" resizable="false" />
+                        <TableColumn fx:id="adNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Address" />
+                        <TableColumn fx:id="address" editable="false" prefWidth="591.0" resizable="false" sortable="false" />
                      </columns>
                   </TableView>
                </children>
@@ -71,8 +63,8 @@
                <children>
                   <TableView fx:id="hTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
                      <columns>
-                        <TableColumn fx:id="hNum" prefWidth="54.0" resizable="false" text="Address" />
-                        <TableColumn fx:id="hexa" prefWidth="591.0" resizable="false" />
+                        <TableColumn fx:id="hNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Address" />
+                        <TableColumn fx:id="hexa" editable="false" prefWidth="591.0" resizable="false" sortable="false" />
                      </columns>
                   </TableView>
                </children>
@@ -85,8 +77,8 @@
                <children>
                   <TableView fx:id="decTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
                      <columns>
-                        <TableColumn fx:id="decNum" prefWidth="54.0" resizable="false" text="Address" />
-                        <TableColumn fx:id="decimal" prefWidth="591.0" resizable="false" />
+                        <TableColumn fx:id="decNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Address" />
+                        <TableColumn fx:id="decimal" editable="false" prefWidth="591.0" resizable="false" sortable="false" />
                      </columns>
                   </TableView>
                </children>
@@ -95,29 +87,3 @@
       </Tab>
    </tabs>
 </fx:root>
-=======
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <TableView fx:id="table" prefHeight="525.0" prefWidth="600.0">
-        <columns>
-          <TableColumn fx:id="num" prefWidth="54.0" resizable="false" />
-          <TableColumn fx:id="code" prefWidth="545.0" resizable="false" />
-        </columns>
-      </TableView>
-      <HBox prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Label text="Code">
-               <HBox.margin>
-                  <Insets left="5.0" right="5.0" top="7.0" />
-               </HBox.margin>
-            </Label>
-            <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="547.0">
-               <HBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </HBox.margin>
-            </TextField>
-         </children>
-      </HBox>
-   </children>
-</VBox>
->>>>>>> 8ade199fe05630ceffd0a53e4665d6ad0601db7b

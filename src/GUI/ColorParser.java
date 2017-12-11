@@ -1,36 +1,85 @@
 package GUI;
 
-import javax.xml.soap.Text;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import main.Keyword;
+import main.ParserException;
+import statement.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ColorParser {
-    private String[] inputList;
-    private String coloredText;
+    private ArrayList<Text> coloredText;
+    private Text t;
 
-    public String color (String input) {
-        for (int i=0; i<10; i++){ // TODO: 11-Dec-17 replace this with the correct input
-            switch (input) {
-                case "int":
-                    break;
-                case "=": case "!=": case "==": case ">": case "<": case ">=": case "<=": case "+": case "-":
-                case "*": case "/":
-                    break;
-                case "r1": case "r2": case "r3": case "r4": case "r5": case "r6": case "r7": case "r8": case "r9":
-                case "r10": case "r11": case "r12": case "r13": case "r14": case "r15": case "r16":
-                    break;
-                case "(": case ")": case "{": case "}":
-                    break;
-                case "0": case"1": case "2": case "3": case "4": case "5": case "6": case "7": case "8": case "9":
-                    break;
-                case "variable" :
-                    break;
-                    default:
-                        break;
+    public ColorParser(String input) {
+        color(input);
+    }
 
-
-            }
-        }
+    public ArrayList<Text> getColoredText() {
         return coloredText;
     }
 
+    public void setColoredText(ArrayList<Text> coloredText) {
+        this.coloredText = coloredText;
+    }
+
+    private void color(String input) {
+        coloredText = new ArrayList<>();
+
+        input = input.replaceAll(" +|[;]|\\t", "");
+        String arr[] = input.split("(?=(?<!end)(if|while)|else)|(?<=(if|while|else))|(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))");
+        for (String anArr : arr) {
+            if (anArr.matches("[rR]([0-9]|1[0-5])")) regColor(anArr);
+            else if (anArr.matches("[A-Za-z][A-Za-z0-9]*")) varColor(anArr);
+            else if (anArr.matches("[0-9]+")) numColor(anArr);
+            else if (anArr.matches("[-+*/]|[<>!=]?[=]|[<>]")) operatorColor(anArr);
+            else if (anArr.matches("(end)?(while|if)|endprogram|break|continue")) keywordColor(anArr);
+            else defColor(anArr);
+        }
+    }
+
+    private void varColor (String var) {
+        t = new Text(var);
+        t.setFill(Color.rgb(253,165,255));
+        t.setFont(Font.font("Monospaced Regular", 12));
+        coloredText.add(t);
+    }
+
+    private void defColor (String def) {
+        t = new Text(def);
+        t.setFill(Color.rgb(171,178,191));
+        t.setFont(Font.font("Monospaced Regular", 12));
+        coloredText.add(t);
+    }
+
+    private void numColor (String num) {
+        t = new Text(num);
+        t.setFill(Color.rgb(210,148,93));
+        t.setFont(Font.font("Monospaced Regular", 12));
+        coloredText.add(t);
+    }
+
+    private void regColor (String reg) {
+        t = new Text(reg);
+        t.setFill(Color.rgb(255,198,109));
+        t.setFont(Font.font("Monospaced Regular", 12));
+        coloredText.add(t);
+    }
+
+    private void keywordColor (String keyword) {
+        t = new Text(keyword);
+        t.setFill(Color.rgb(198,121,221));
+        t.setFont(Font.font("Monospaced Regular", 12));
+        coloredText.add(t);
+    }
+
+    private void operatorColor (String operator) {
+        t = new Text(operator);
+        t.setFill(Color.rgb(255,255,255));
+        t.setFont(Font.font("Monospaced Regular", 12));
+        coloredText.add(t);
+    }
 }
