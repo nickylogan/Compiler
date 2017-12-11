@@ -18,6 +18,8 @@ import static main.Operator.*;
 public class Parser {
 	private static HashMap<String, VariableLocation> variables = new HashMap<String, VariableLocation>();
 	private static ArrayList<Instruction> instructions;
+	public final static int LINE_SIZE = 4;
+	public final static int LINE_INIT_POS = 0;
 	
 	public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int index) {
 		instructions = new ArrayList<Instruction>();
@@ -222,6 +224,27 @@ public class Parser {
 			variables.put(varName, i);
 			return i;
 		}
+	}
+	
+	public static void modifyVarLocations(int n) {
+		for(String s : variables.keySet()) {
+			VariableLocation temp = variables.get(s);
+			temp.setValue(LINE_INIT_POS + (n * LINE_SIZE));
+			n++;
+		}
+	}
+	
+	private static void modifyInstruction(Instruction ins, int pos) {
+		Operator op = ins.getOperator();
+		ArrayList<Operand> operands = ins.getOperands();
+		if(op.equals(Operator.JMP)) {
+			operands.remove(0);
+		}
+		else {
+			operands.remove(2);
+		}
+		operands.add(new Immediate(LINE_INIT_POS + ((pos - 1) * LINE_SIZE)));
+		ins.setOperands(operands);
 	}
 	
 	public static HashMap<String, VariableLocation> getVariables() {
