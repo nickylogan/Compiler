@@ -36,10 +36,7 @@ public class Main {
 //            System.out.println("["+io.getOffset()+"] "+io.getInstruction());
 //        }
         ArrayList<Instruction> instructions = Parser.compile(lines);
-        for (int i = 0; i < instructions.size(); ++i) {
-            Instruction in = instructions.get(i);
-            System.out.println("[" + ((i * 4) / 10) + ((i * 4) % 10) + "] " + in);
-        }
+        printAssemblyCode(instructions);
         System.out.println();
         ArrayList<String> hex = Mapper.convertToHexString(instructions);
         for(String s : hex){

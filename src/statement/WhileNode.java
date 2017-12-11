@@ -82,18 +82,18 @@ public class WhileNode extends StatementNode {
                 Register r1 = Register.getValue(ss[2]);
                 Register r2 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1) || Register.isReserved(r2))
-                    throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
+                    throw new ParserException("Use of reserved register at line " + (getLineNumber()));
                 main = new Instruction(op, r1, r2, normal ? whileLabel : endLabel);
             } else if (Register.isRegister(ss[2]) != -1 && ss[4].matches("[0-9]+")) {
                 Register r1 = Register.getValue(ss[2]);
                 if (Register.isReserved(r1))
-                    throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
+                    throw new ParserException("Use of reserved register at line " + (getLineNumber()));
                 helper1 = new Instruction(Operator.MOVI, Register.R14, new Immediate(Integer.parseInt(ss[4])));
                 main = new Instruction(op, r1, Register.R14, normal ? whileLabel : endLabel);
             } else if (Register.isRegister(ss[2]) != -1 && ss[4].matches("[A-Za-z][A-Za-z0-9]*")) {
                 Register r1 = Register.getValue(ss[2]);
                 if (Register.isReserved(r1))
-                    throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
+                    throw new ParserException("Use of reserved register at line " + (getLineNumber()));
                 VariableLocation varLocation = Parser.initVariable(ss[4]);
                 Memory mem = new Memory(Register.R15, new Immediate(varLocation));
                 helper1 = new Instruction(Operator.MOVM, Register.R14, mem);
@@ -101,7 +101,7 @@ public class WhileNode extends StatementNode {
             } else if (ss[2].matches("[A-Za-z][A-Za-z0-9]*") && Register.isRegister(ss[4]) != -1) {
                 Register r1 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1))
-                    throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
+                    throw new ParserException("Use of reserved register at line " + (getLineNumber()));
                 VariableLocation varLocation = Parser.initVariable(ss[2]);
                 Memory mem = new Memory(Register.R15, new Immediate(varLocation));
                 helper1 = new Instruction(Operator.MOVM, Register.R14, mem);
@@ -123,7 +123,7 @@ public class WhileNode extends StatementNode {
             } else if (ss[2].matches("[0-9]+") && Register.isRegister(ss[4]) != -1) {
                 Register r1 = Register.getValue(ss[4]);
                 if (Register.isReserved(r1))
-                    throw new ParserException("Use of reserved register at line " + (getLineNumber() + 1));
+                    throw new ParserException("Use of reserved register at line " + (getLineNumber()));
                 helper1 = new Instruction(Operator.MOVI, Register.R14, new Immediate(Integer.parseInt(ss[2])));
                 main = new Instruction(op, Register.R14, r1, normal ? whileLabel : endLabel);
             } else if (ss[2].matches("[0-9]+") && ss[4].matches("[A-Za-z][A-Za-z0-9]*")) {
@@ -132,14 +132,14 @@ public class WhileNode extends StatementNode {
                 helper1 = new Instruction(Operator.MOVI, Register.R13, new Immediate(Integer.parseInt(ss[4])));
                 helper2 = new Instruction(Operator.MOVM, Register.R14, mem);
                 main = new Instruction(op, Register.R13, Register.R14, normal ? whileLabel : endLabel);
-            } else throw new ParserException("invalid conditional statement at line " + (getLineNumber() + 1));
+            } else throw new ParserException("invalid conditional statement at line " + (getLineNumber()));
         } else if (ss.length == 4) {
             if (!ss[2].equals("true") && !ss[2].equals("false"))
-                throw new ParserException("invalid conditional statement at line " + (getLineNumber() + 1));
+                throw new ParserException("invalid conditional statement at line " + (getLineNumber()));
             aBoolean = Boolean.valueOf(ss[2]);
             deterministic = true;
         } else
-            throw new ParserException("invalid if statement at line " + (getLineNumber() + 1));
+            throw new ParserException("invalid if statement at line " + (getLineNumber()));
         int index = 0;
         ArrayList<InstructionOffset> res = new ArrayList<>();
         if (deterministic) {
