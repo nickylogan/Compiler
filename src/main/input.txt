@@ -1,10 +1,4 @@
 a = 0
 b = 0
-while(b<=10)
-    c = 0
-    while(c<b)
-        c = c + 1
-    endwhile
-    a = a + c
-    b = b + 1
-endwhile
+c = 0
+d = 0
