@@ -6,19 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-import main.Immediate;
-import main.Instruction;
-import main.Memory;
-import main.ParserException;
-import main.Register;
-import main.Token;
-import main.VariableLocation;
 import statement.*;
 
 import static main.Operator.*;
 
 public class Parser {
-    private static HashMap<String, VariableLocation> variables = new HashMap<String, VariableLocation>();
+    private static HashMap<String, VariableLocation> variables = new HashMap<>();
     private static ArrayList<Instruction> instructions;
     public final static int LINE_SIZE = 4;
     public final static int LINE_INIT_POS = 0;
@@ -94,6 +87,7 @@ public class Parser {
             } else if (line.matches("endprogram")) {
                 stopped = true;
                 break;
+            } else if (line.isEmpty()) {
             } else throw new ParserException("Invalid syntax at line " + (i + 1));
         }
         if(parent.getParent() != null){
@@ -124,7 +118,7 @@ public class Parser {
     }
 
     public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int lineNumber) {
-        instructions = new ArrayList<Instruction>();
+        instructions = new ArrayList<>();
 
         // remove semicolon if assign statement
         //String last = line.get(line.size() - 1);
@@ -135,13 +129,14 @@ public class Parser {
 
         if (!isNumeric(val) || !assignSymbol.equals("=")) {
             // syntax: val = res
-            Object res = addAssignInstruction(new ArrayList<String>(line.subList(2, line.size())), lineNumber);
+            Object res = addAssignInstruction(new ArrayList<>(line.subList(2, line.size())), lineNumber);
 
             boolean isRegister = (Register.isRegister(val) != -1);
             Register r;
-            if (isRegister)
+            if (isRegister) {
                 r = Register.getRegister(Register.isRegister(val));
-            else
+                if(Register.isReserved(r)) throw new ParserException("Use of reserved register at line " + (lineNumber));
+            }else
                 r = Register.R14;
 
             if (res instanceof Register) {
@@ -181,8 +176,8 @@ public class Parser {
      * @return object to be moved into first value
      */
     private static Object addAssignInstruction(ArrayList<String> tokens, int lineNumber) {
-        Stack<Object> values = new Stack<Object>();
-        Stack<Token> operands = new Stack<Token>();
+        Stack<Object> values = new Stack<>();
+        Stack<Token> operands = new Stack<>();
 
         int size = tokens.size();
         for (int i = 0; i < size; ++i) {
