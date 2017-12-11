@@ -100,7 +100,7 @@ public class Parser {
             throw new ParserException("Missing end of file");
         }
         ArrayList<InstructionOffset> temp = root.parse();
-        Instruction init = new Instruction(Operator.MOVI, Register.R15, new Immediate((2 + temp.size()) * 4));
+        Instruction init = new Instruction(Operator.MOVI, Register.R15, new Immediate((2 + temp.size()) * LINE_SIZE));
         instructionOffsets.add(new InstructionOffset(init, 0));
         for (InstructionOffset io : temp) {
             io.setOffset(io.getOffset() + 1);
@@ -115,7 +115,7 @@ public class Parser {
             if (op == JMP || op == JE || op == JGT || op == JLT || op == JNE) {
                 ArrayList<Operand> ops = ins.getOperands();
                 Immediate k = ((Immediate) ops.get(ops.size() - 1));
-                k.setValue(k.getIntValue() * 4);
+                k.setValue(k.getIntValue() * LINE_SIZE);
             }
             instructions.add(ins);
         }
@@ -345,7 +345,7 @@ public class Parser {
         if (variables.containsKey(varName)) {
             return variables.get(varName);
         } else {
-            VariableLocation i = new VariableLocation(variables.size() * 4);
+            VariableLocation i = new VariableLocation(variables.size() * LINE_SIZE);
             variables.put(varName, i);
             return i;
         }
