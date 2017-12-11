@@ -1,7 +1,7 @@
-x = 0;
+x = (0);
 y = 10;
 while (x > 5)
-	R10 = x + y;
+	R10 = x + y * 5 - y;
 	x = x + 1;
 endwhile
 endprogram

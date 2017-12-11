@@ -49,7 +49,7 @@ public class Parser {
     		}
     		else if(res instanceof Integer) {
     			// syntax: register = integer
-    			int numericVal = ((Integer)res).intValue();
+    			int numericVal = (Integer) res;
     			instructions.add(new Instruction(MOVI, r, new Immediate(numericVal)));
     		}
     		else {
@@ -60,7 +60,7 @@ public class Parser {
     		}
     		
     		if(!isRegister) {
-    			VariableLocation varLocation = initVariable(val.toString());
+    			VariableLocation varLocation = initVariable(val);
     			instructions.add(new Instruction(MOVI, Register.R13, new Immediate(varLocation)));
     			Memory varMemory = new Memory(Register.R13, new Immediate(0));
     			instructions.add(new Instruction(MOV, varMemory, r));
@@ -107,7 +107,7 @@ public class Parser {
 			else if(Register.isRegister(s) != -1){
 				int index = Register.isRegister(s);
 				Register r = Register.getRegister(index);
-				if(r.equals(Register.R15) || r.equals(Register.R14) || r.equals(Register.R13))
+				if(Register.isReserved(r))
 					throw new ParserException("Cannot use reserved register");
 				values.push(r);
 			}
@@ -213,7 +213,7 @@ public class Parser {
 		return s.length() == pos.getIndex();
 	}
 	
-	private static VariableLocation initVariable(String varName) {
+	public static VariableLocation initVariable(String varName) {
 		if(variables.containsKey(varName)) {
 			return variables.get(varName);
 		}
