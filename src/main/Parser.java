@@ -94,7 +94,10 @@ public class Parser {
             } else if (line.matches("endprogram")) {
                 stopped = true;
                 break;
-            }
+            } else throw new ParserException("Invalid syntax at line " + (i + 1));
+        }
+        if(parent.getParent() != null){
+            throw new ParserException("Missing end of file");
         }
         ArrayList<InstructionOffset> temp = root.parse();
         Instruction init = new Instruction(Operator.MOVI, Register.R15, new Immediate((2 + temp.size()) * 4));

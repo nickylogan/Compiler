@@ -143,28 +143,30 @@ public class WhileNode extends StatementNode {
         int index = 0;
         ArrayList<InstructionOffset> res = new ArrayList<>();
         if (deterministic) {
-            ArrayList<InstructionOffset> childArr = children.parse();
-            ArrayList<Immediate> end = new ArrayList<>();
-            ArrayList<Immediate> start = new ArrayList<>();
-            for (InstructionOffset instructionOffset : childArr) {
-                if(instructionOffset.getLabel().equals("break")) {
-                    ArrayList<Operand> ops = instructionOffset.getInstruction().getOperands();
-                    end.add((Immediate)ops.get(ops.size()-1));
-                    instructionOffset.setLabel("");
-                } else if(instructionOffset.getLabel().equals("continue")) {
-                    ArrayList<Operand> ops = instructionOffset.getInstruction().getOperands();
-                    start.add((Immediate)ops.get(ops.size()-1));
-                    instructionOffset.setLabel("");
+            if(aBoolean) {
+                ArrayList<InstructionOffset> childArr = children.parse();
+                ArrayList<Immediate> end = new ArrayList<>();
+                ArrayList<Immediate> start = new ArrayList<>();
+                for (InstructionOffset instructionOffset : childArr) {
+                    if (instructionOffset.getLabel().equals("break")) {
+                        ArrayList<Operand> ops = instructionOffset.getInstruction().getOperands();
+                        end.add((Immediate) ops.get(ops.size() - 1));
+                        instructionOffset.setLabel("");
+                    } else if (instructionOffset.getLabel().equals("continue")) {
+                        ArrayList<Operand> ops = instructionOffset.getInstruction().getOperands();
+                        start.add((Immediate) ops.get(ops.size() - 1));
+                        instructionOffset.setLabel("");
+                    }
+                    instructionOffset.setOffset(instructionOffset.getOffset() + index);
                 }
-                instructionOffset.setOffset(instructionOffset.getOffset() + index);
+                index += childArr.size();
+                whileStartLabel.setValue(0);
+                res.addAll(childArr);
+                res.add(new InstructionOffset(repeat, index++));
+                endLabel.setValue(index);
+                for (Immediate i : start) i.setValue(whileLabel.getIntValue());
+                for (Immediate i : end) i.setValue(endLabel.getIntValue());
             }
-            index += childArr.size();
-            whileStartLabel.setValue(0);
-            res.addAll(childArr);
-            res.add(new InstructionOffset(repeat, index++));
-            endLabel.setValue(index);
-            for(Immediate i : start) i.setValue(whileLabel.getIntValue());
-            for(Immediate i : end) i.setValue(endLabel.getIntValue());
         } else {
             if (helper1 != null) res.add(new InstructionOffset(helper1, index++));
             if (helper2 != null) res.add(new InstructionOffset(helper2, index++));

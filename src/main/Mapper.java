@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Mapper {
-    private static String toHexStringWithLength(int value, int length){
+    private static String toHexStringWithLength(int value, int length) {
         StringBuilder sb = new StringBuilder();
         String hex = Integer.toHexString(value);
-        for(int i = 0; i<length-hex.length(); ++i) sb.append("0");
+        for (int i = 0; i < length - hex.length(); ++i) sb.append("0");
         sb.append(hex);
         return sb.toString();
     }
+
     private static String convertToMachineCodeLine(Instruction instruction) throws MapperException {
         StringBuilder sb = new StringBuilder("0x");
         Operator op = instruction.getOperator();
@@ -46,12 +47,12 @@ public class Mapper {
         } else if (op == Operator.JMP) {
             sb.append(toHexStringWithLength(((Immediate) operands.get(0)).getValue().getValue(), 6));
         } else if (op == Operator.JMPR || op == Operator.PUSH || op == Operator.POP || op == Operator.CALL) {
-            sb.append(((Register)operands.get(0)).getCode());
+            sb.append(((Register) operands.get(0)).getCode());
             sb.append("00000");
-        } else if (op == Operator.JE || op == Operator.JLT || op == Operator.JGT){
+        } else if (op == Operator.JE || op == Operator.JLT || op == Operator.JGT) {
             sb.append(((Register) operands.get(0)).getCode());
             sb.append(((Register) operands.get(1)).getCode());
-            sb.append(toHexStringWithLength(((Immediate)operands.get(2)).getValue().getValue(), 4));
+            sb.append(toHexStringWithLength(((Immediate) operands.get(2)).getValue().getValue(), 4));
         } else {
             throw new MapperException("Instruction " + op.name() + " not implemented!");
         }
@@ -59,35 +60,23 @@ public class Mapper {
         return sb.toString();
     }
 
-    private static Long hexStringToLong (String s) {
-        String digits = "0123456789ABCDEF";
-        s = s.toUpperCase();
-        long val = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            int d = digits.indexOf(c);
-            val = 16*val + d;
-        }
-        return new Long(val);
+    private static Long hexStringToLong(String s) {
+        return Long.decode(s);
     }
-
 
     public static ArrayList<String> convertToHexString(ArrayList<Instruction> instructions) {
         ArrayList<String> instructions_hex = new ArrayList<String>();
         int s = instructions.size();
-        instructions_hex.ensureCapacity(s);
-        for (int i=0; i<s; i++) {
-            instructions_hex.set(i,convertToMachineCodeLine(instructions.get(i)));
+        for (Instruction instruction : instructions) {
+            instructions_hex.add(convertToMachineCodeLine(instruction));
         }
         return instructions_hex;
     }
 
-    public static ArrayList<Long> convertHexStringToMachineCode (ArrayList<String> instruction_hex) {
+    public static ArrayList<Long> convertHexStringToMachineCode(ArrayList<String> instruction_hex) {
         ArrayList<Long> machine_code = new ArrayList<Long>();
-        int s = instruction_hex.size();
-        machine_code.ensureCapacity(s);
-        for (int i=0; i<s; i++) {
-            machine_code.set(i,hexStringToLong(instruction_hex.get(i)));
+        for (String anInstruction_hex : instruction_hex) {
+            machine_code.add(hexStringToLong(anInstruction_hex));
         }
         return machine_code;
     }
