@@ -58,16 +58,16 @@ public class CodeController extends TabPane implements Initializable {
         return rawCode;
     }
 
-    public void setcAddress(ObservableList<CodeLine> cAddress) {
-        this.cAddress = cAddress;
+    public void setcAddress() {
+        // TODO: 12-Dec-17 panggil fungsi parser yang ubah ke assembly buat dimasukin ke sini 
     }
 
     public void setcHexa(ObservableList<CodeLine> cHexa) {
-        this.cHexa = cHexa;
+        // TODO: 12-Dec-17 same as above
     }
 
     public void setcDec(ObservableList<CodeLine> cDec) {
-        this.cDec = cDec;
+        // TODO: 12-Dec-17 same as above
     }
 
     public CodeController() {
