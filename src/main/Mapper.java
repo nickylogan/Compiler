@@ -59,10 +59,10 @@ public class Mapper {
         return sb.toString();
     }
     public static String convertToMachineCode(ArrayList<Instruction> instructions) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
     	for(Instruction instruction: instructions){
-            s += (Integer.decode(convertToMachineCodeLine(instruction))).toString() + "\n";
+            s.append((Integer.decode(convertToMachineCodeLine(instruction))).toString()).append("\n");
         }
-    	return s;
+    	return s.toString();
     }
 }

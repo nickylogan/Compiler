@@ -1,4 +1,6 @@
-package InstructionNodes;
+package statement;
+
+import main.Instruction;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,19 +19,19 @@ public class Test {
             e.printStackTrace();
         }
         String lines[] = code.split("\\r?\\n");
-        InstructionNode root = new MultipleInstructionNode();
-        InstructionNode parent = root;
+        StatementNode root = new MultipleStatementNode();
+        StatementNode parent = root;
         System.out.println(parent);
         for (String s : lines) {
             s = s.replaceAll(" +", "");
             if (s.matches("([A-Za-z][A-Za-z0-9]*+)(=)([0-9]+|[A-Za-z][A-Za-z0-9]*+)")) {
-                SimpleInstructionNode ins = new SimpleInstructionNode();
+                SimpleStatementNode ins = new SimpleStatementNode(s,0);
                 System.out.println(ins);
-                System.out.println((MultipleInstructionNode) parent);
-                ((MultipleInstructionNode) parent).addInstruction(ins);
+                System.out.println((MultipleStatementNode) parent);
+                ((MultipleStatementNode) parent).addStatement(ins);
             } else if (s.matches("(if)[(]([0-9]+|[A-Za-z][A-Za-z0-9]*+)(<|<=|>=|>|==)([0-9]+|[A-Za-z][A-Za-z0-9]*+)[)](then)")) {
-                IfNode ifNode = new IfNode();
-                ((MultipleInstructionNode) parent).addInstruction(ifNode);
+                IfNode ifNode = new IfNode(s,0);
+                ((MultipleStatementNode) parent).addStatement(ifNode);
                 parent = ifNode.getTrueChild();
             } else if (s.matches("else")) {
                 parent = ((IfNode) parent.getParent()).createFalseChild();
@@ -40,8 +42,8 @@ public class Test {
                 parent = parent.getParent();
             }
         }
-        ArrayList<String> arr = root.parse();
-        for (String s : arr)
-            System.out.println(s);
+//        ArrayList<Instruction> arr = root.parse();
+//        for (Instruction s : arr)
+//            System.out.println(s);
     }
 }
