@@ -48,42 +48,42 @@ public class ColorParser {
     private void varColor (String var) {
         t = new Text(var);
         t.setFill(Color.rgb(253,165,255));
-        t.setFont(Font.font("Monospaced Regular", 12));
+        t.setFont(Font.font("Monospaced Regular", 14.0));
         coloredText.add(t);
     }
 
     private void defColor (String def) {
         t = new Text(def);
         t.setFill(Color.rgb(171,178,191));
-        t.setFont(Font.font("Monospaced Regular", 12));
+        t.setFont(Font.font("Monospaced Regular", 14.0));
         coloredText.add(t);
     }
 
     private void numColor (String num) {
         t = new Text(num);
         t.setFill(Color.rgb(210,148,93));
-        t.setFont(Font.font("Monospaced Regular", 12));
+        t.setFont(Font.font("Monospaced Regular", 14.0));
         coloredText.add(t);
     }
 
     private void regColor (String reg) {
         t = new Text(reg);
         t.setFill(Color.rgb(255,198,109));
-        t.setFont(Font.font("Monospaced Regular", 12));
+        t.setFont(Font.font("Monospaced Regular", 14.0));
         coloredText.add(t);
     }
 
     private void keywordColor (String keyword) {
         t = new Text(keyword);
         t.setFill(Color.rgb(198,121,221));
-        t.setFont(Font.font("Monospaced Regular", 12));
+        t.setFont(Font.font("Monospaced Regular", 14.0));
         coloredText.add(t);
     }
 
     private void operatorColor (String operator) {
         t = new Text(operator);
         t.setFill(Color.rgb(255,255,255));
-        t.setFont(Font.font("Monospaced Regular", 12));
+        t.setFont(Font.font("Monospaced Regular", 14.0));
         coloredText.add(t);
     }
 }

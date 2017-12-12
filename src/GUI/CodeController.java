@@ -5,11 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -21,53 +21,34 @@ public class CodeController extends TabPane implements Initializable {
     @FXML
     private TextField codeLine;
     @FXML
-    private TableColumn<Integer, String> pNum;
+    private ListView<Text> pNum;
     @FXML
-    private TableColumn<ArrayList<Text>, String> pseudocode;
+    private ListView<FlowPane> pseudocode;
     @FXML
-    private TableColumn<Integer, String> adNum;
+    private ListView<Text> adNum;
     @FXML
-    private TableColumn<ArrayList<Text>, String> address;
+    private ListView<FlowPane> address;
     @FXML
-    private TableColumn<Integer, String> hNum;
+    private ListView<Text> hNum;
     @FXML
-    private TableColumn<ArrayList<Text>, String> hexa;
+    private ListView<FlowPane> hexa;
     @FXML
-    private TableColumn<Integer, String> decNum;
+    private ListView<Text> decNum;
     @FXML
-    private TableColumn<ArrayList<Text>, String> decimal;
+    private ListView<Text> decimal;
     @FXML
-    private TableView<CodeLine> pTable;
-    @FXML
-    private TableView<CodeLine> adTable;
-    @FXML
-    private TableView<CodeLine> hTable;
-    @FXML
-    private TableView<CodeLine> decTable;
+    private FlowPane bundle;
 
+    private ObservableList<FlowPane> pseudoList = FXCollections.observableArrayList();
+    private ObservableList<FlowPane> adList = FXCollections.observableArrayList();
+    private ObservableList<FlowPane> hexaList = FXCollections.observableArrayList();
     private String code;
     private ColorParser cp;
     private Integer line = 0;
-    private static ArrayList<String> rawCode;
-    private ObservableList<CodeLine> codes;
-    private ObservableList<CodeLine> cAddress;
-    private ObservableList<CodeLine> cHexa;
-    private ObservableList<CodeLine> cDec;
+    private static ArrayList<String> rawCode = new ArrayList<>();
 
     public static ArrayList<String> getRawCode() {
         return rawCode;
-    }
-
-    public void setcAddress() {
-        // TODO: 12-Dec-17 panggil fungsi parser yang ubah ke assembly buat dimasukin ke sini 
-    }
-
-    public void setcHexa(ObservableList<CodeLine> cHexa) {
-        // TODO: 12-Dec-17 same as above
-    }
-
-    public void setcDec(ObservableList<CodeLine> cDec) {
-        // TODO: 12-Dec-17 same as above
     }
 
     public CodeController() {
@@ -84,41 +65,68 @@ public class CodeController extends TabPane implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        pseudocode.setItems(pseudoList);
+        address.setItems(adList);
+        hexa.setItems(hexaList);
+
         codeLine.setOnAction(e -> {
             code = codeLine.getText();
             rawCode.add(code);
-            cp = new ColorParser(code);
-            codes.add(new CodeLine(line, cp.getColoredText()));
-            setPTable();
+            addLine(line, code);
+            codeLine.setText("");
         });
+
     }
 
-    public void setPTable () {
-        pNum.setCellValueFactory(new PropertyValueFactory<>("pNum"));
-        pseudocode.setCellValueFactory(new PropertyValueFactory<>("pseudocode"));
-        pTable.getItems().clear();
-        pTable.getItems().addAll(codes);
+    public void addLine (Integer lineNum, String code) {
+        cp = new ColorParser(code);
+        bundle = new FlowPane();
+        bundle.getChildren().addAll (cp.getColoredText());
+        pseudoList.add(bundle);
+        line++;
+        Text temp = new Text(line.toString());
+        temp.setFill(Color.rgb(255,255,255));
+        temp.setFont(Font.font("Monospaced Regular", 14.0));
+        pNum.getItems().add(temp);
     }
 
-    public void setAdTable () {
-        adNum.setCellValueFactory(new PropertyValueFactory<>("adNum"));
-        address.setCellValueFactory(new PropertyValueFactory<>("address"));
-        adTable.getItems().clear();
-        adTable.getItems().addAll(cAddress);
+    public void setAdTable (ArrayList<String> assemblyCode) {
+        for (int i = 0; i<assemblyCode.size(); i++) {
+            cp = new ColorParser (assemblyCode.get(i).substring(assemblyCode.get(i).indexOf("]")+1,assemblyCode.get(i).length()-1));
+            bundle = new FlowPane();
+            bundle.getChildren().addAll(cp.getColoredText());
+            adList.add(bundle);
+            Text temp = new Text(assemblyCode.get(i).substring(0,assemblyCode.get(i).indexOf("]")));
+            temp.setFill(Color.rgb(255,255,255));
+            temp.setFont(Font.font("Monospaced Regular", 14.0));
+            adNum.getItems().add(temp);
+        }
     }
 
-    public void setHTable () {
-        hNum.setCellValueFactory(new PropertyValueFactory<>("hNum"));
-        hexa.setCellValueFactory(new PropertyValueFactory<>("hexa"));
-        hTable.getItems().clear();
-        hTable.getItems().addAll(cHexa);
+    public void setHTable (ArrayList<String> hexaCode) {
+        for (int i = 0; i<hexaCode.size(); i++) {
+            cp = new ColorParser (hexaCode.get(i).substring(hexaCode.get(i).indexOf("]")+1,hexaCode.get(i).length()-1));
+            bundle = new FlowPane();
+            bundle.getChildren().addAll(cp.getColoredText());
+            hexaList.add(bundle);
+            Text temp = new Text(hexaCode.get(i).substring(0,hexaCode.get(i).indexOf("]")));
+            temp.setFill(Color.rgb(255,255,255));
+            temp.setFont(Font.font("Monospaced Regular", 14.0));
+            hNum.getItems().add(temp);
+        }
     }
 
-    public void setDecTable () {
-        decNum.setCellValueFactory(new PropertyValueFactory<>("decNum"));
-        decimal.setCellValueFactory(new PropertyValueFactory<>("decimal"));
-        decTable.getItems().clear();
-        decTable.getItems().addAll(cDec);
+    public void setDecTable (ArrayList<String> hexCode, ArrayList<Long> decCode) {
+        for (int i = 0; i<decCode.size(); i++) {
+            Text temp = new Text(hexCode.get(i).substring(0,hexCode.get(i).indexOf("]")));
+            temp.setFill(Color.rgb(255,255,255));
+            decNum.getItems().add(temp);
+            temp.setFont(Font.font("Monospaced Regular", 14.0));
+            temp = new Text (decCode.get(i).toString());
+            temp.setFill(Color.rgb(255,255,255));
+            temp.setFont(Font.font("Monospaced Regular", 14.0));
+            decimal.getItems().add(temp);
+        }
     }
 
 }

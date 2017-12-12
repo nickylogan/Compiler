@@ -353,4 +353,13 @@ public class Parser {
     public static void setVariables(HashMap<String, VariableLocation> variables) {
         Parser.variables = variables;
     }
+
+    public static ArrayList<String> convertInstructionsToString(ArrayList<Instruction> instructions) {
+        ArrayList<String> strarr = new ArrayList<>();
+        for (int i = 0; i < instructions.size(); ++i) {
+            Instruction in = instructions.get(i);
+            strarr.add("[" + ((i * Parser.LINE_SIZE) / 10) + ((i * Parser.LINE_SIZE) % 10) + "] " + in);
+        }
+        return strarr;
+    }
 }

@@ -1,5 +1,9 @@
 package main;
 
+import GUI.MainWindowController;
+import GUI.Window;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import statement.*;
 
 import javax.swing.plaf.nimbus.State;
@@ -9,58 +13,10 @@ import java.util.ArrayList;
 import static main.Operator.*;
 import static main.Register.*;
 
-public class Main {
-    private static MultipleStatementNode root = new MultipleStatementNode();
-    private static MultipleStatementNode parent = root;
-
+public class Main extends Application{
+    static Window window;
     public static void main(String[] args) {
-
-        ArrayList<String> lines = new ArrayList<>();
-        String pseudocode = "";
-        try {
-            String path = "src/main/input.txt";
-            File file = new File(path);
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-//        for(InstructionOffset io : instructionOffsets){
-//            System.out.println("["+io.getOffset()+"] "+io.getInstruction());
-//        }
-        ArrayList<Instruction> instructions = Parser.compile(lines);
-        printAssemblyCode(instructions);
-        System.out.println();
-        ArrayList<String> hex = Mapper.convertToHexString(instructions);
-        for(String s : hex){
-            System.out.println(s);
-        }
-        System.out.println();
-        ArrayList<Long> longs = Mapper.convertHexStringToMachineCode(hex);
-        for(Long  l : longs){
-            System.out.println(l);
-        }
-
-
-//        instructions.size();
-
-//        Parser.modifyVarLocations(instructions.size());
-
-//        printAssemblyCode(instructions);
-//        String s = Mapper.convertToMachineCode(instructions);
-//        System.out.print(s);
-        try {
-            writeFile("src/main/output.mcd", longs);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        launch(args);
     }
 
 
@@ -81,4 +37,10 @@ public class Main {
     }
 
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        MainWindowController controller = new MainWindowController();
+        window = new Window(controller);
+        window.show();
+    }
 }

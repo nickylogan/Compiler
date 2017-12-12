@@ -6,20 +6,31 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root style="-fx-background-color: #282C34;" type="TabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="768.0" prefWidth="1366.0" style="-fx-background-color: #282C34;" type="TabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab closable="false" text="Pseudocode">
          <content>
-            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0" prefWidth="646.0" style="-fx-background-color: #282C34;">
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1366.0" style="-fx-background-color: #282C34;">
                <children>
-                  <TableView fx:id="pTable" prefHeight="525.0" prefWidth="611.0" style="-fx-background-color: transparent;">
-                    <columns>
-                      <TableColumn fx:id="pNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Line" />
-                      <TableColumn fx:id="pseudocode" prefWidth="591.0" resizable="false" sortable="false" />
-                    </columns>
-                  </TableView>
+                  <HBox prefHeight="567.0" prefWidth="1366.0">
+                     <children>
+                        <StackPane prefHeight="567.0" prefWidth="32.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="pNum" prefHeight="567.0" prefWidth="64.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
+                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="567.0" prefWidth="1298.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="pseudocode" prefHeight="1013.0" prefWidth="1366.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
                   <Separator prefWidth="200.0" />
-                  <HBox prefHeight="40.0" prefWidth="600.0">
+                  <HBox prefHeight="0.0" prefWidth="1280.0">
                      <children>
                         <Label text="Code" textFill="#e4e4ff">
                            <HBox.margin>
@@ -29,7 +40,7 @@
                               <Font name="Consolas" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="585.0" promptText="Input code here. Press enter to submit the code." style="-fx-background-color: #FFFFFF; -fx-border-color: #ABB2BF;">
+                        <TextField fx:id="codeLine" prefHeight="25.0" prefWidth="1283.0" promptText="Input code here. Press enter to submit the code." style="-fx-background-color: #FFFFFF; -fx-border-color: #ABB2BF;">
                            <HBox.margin>
                               <Insets left="5.0" top="5.0" />
                            </HBox.margin>
@@ -47,12 +58,23 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="adTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
-                     <columns>
-                        <TableColumn fx:id="adNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Address" />
-                        <TableColumn fx:id="address" editable="false" prefWidth="591.0" resizable="false" sortable="false" />
-                     </columns>
-                  </TableView>
+                  <HBox prefHeight="612.0" prefWidth="1366.0">
+                     <children>
+                        <StackPane prefHeight="612.0" prefWidth="70.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="adNum" prefHeight="612.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
+                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="612.0" prefWidth="1319.0">
+                           <children>
+                              <FlowPane />
+                              <ListView fx:id="address" prefHeight="612.0" prefWidth="1138.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
                </children>
             </AnchorPane>
         </content>
@@ -61,12 +83,23 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="hTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
-                     <columns>
-                        <TableColumn fx:id="hNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Address" />
-                        <TableColumn fx:id="hexa" editable="false" prefWidth="591.0" resizable="false" sortable="false" />
-                     </columns>
-                  </TableView>
+                  <HBox prefHeight="612.0" prefWidth="1366.0">
+                     <children>
+                        <StackPane prefHeight="612.0" prefWidth="70.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="hNum" prefHeight="612.0" prefWidth="54.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
+                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="612.0" prefWidth="1257.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="hexa" prefHeight="612.0" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
                </children>
             </AnchorPane>
         </content>
@@ -75,12 +108,23 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="decTable" prefHeight="572.0" prefWidth="646.0" style="-fx-background-color: transparent;">
-                     <columns>
-                        <TableColumn fx:id="decNum" editable="false" prefWidth="54.0" resizable="false" sortable="false" text="Address" />
-                        <TableColumn fx:id="decimal" editable="false" prefWidth="591.0" resizable="false" sortable="false" />
-                     </columns>
-                  </TableView>
+                  <HBox prefHeight="612.0" prefWidth="1366.0">
+                     <children>
+                        <StackPane prefHeight="612.0" prefWidth="70.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="decNum" prefHeight="612.0" prefWidth="54.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
+                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="612.0" prefWidth="1257.0">
+                           <children>
+                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="decimal" prefHeight="612.0" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
                </children>
             </AnchorPane>
         </content>

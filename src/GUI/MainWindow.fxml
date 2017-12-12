@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" type="VBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" type="VBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar style="-fx-background-color: #282C34;">
         <menus>
@@ -95,6 +95,6 @@
         </menus>
       </MenuBar>
       <Separator prefWidth="200.0" style="-fx-background-color: #282C34;" />
-      <AnchorPane fx:id="codeArea" prefHeight="378.0" prefWidth="600.0" style="-fx-background-color: #282C34; -fx-border-color: #282C32;" />
+      <AnchorPane fx:id="codeArea" style="-fx-background-color: #282C34; -fx-border-color: #282C32;" />
    </children>
 </fx:root>

@@ -7,6 +7,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import main.Instruction;
+import main.Mapper;
+import main.Parser;
 
 import java.io.*;
 import java.net.URL;
@@ -30,7 +33,7 @@ public class MainWindowController extends VBox implements Initializable{
     private MenuItem redo;
     @FXML
     private MenuItem compile;
-
+    private CodeController cc;
     public MainWindowController() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         loader.setRoot(this);
@@ -45,7 +48,7 @@ public class MainWindowController extends VBox implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        CodeController cc = new CodeController();
+        cc = new CodeController();
         codeArea.getChildren().add(cc);
         AnchorPane.setTopAnchor(cc, 0.0);
         AnchorPane.setBottomAnchor(cc, 0.0);
@@ -71,9 +74,6 @@ public class MainWindowController extends VBox implements Initializable{
     }
 
     public void loadFile(File file) {
-//        sheetArea.getChildren().remove(sheetWindow);
-//        sheetWindow = new SheetWindow();
-//        System.out.println("load called " + file.getName());
         try {
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -126,5 +126,37 @@ public class MainWindowController extends VBox implements Initializable{
 
     public MenuItem getCompile() {
         return compile;
+    }
+
+    public CodeController getCc() {
+        return cc;
+    }
+
+//    public static void writeFile(File file, ArrayList<Long> machineCode) throws IOException {
+//        PrintWriter printWriter = new PrintWriter(file.getAbsolutePath());
+//        for(Long l : machineCode){
+//            printWriter.println(l);
+//        }
+//        printWriter.close();
+//    }
+
+    public void compile(File file){
+        ArrayList<Instruction> ins = Parser.compile(CodeController.getRawCode());
+        ArrayList<String> insStr = Parser.convertInstructionsToString(ins); //nanti didisplay di tab assmebly code
+        ArrayList<String> hex = Mapper.convertToHexString(ins); //display di tab machine code (hex)
+        ArrayList<Long> machineCode =  Mapper.convertToMachineCode(ins); //display di tab machine code (dec)
+        cc.setAdTable(insStr);
+        cc.setHTable(hex);
+        cc.setDecTable(hex, machineCode);
+        PrintWriter printWriter = null;
+        try {
+            printWriter = new PrintWriter(file.getAbsolutePath());
+            for (Long l : machineCode) {
+                printWriter.println(l);
+            }
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

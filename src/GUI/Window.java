@@ -7,8 +7,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.Instruction;
+import main.Parser;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class Window extends Stage {
@@ -24,8 +27,6 @@ public class Window extends Stage {
 //        getIcons().add(new Image("/assets/program.png"));
         setTitle("Compiler - Untitled");
         setScene(scene);
-        initialize();
-        show();
     }
 
     public MainWindowController getMainWindow() {
@@ -159,8 +160,16 @@ public class Window extends Stage {
     }
 
     public void compile() {
-
+        if (file == null) saveAs();
+        if (file != null) {
+            String s = file.getAbsolutePath();
+            int pos = s.lastIndexOf('.');
+            s = s.substring(0, pos);
+            File file = new File(s + ".mcd");
+            mainWindow.compile(file);
+        }
     }
+
 
     private void initialize() {
         setResizable(true);
