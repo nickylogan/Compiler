@@ -1,6 +1,5 @@
 package statement;
 
-import javafx.util.Pair;
 import main.*;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class IfNode extends StatementNode {
     }
 
     @Override
-    public ArrayList<InstructionOffset> parse() {
+    public ArrayList<InstructionOffset> parse() throws ParserException {
         String s = getLine();
         String[] ss = s.split("(?=if)|(?<=if)|(?=[><!()]|(?<![<>=!])=)|(?<=[()=<>!])(?!=)");
         Boolean aBoolean = null;

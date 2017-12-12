@@ -1,7 +1,7 @@
 package statement;
 
-import main.Instruction;
 import main.InstructionOffset;
+import main.ParserException;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class MultipleStatementNode extends StatementNode {
     }
 
     @Override
-    public ArrayList<InstructionOffset> parse() {
+    public ArrayList<InstructionOffset> parse() throws ParserException {
         ArrayList<InstructionOffset> arr = new ArrayList<>();
         int i = 0;
         for (StatementNode s : children) {

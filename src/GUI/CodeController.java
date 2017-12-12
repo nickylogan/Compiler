@@ -1,5 +1,9 @@
 package GUI;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +15,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import main.Main;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,23 +30,28 @@ public class CodeController extends TabPane implements Initializable {
     @FXML
     private ListView<FlowPane> pseudocode;
     @FXML
-    private ListView<Text> adNum;
-    @FXML
     private ListView<FlowPane> address;
-    @FXML
-    private ListView<Text> hNum;
     @FXML
     private ListView<FlowPane> hexa;
     @FXML
-    private ListView<Text> decNum;
-    @FXML
-    private ListView<Text> decimal;
+    private ListView<FlowPane> decimal;
     @FXML
     private FlowPane bundle;
+    @FXML
+    private ScrollPane s1;
+    @FXML
+    private ScrollPane s2;
+    @FXML
+    private ScrollPane s3;
+    @FXML
+    private ScrollPane s4;
+    @FXML
+    private ScrollPane s5;
 
     private ObservableList<FlowPane> pseudoList = FXCollections.observableArrayList();
     private ObservableList<FlowPane> adList = FXCollections.observableArrayList();
     private ObservableList<FlowPane> hexaList = FXCollections.observableArrayList();
+    private ObservableList<FlowPane> decList = FXCollections.observableArrayList();
     private String code;
     private ColorParser cp;
     private Integer line = 0;
@@ -68,17 +78,18 @@ public class CodeController extends TabPane implements Initializable {
         pseudocode.setItems(pseudoList);
         address.setItems(adList);
         hexa.setItems(hexaList);
+        decimal.setItems(decList);
 
         codeLine.setOnAction(e -> {
+            Main.window.setSaved(false);
             code = codeLine.getText();
             rawCode.add(code);
             addLine(line, code);
             codeLine.setText("");
         });
-
     }
 
-    public void addLine (Integer lineNum, String code) {
+    public void addLine (Integer lineNumber, String code) {
         cp = new ColorParser(code);
         bundle = new FlowPane();
         bundle.getChildren().addAll (cp.getColoredText());
@@ -86,46 +97,63 @@ public class CodeController extends TabPane implements Initializable {
         line++;
         Text temp = new Text(line.toString());
         temp.setFill(Color.rgb(255,255,255));
-        temp.setFont(Font.font("Monospaced Regular", 14.0));
+        temp.setFont(Font.font("Courier New", 14.0));
         pNum.getItems().add(temp);
     }
 
     public void setAdTable (ArrayList<String> assemblyCode) {
-        for (int i = 0; i<assemblyCode.size(); i++) {
-            cp = new ColorParser (assemblyCode.get(i).substring(assemblyCode.get(i).indexOf("]")+1,assemblyCode.get(i).length()-1));
+//        System.out.println(assemblyCode);
+        int i = 0;
+        for (String anAssemblyCode : assemblyCode) {
+            ArrayList<Text> arr = new ArrayList<>();
+            Text ad = new Text("["+(i*4/10)+(i*4%10)+"] " );
+            Text t = new Text(anAssemblyCode);
+            ad.setFill(Color.rgb(210,148,93));
+            ad.setFont(Font.font("Courier New", 14.0));
+            t.setFill(Color.WHITE);
+            t.setFont(Font.font("Courier New", 14.0));
+            arr.add(ad);
+            arr.add(t);
             bundle = new FlowPane();
-            bundle.getChildren().addAll(cp.getColoredText());
+            bundle.getChildren().addAll(arr);
             adList.add(bundle);
-            Text temp = new Text(assemblyCode.get(i).substring(0,assemblyCode.get(i).indexOf("]")));
-            temp.setFill(Color.rgb(255,255,255));
-            temp.setFont(Font.font("Monospaced Regular", 14.0));
-            adNum.getItems().add(temp);
+            ++i;
         }
     }
 
     public void setHTable (ArrayList<String> hexaCode) {
-        for (int i = 0; i<hexaCode.size(); i++) {
-            cp = new ColorParser (hexaCode.get(i).substring(hexaCode.get(i).indexOf("]")+1,hexaCode.get(i).length()-1));
+        int i = 0;
+        for (String aHexaCode : hexaCode) {
+            ArrayList<Text> t = new ArrayList<>();
+            Text ad = new Text("["+(i*4/10)+(i*4%10)+"] ");
+            Text co = new Text(aHexaCode);
+            ad.setFill(Color.rgb(210,148,93));
+            ad.setFont(Font.font("Courier New", 14.0));
+            co.setFill(Color.WHITE);
+            co.setFont(Font.font("Courier New", 14.0));
+            t.add(ad);
+            t.add(co);
             bundle = new FlowPane();
-            bundle.getChildren().addAll(cp.getColoredText());
+            bundle.getChildren().addAll(t);
             hexaList.add(bundle);
-            Text temp = new Text(hexaCode.get(i).substring(0,hexaCode.get(i).indexOf("]")));
-            temp.setFill(Color.rgb(255,255,255));
-            temp.setFont(Font.font("Monospaced Regular", 14.0));
-            hNum.getItems().add(temp);
+            i++;
         }
     }
 
     public void setDecTable (ArrayList<String> hexCode, ArrayList<Long> decCode) {
         for (int i = 0; i<decCode.size(); i++) {
-            Text temp = new Text(hexCode.get(i).substring(0,hexCode.get(i).indexOf("]")));
+            ArrayList<Text> t = new ArrayList<>();
+            Text ad = new Text("["+(i*4/10)+(i*4%10)+"] ");
+            ad.setFill(Color.rgb(210,148,93));
+            ad.setFont(Font.font("Courier New", 14.0));
+            Text temp = new Text (decCode.get(i).toString());
             temp.setFill(Color.rgb(255,255,255));
-            decNum.getItems().add(temp);
-            temp.setFont(Font.font("Monospaced Regular", 14.0));
-            temp = new Text (decCode.get(i).toString());
-            temp.setFill(Color.rgb(255,255,255));
-            temp.setFont(Font.font("Monospaced Regular", 14.0));
-            decimal.getItems().add(temp);
+            temp.setFont(Font.font("Courier New", 14.0));
+            t.add(ad);
+            t.add(temp);
+            bundle = new FlowPane();
+            bundle.getChildren().setAll(t);
+            decList.add(bundle);
         }
     }
 

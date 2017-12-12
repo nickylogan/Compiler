@@ -1,0 +1,45 @@
+TUGAS ORKOM - COMPILER PROJECT BY:
+00000023971 BARJUAN DAVIS PENTHALION
+00000019920 LAURENTIUS DOMINICK LOGAN
+00000011802 MADELEINE JOSE JOSODIPURO
+00000019602 NADYA FELIM BACHTIAR
+
+IF:
+
+if(<condition>)
+<statements>
+else
+<statements>
+endif
+
+WHILE:
+
+while(<condition>)
+<statements> | <keywords>
+endwhile
+
+ASSIGNMENT:
+
+<l-value> := <normal assignment>
+
+Tokens:
+
+<condition> := <singular> <comparison operator> <singular> | true | false
+<comparison operator> := < | > | <= | >= | == | !=
+<singular> := <number> | <l-value>
+<l-value> := <variable> | <register>
+<keywords> := break|continue
+
+
+Limits:
+- else if not supported but easily implemented
+- negative numbers not supported
+- for, do while not supported
+- increment and decrement not supported
+- complex conditional statements not supported
+- !(condition) not supported
+- goto not supported
+- function not supported
+- ternary operator not supported
+- all data types are 4-byte integer
+- arrays and strings not supported

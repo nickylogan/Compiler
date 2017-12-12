@@ -3,16 +3,16 @@ package statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javafx.util.Pair;
 import main.InstructionOffset;
 import main.Parser;
 
 import main.Instruction;
+import main.ParserException;
 
 public class SimpleStatementNode extends StatementNode {
 
     @Override
-    public ArrayList<InstructionOffset> parse() {
+    public ArrayList<InstructionOffset> parse() throws ParserException {
         ArrayList<Instruction> instructions;
 
         String split[] = getLine().split("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))");

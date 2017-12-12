@@ -1,6 +1,7 @@
 package statement;
 
 import main.InstructionOffset;
+import main.ParserException;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public abstract class StatementNode {
         this.parent = parent;
     }
 
-    public abstract ArrayList<InstructionOffset> parse();
+    public abstract ArrayList<InstructionOffset> parse() throws ParserException;
 
     public void setLine(String line) {
         this.line = line;

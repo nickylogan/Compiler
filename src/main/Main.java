@@ -14,7 +14,7 @@ import static main.Operator.*;
 import static main.Register.*;
 
 public class Main extends Application{
-    static Window window;
+    public static Window window;
     public static void main(String[] args) {
         launch(args);
     }

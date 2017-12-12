@@ -3,20 +3,25 @@ package GUI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.MenuItem;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import main.Instruction;
 import main.Mapper;
 import main.Parser;
+import main.ParserException;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class MainWindowController extends VBox implements Initializable{
+public class MainWindowController extends VBox implements Initializable {
     @FXML
     private AnchorPane codeArea;
     @FXML
@@ -28,12 +33,12 @@ public class MainWindowController extends VBox implements Initializable{
     @FXML
     private MenuItem close;
     @FXML
-    private MenuItem undo;
-    @FXML
-    private MenuItem redo;
-    @FXML
     private MenuItem compile;
+    @FXML
+    private MenuItem about;
+
     private CodeController cc;
+
     public MainWindowController() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         loader.setRoot(this);
@@ -54,6 +59,29 @@ public class MainWindowController extends VBox implements Initializable{
         AnchorPane.setBottomAnchor(cc, 0.0);
         AnchorPane.setLeftAnchor(cc, 0.0);
         AnchorPane.setRightAnchor(cc, 0.0);
+        about.setOnAction(e->{
+            try {
+                File file = new File("src/GUI/about.txt");
+                FileReader fileReader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                String line;
+                ScrollPane scrollPane = new ScrollPane();
+                VBox vBox = new VBox();
+                vBox.setPadding(new Insets(10,10,10,10));
+                Stage stage = new Stage();
+                while ((line = bufferedReader.readLine()) != null) {
+                    Text text = new Text(line);
+                    text.setFont(Font.font("Courier New", 14.0));
+                    vBox.getChildren().add(text);
+                }
+                scrollPane.setContent(vBox);
+                stage.setScene(new Scene(scrollPane, 800,600));
+                stage.show();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+        });
     }
 
     public void writeToFile(File file) {
@@ -61,7 +89,7 @@ public class MainWindowController extends VBox implements Initializable{
             PrintWriter printWriter = new PrintWriter(file.getAbsolutePath());
             ArrayList<String> rawCode = CodeController.getRawCode();
             for (String aRawCode : rawCode) {
-                printWriter.println(aRawCode + "\n");
+                printWriter.println(aRawCode);
             }
             printWriter.close();
         } catch (IOException e) {
@@ -79,8 +107,10 @@ public class MainWindowController extends VBox implements Initializable{
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line;
             ArrayList<String> rawCode = new ArrayList<>();
+            int i = 1;
             while ((line = bufferedReader.readLine()) != null) {
-                rawCode.add(line);
+                CodeController.getRawCode().add(line);
+                cc.addLine(i++, line);
             }
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -116,14 +146,6 @@ public class MainWindowController extends VBox implements Initializable{
         return close;
     }
 
-    public MenuItem getUndo() {
-        return undo;
-    }
-
-    public MenuItem getRedo() {
-        return redo;
-    }
-
     public MenuItem getCompile() {
         return compile;
     }
@@ -140,23 +162,30 @@ public class MainWindowController extends VBox implements Initializable{
 //        printWriter.close();
 //    }
 
-    public void compile(File file){
-        ArrayList<Instruction> ins = Parser.compile(CodeController.getRawCode());
-        ArrayList<String> insStr = Parser.convertInstructionsToString(ins); //nanti didisplay di tab assmebly code
-        ArrayList<String> hex = Mapper.convertToHexString(ins); //display di tab machine code (hex)
-        ArrayList<Long> machineCode =  Mapper.convertToMachineCode(ins); //display di tab machine code (dec)
-        cc.setAdTable(insStr);
-        cc.setHTable(hex);
-        cc.setDecTable(hex, machineCode);
-        PrintWriter printWriter = null;
+    public void compile(File file) {
         try {
-            printWriter = new PrintWriter(file.getAbsolutePath());
-            for (Long l : machineCode) {
-                printWriter.println(l);
+            ArrayList<Instruction> ins = Parser.compile(CodeController.getRawCode());
+            ArrayList<String> insStr = Parser.convertInstructionsToString(ins); //nanti didisplay di tab assmebly code
+            ArrayList<String> hex = Mapper.convertToHexString(ins); //display di tab machine code (hex)
+            ArrayList<Long> machineCode = Mapper.convertToMachineCode(ins); //display di tab machine code (dec)
+            cc.setAdTable(insStr);
+            cc.setHTable(hex);
+            cc.setDecTable(hex, machineCode);
+            PrintWriter printWriter = null;
+            try {
+                printWriter = new PrintWriter(file.getAbsolutePath());
+                for (Long l : machineCode) {
+                    printWriter.println(l);
+                }
+                printWriter.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-            printWriter.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (ParserException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.setHeaderText(null);
+            alert.setTitle("Compile error");
+            alert.showAndWait();
         }
     }
 }

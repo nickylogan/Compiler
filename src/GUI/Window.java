@@ -24,9 +24,10 @@ public class Window extends Stage {
         mainWindow = controller;
         scene = new Scene(controller);
         setSaved(true);
-//        getIcons().add(new Image("/assets/program.png"));
+        file = null;
         setTitle("Compiler - Untitled");
         setScene(scene);
+        initialize();
     }
 
     public MainWindowController getMainWindow() {
@@ -38,6 +39,7 @@ public class Window extends Stage {
     }
 
     public void save() {
+//        System.out.println("save");
         if (file != null) {
             mainWindow.writeToFile(file);
             setSaved(true);
@@ -45,13 +47,14 @@ public class Window extends Stage {
     }
 
     public void saveAs() {
+//        System.out.println("saveas");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Pseudocode", "*.cpr"));
         if (file != null) fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.setTitle("Save As");
         File file = fileChooser.showSaveDialog(this);
-        System.out.println(file == null ? "null" : file.getName());
+//        System.out.println(file == null ? "null" : file.getName());
         if (file != null) {
             setSaved(true);
             mainWindow.writeToFile(file);
@@ -82,13 +85,13 @@ public class Window extends Stage {
         }
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Spreadsheet file", "*.cpr")
+                new FileChooser.ExtensionFilter("Pseudocode", "*.cpr")
         );
         if (file != null)
             fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.setTitle("Open");
         File file = fileChooser.showOpenDialog(this);
-        System.out.println("file chosen");
+//        System.out.println("file chosen");
         if (file != null) {
             this.file = file;
             mainWindow = new MainWindowController();
@@ -115,6 +118,7 @@ public class Window extends Stage {
             if (result.get() == ButtonType.YES) {
                 save();
             } else if (result.get() == ButtonType.NO) {
+                alert.close();
             } else if (result.get() == ButtonType.CANCEL) {
                 alert.close();
                 return;
@@ -160,11 +164,14 @@ public class Window extends Stage {
     }
 
     public void compile() {
+//        System.out.println("compile");
         if (file == null) saveAs();
         if (file != null) {
+            if(!saved) save();
             String s = file.getAbsolutePath();
             int pos = s.lastIndexOf('.');
             s = s.substring(0, pos);
+//            System.out.println(s);
             File file = new File(s + ".mcd");
             mainWindow.compile(file);
         }
@@ -175,7 +182,6 @@ public class Window extends Stage {
         setResizable(true);
         setMaximized(false);
         setMaximized(true);
-        setResizable(false);
         mainWindow.getNewFile().setOnAction(e -> newFile());
         mainWindow.getSave().setOnAction(e -> save());
         mainWindow.getOpen().setOnAction(e -> open());

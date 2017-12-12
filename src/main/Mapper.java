@@ -66,7 +66,6 @@ public class Mapper {
 
     public static ArrayList<String> convertToHexString(ArrayList<Instruction> instructions) {
         ArrayList<String> instructions_hex = new ArrayList<String>();
-        int s = instructions.size();
         for (Instruction instruction : instructions) {
             instructions_hex.add(convertToMachineCodeLine(instruction));
         }

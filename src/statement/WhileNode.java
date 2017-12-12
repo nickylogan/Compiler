@@ -17,7 +17,7 @@ public class WhileNode extends StatementNode {
     }
 
     @Override
-    public ArrayList<InstructionOffset> parse() {
+    public ArrayList<InstructionOffset> parse() throws ParserException {
         String s = getLine();
         String[] ss = s.split("(?=while)|(?<=while)|(?=[><!()]|(?<![<>=!])=)|(?<=[()=<>!])(?!=)");
         Boolean aBoolean = null;

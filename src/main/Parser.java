@@ -18,7 +18,11 @@ public class Parser {
     private static MultipleStatementNode root = new MultipleStatementNode();
     private static MultipleStatementNode parent = root;
 
-    public static ArrayList<Instruction> compile(ArrayList<String> lines) {
+    public static ArrayList<Instruction> compile(ArrayList<String> lines) throws ParserException{
+        if(variables!=null) variables.clear();
+        if(instructions!=null) instructions.clear();
+        root = new MultipleStatementNode();
+        parent = root;
         ArrayList<InstructionOffset> instructionOffsets = new ArrayList<>();
 
         int size = lines.size();
@@ -117,7 +121,7 @@ public class Parser {
         return instructions;
     }
 
-    public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int lineNumber) {
+    public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int lineNumber) throws ParserException{
         instructions = new ArrayList<>();
 
         // remove semicolon if assign statement
@@ -175,7 +179,7 @@ public class Parser {
      * @param tokens - ArrayList of string from splitted line
      * @return object to be moved into first value
      */
-    private static Object addAssignInstruction(ArrayList<String> tokens, int lineNumber) {
+    private static Object addAssignInstruction(ArrayList<String> tokens, int lineNumber) throws ParserException{
         Stack<Object> values = new Stack<>();
         Stack<Token> operands = new Stack<>();
 
@@ -225,7 +229,7 @@ public class Parser {
      * @param val2  - value 2
      * @return object to be pushed into equation
      */
-    public static Object applyOp(Token token, Object val1, Object val2) {
+    public static Object applyOp(Token token, Object val1, Object val2) throws ParserException{
         if (val1 instanceof Integer && val2 instanceof Integer) {
             Integer res = 0;
             switch (token.getKeyword()) {
@@ -356,9 +360,8 @@ public class Parser {
 
     public static ArrayList<String> convertInstructionsToString(ArrayList<Instruction> instructions) {
         ArrayList<String> strarr = new ArrayList<>();
-        for (int i = 0; i < instructions.size(); ++i) {
-            Instruction in = instructions.get(i);
-            strarr.add("[" + ((i * Parser.LINE_SIZE) / 10) + ((i * Parser.LINE_SIZE) % 10) + "] " + in);
+        for (Instruction in : instructions) {
+            strarr.add(in.toString());
         }
         return strarr;
     }

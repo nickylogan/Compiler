@@ -19,7 +19,7 @@ public class KeywordStatement extends StatementNode {
     }
 
     @Override
-    public ArrayList<InstructionOffset> parse() {
+    public ArrayList<InstructionOffset> parse() throws ParserException {
         ArrayList<InstructionOffset> ins = new ArrayList<>();
         InstructionOffset in = null;
         if(keyword==Keyword.BREAK){

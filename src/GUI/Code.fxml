@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<fx:root prefHeight="768.0" prefWidth="1366.0" style="-fx-background-color: #282C34;" type="TabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="768.0" prefWidth="1366.0" style="-fx-background-color: #282C34;" stylesheets="@style.css" type="TabPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab closable="false" text="Pseudocode">
          <content>
@@ -14,19 +23,27 @@
                <children>
                   <HBox prefHeight="567.0" prefWidth="1366.0">
                      <children>
-                        <StackPane prefHeight="567.0" prefWidth="32.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="pNum" prefHeight="567.0" prefWidth="64.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
+                        <ScrollPane fx:id="s1" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
+                           <content>
+                              <StackPane prefHeight="567.0" prefWidth="32.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
+                                 <children>
+                                    <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="pNum" prefWidth="64.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                                 </children>
+                              </StackPane>
+                           </content>
+                        </ScrollPane>
                         <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
-                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="567.0" prefWidth="1298.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="pseudocode" prefHeight="1013.0" prefWidth="1366.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
+                        <ScrollPane fx:id="s2" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
+                           <content>
+                              <StackPane prefHeight="567.0" prefWidth="1298.0">
+                                 <children>
+                                    <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="pseudocode" prefWidth="1366.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                                 </children>
+                              </StackPane>
+                           </content>
+                        </ScrollPane>
                      </children>
                   </HBox>
                   <Separator prefWidth="200.0" />
@@ -45,7 +62,7 @@
                               <Insets left="5.0" top="5.0" />
                            </HBox.margin>
                            <font>
-                              <Font name="Monospaced Regular" size="12.0" />
+                              <Font name="Courier New" size="12.0" />
                            </font>
                         </TextField>
                      </children>
@@ -60,19 +77,16 @@
                <children>
                   <HBox prefHeight="612.0" prefWidth="1366.0">
                      <children>
-                        <StackPane prefHeight="612.0" prefWidth="70.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="adNum" prefHeight="612.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
-                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
-                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="612.0" prefWidth="1319.0">
-                           <children>
-                              <FlowPane />
-                              <ListView fx:id="address" prefHeight="612.0" prefWidth="1138.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
+                        <ScrollPane fx:id="s3" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                           <content>
+                              <StackPane prefHeight="612.0" prefWidth="1319.0">
+                                 <children>
+                                    <FlowPane />
+                                    <ListView fx:id="address" prefWidth="1138.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                                 </children>
+                              </StackPane>
+                           </content>
+                        </ScrollPane>
                      </children>
                   </HBox>
                </children>
@@ -85,19 +99,16 @@
                <children>
                   <HBox prefHeight="612.0" prefWidth="1366.0">
                      <children>
-                        <StackPane prefHeight="612.0" prefWidth="70.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="hNum" prefHeight="612.0" prefWidth="54.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
-                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
-                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="612.0" prefWidth="1257.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="hexa" prefHeight="612.0" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
+                        <ScrollPane fx:id="s4" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                           <content>
+                              <StackPane prefHeight="612.0" prefWidth="1257.0">
+                                 <children>
+                                    <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="hexa" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                                 </children>
+                              </StackPane>
+                           </content>
+                        </ScrollPane>
                      </children>
                   </HBox>
                </children>
@@ -110,19 +121,16 @@
                <children>
                   <HBox prefHeight="612.0" prefWidth="1366.0">
                      <children>
-                        <StackPane prefHeight="612.0" prefWidth="70.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="decNum" prefHeight="612.0" prefWidth="54.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
-                        <Separator orientation="VERTICAL" prefHeight="567.0" prefWidth="0.0" />
-                        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="612.0" prefWidth="1257.0">
-                           <children>
-                              <FlowPane prefHeight="200.0" prefWidth="200.0" />
-                              <ListView fx:id="decimal" prefHeight="612.0" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
-                           </children>
-                        </StackPane>
+                        <ScrollPane fx:id="s5" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                           <content>
+                              <StackPane prefHeight="612.0" prefWidth="1257.0">
+                                 <children>
+                                    <FlowPane prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="decimal" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                                 </children>
+                              </StackPane>
+                           </content>
+                        </ScrollPane>
                      </children>
                   </HBox>
                </children>
