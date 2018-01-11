@@ -1,4 +1,13 @@
-R1 = R5 + 6;
-R2 = (3*5)
-/6-4;
-R4 = R3;
+a = 16 * 16 - 90 + 7 * (3 + 2)
+r2 = 5
+r3 = 7
+r1 = r2 + r3
+b = 0
+while(b<=10)
+    c = 0
+    while(c<b)
+        c = c + 1
+    endwhile
+    a = a + c
+    b = b + 1
+endwhile
