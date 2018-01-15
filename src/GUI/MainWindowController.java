@@ -3,43 +3,82 @@ package GUI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import main.Instruction;
-import main.Mapper;
-import main.Parser;
-import main.ParserException;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class MainWindowController extends VBox implements Initializable {
-    @FXML
-    private AnchorPane codeArea;
-    @FXML
-    private MenuItem newFile;
-    @FXML
-    private MenuItem save;
-    @FXML
-    private MenuItem open;
-    @FXML
-    private MenuItem close;
-    @FXML
-    private MenuItem compile;
-    @FXML
-    private MenuItem about;
 
-    private CodeController cc;
+public class MainWindowController extends BorderPane implements Initializable {
+    @FXML private MenuItem newMenu;
+    @FXML private MenuItem openMenu;
+    @FXML private MenuItem saveMenu;
+    @FXML private MenuItem saveAsMenu;
+    @FXML private MenuItem exitMenu;
+    @FXML private MenuItem cutMenu;
+    @FXML private MenuItem copyMenu;
+    @FXML private MenuItem pasteMenu;
+    @FXML private MenuItem duplicateMenu;
+    @FXML private MenuItem deleteMenu;
+    @FXML private MenuItem compileMenu;
+    @FXML private MenuItem runMenu;
+    @FXML private MenuItem toggleInstruction;
+    @FXML private MenuItem toggleMachineHex;
+    @FXML private MenuItem toggleMachineDec;
+    @FXML private MenuItem helpMenu;
+    @FXML private MenuItem aboutMenu;
+    @FXML private Tab codeTab;
+    @FXML private Tab instructionTab;
+    @FXML private Tab hexTab;
+    @FXML private Tab decTab;
+    @FXML private AnchorPane codeTabArea;
+    @FXML private AnchorPane instructionTabArea;
+    @FXML private AnchorPane hexTabArea;
+    @FXML private AnchorPane decTabArea;
 
-    public MainWindowController() {
+    private CodeArea codeArea;
+    private static final String[] KEYWORDS = new String[] {
+            "if", "endif", "break", "while", "endwhile", "else"
+    };
+
+    private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
+    private static final String PAREN_PATTERN = "\\(|\\)";
+    private static final String BRACE_PATTERN = "\\{|\\}";
+    private static final String BRACKET_PATTERN = "\\[|\\]";
+    private static final String SEMICOLON_PATTERN = "\\;";
+    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
+    private static final String COMMENT_PATTERN = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/";
+    private static final String OPERATOR_PATTERN = "[-+*/<>=]|==";
+    private static final String NUMBER_PATTERN = "[0-9]+|true|false";
+
+    private static final Pattern PATTERN = Pattern.compile(
+            "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+                    + "|(?<OPERATOR>" + OPERATOR_PATTERN + ")"
+                    + "|(?<NUMBER>" + NUMBER_PATTERN + ")"
+                    + "|(?<PAREN>" + PAREN_PATTERN + ")"
+                    + "|(?<BRACE>" + BRACE_PATTERN + ")"
+                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
+                    + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
+                    + "|(?<STRING>" + STRING_PATTERN + ")"
+                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
+    );
+
+    public MainWindowController(){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         loader.setRoot(this);
         loader.setController(this);
@@ -48,144 +87,73 @@ public class MainWindowController extends VBox implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cc = new CodeController();
-        codeArea.getChildren().add(cc);
-        AnchorPane.setTopAnchor(cc, 0.0);
-        AnchorPane.setBottomAnchor(cc, 0.0);
-        AnchorPane.setLeftAnchor(cc, 0.0);
-        AnchorPane.setRightAnchor(cc, 0.0);
-        about.setOnAction(e->{
-            try {
-                File file = new File("src/GUI/about.txt");
-                FileReader fileReader = new FileReader(file);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
-                String line;
-                ScrollPane scrollPane = new ScrollPane();
-                VBox vBox = new VBox();
-                vBox.setPadding(new Insets(10,10,10,10));
-                Stage stage = new Stage();
-                while ((line = bufferedReader.readLine()) != null) {
-                    Text text = new Text(line);
-                    text.setFont(Font.font("Courier New", 14.0));
-                    vBox.getChildren().add(text);
-                }
-                scrollPane.setContent(vBox);
-                stage.setScene(new Scene(scrollPane, 800,600));
-                stage.show();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-
-        });
-    }
-
-    public void writeToFile(File file) {
-        try {
-            PrintWriter printWriter = new PrintWriter(file.getAbsolutePath());
-            ArrayList<String> rawCode = CodeController.getRawCode();
-            for (String aRawCode : rawCode) {
-                printWriter.println(aRawCode);
-            }
-            printWriter.close();
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error loading file");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        //set icons
+        {
+            newMenu.setGraphic(new ImageView("GUI/assets/text.png"));
+            openMenu.setGraphic(new ImageView("GUI/assets/menu-open.png"));
+            saveMenu.setGraphic(new ImageView("GUI/assets/menu-saveall.png"));
+            exitMenu.setGraphic(new ImageView("GUI/assets/exit.png"));
+            cutMenu.setGraphic(new ImageView("GUI/assets/menu-cut.png"));
+            copyMenu.setGraphic(new ImageView("GUI/assets/copy.png"));
+            pasteMenu.setGraphic(new ImageView("GUI/assets/menu-paste.png"));
+            deleteMenu.setGraphic(new ImageView("GUI/assets/delete.png"));
+            compileMenu.setGraphic(new ImageView("GUI/assets/compile.png"));
+            runMenu.setGraphic(new ImageView("GUI/assets/run.png"));
+            toggleInstruction.setGraphic(new ImageView("GUI/assets/gear.png"));
+            toggleMachineHex.setGraphic(new ImageView("GUI/assets/hex.png"));
+            toggleMachineDec.setGraphic(new ImageView("GUI/assets/dec.png"));
+            helpMenu.setGraphic(new ImageView("GUI/assets/help.png"));
+            codeTab.setGraphic(new ImageView("GUI/assets/brace.png"));
+            instructionTab.setGraphic(new ImageView("GUI/assets/gear-dark.png"));
+            hexTab.setGraphic(new ImageView("GUI/assets/hex-dark.png"));
+            decTab.setGraphic(new ImageView("GUI/assets/dec-dark.png"));
         }
+
+        //set areas inside of tab pane
+        codeArea = new CodeArea();
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.richChanges()
+                .filter(ch -> !ch.getInserted().equals(ch.getRemoved())) // XXX
+                .subscribe(change -> {
+                    codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText()));
+                });
+
+        codeArea.getStylesheets().add(getClass().getResource("code-area.css").toExternalForm());
+
+        codeTabArea.getChildren().add(codeArea);
+        AnchorPane.setTopAnchor(codeArea, (double) 0);
+        AnchorPane.setLeftAnchor(codeArea, (double) 0);
+        AnchorPane.setRightAnchor(codeArea, (double) 0);
+        AnchorPane.setBottomAnchor(codeArea, (double) 0);
     }
 
-    public void loadFile(File file) {
-        try {
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
-            ArrayList<String> rawCode = new ArrayList<>();
-            int i = 1;
-            while ((line = bufferedReader.readLine()) != null) {
-                CodeController.getRawCode().add(line);
-                cc.addLine(i++, line);
-            }
-        } catch (FileNotFoundException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("File not found!");
-            alert.setContentText("Error loading " + file.getName());
-            alert.showAndWait();
-        } catch (IOException ignored) {
+    private static StyleSpans<Collection<String>> computeHighlighting(String text) {
+        Matcher matcher = PATTERN.matcher(text);
+        int lastKwEnd = 0;
+        StyleSpansBuilder<Collection<String>> spansBuilder
+                = new StyleSpansBuilder<>();
+        while (matcher.find()) {
+            String styleClass =
+                    matcher.group("KEYWORD") != null ? "keyword" :
+                    matcher.group("PAREN") != null ? "paren" :
+                    matcher.group("OPERATOR") != null ? "operator" :
+                    matcher.group("NUMBER") != null ? "number" :
+                    matcher.group("BRACE") != null ? "brace" :
+                    matcher.group("BRACKET") != null ? "bracket" :
+                    matcher.group("SEMICOLON") != null ? "semicolon" :
+                    matcher.group("STRING") != null ? "string" :
+                    matcher.group("COMMENT") != null ? "comment" :
+                    null; /* never happens */
+            assert styleClass != null;
+            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+            spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
+            lastKwEnd = matcher.end();
         }
-    }
-
-    public void newDocument() {
-
-    }
-
-    public AnchorPane getCodeArea() {
-        return codeArea;
-    }
-
-    public MenuItem getNewFile() {
-        return newFile;
-    }
-
-    public MenuItem getSave() {
-        return save;
-    }
-
-    public MenuItem getOpen() {
-        return open;
-    }
-
-    public MenuItem getClose() {
-        return close;
-    }
-
-    public MenuItem getCompile() {
-        return compile;
-    }
-
-    public CodeController getCc() {
-        return cc;
-    }
-
-//    public static void writeFile(File file, ArrayList<Long> machineCode) throws IOException {
-//        PrintWriter printWriter = new PrintWriter(file.getAbsolutePath());
-//        for(Long l : machineCode){
-//            printWriter.println(l);
-//        }
-//        printWriter.close();
-//    }
-
-    public void compile(File file) {
-        try {
-            ArrayList<Instruction> ins = Parser.compile(CodeController.getRawCode());
-            ArrayList<String> insStr = Parser.convertInstructionsToString(ins); //nanti didisplay di tab assmebly code
-            ArrayList<String> hex = Mapper.convertToHexString(ins); //display di tab machine code (hex)
-            ArrayList<Long> machineCode = Mapper.convertToMachineCode(ins); //display di tab machine code (dec)
-            cc.setAdTable(insStr);
-            cc.setHTable(hex);
-            cc.setDecTable(hex, machineCode);
-            PrintWriter printWriter = null;
-            try {
-                printWriter = new PrintWriter(file.getAbsolutePath());
-                for (Long l : machineCode) {
-                    printWriter.println(l);
-                }
-                printWriter.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } catch (ParserException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.setHeaderText(null);
-            alert.setTitle("Compile error");
-            alert.showAndWait();
-        }
+        spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+        return spansBuilder.create();
     }
 }
