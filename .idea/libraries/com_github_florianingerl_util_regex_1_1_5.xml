@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.github.florianingerl.util:regex:1.1.5" type="repository">
+    <properties maven-id="com.github.florianingerl.util:regex:1.1.5" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/regex-1.1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

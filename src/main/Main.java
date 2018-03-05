@@ -13,34 +13,36 @@ import java.util.ArrayList;
 import static main.Operator.*;
 import static main.Register.*;
 
-public class Main extends Application{
-    public static Window window;
-    public static void main(String[] args) {
-        launch(args);
+public class Main extends Application {
+  public static Window window;
+
+  public static void main(String[] args) {
+    launch(args);
+  }
+
+
+  private static void printAssemblyCode(ArrayList<Instruction> instructions) {
+    for (int i = 0; i < instructions.size(); ++i) {
+      Instruction in = instructions.get(i);
+      System.out.println("[" + ((i * Parser.LINE_SIZE) / 10) + ((i * Parser.LINE_SIZE) % 10) + "] " + in);
     }
+  }
 
-
-    private static void printAssemblyCode(ArrayList<Instruction> instructions) {
-        for (int i = 0; i < instructions.size(); ++i) {
-            Instruction in = instructions.get(i);
-            System.out.println("[" + ((i * Parser.LINE_SIZE) / 10) + ((i * Parser.LINE_SIZE) % 10) + "] " + in);
-        }
+  public static void writeFile(String fileName, ArrayList<Long> machineCode) throws IOException {
+    File file = new File(fileName);
+    PrintWriter printWriter = new PrintWriter(file.getAbsolutePath());
+    for (Long l : machineCode) {
+      printWriter.println(l);
     }
-
-    public static void writeFile(String fileName, ArrayList<Long> machineCode) throws IOException {
-        File file = new File(fileName);
-        PrintWriter printWriter = new PrintWriter(file.getAbsolutePath());
-        for(Long l : machineCode){
-            printWriter.println(l);
-        }
-        printWriter.close();
-    }
+    printWriter.close();
+  }
 
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        MainWindowController controller = new MainWindowController();
-        window = new Window(controller);
-        window.show();
-    }
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+    MainWindowController controller = new MainWindowController();
+    window = new Window(controller);
+//    window.initialize();
+    window.show();
+  }
 }
