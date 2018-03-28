@@ -2,10 +2,9 @@ package main;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 
+import com.florianingerl.util.regex.Matcher;
 import com.florianingerl.util.regex.Pattern;
 import statement.*;
 
@@ -18,24 +17,25 @@ public class Parser {
   public final static int LINE_INIT_POS = 0;
   private static MultipleStatementNode root = new MultipleStatementNode();
 
-  private static String IDENTIFIER_PATTERN = "[A-Za-z_][A-Za-z0-9_]*";
-  private static String NUMBER_PATTERN = "\\d+";
-  private static String SUBSCRIPT_PATTERN = "\\[(?'RVALUE')\\]";
-  private static String ADDITIVE_OPERATOR = "[-+]";
-  private static String MULTIPLICATIVE_OPERATOR = "[*/]";
-  private static String COMPARISON_OPERATOR = "[<>]=?|==";
-  private static String ADDITIVE_PATTERN = "(?'SUMMAND')(?:(?'ADDITIVE_OP')(?'SUMMAND'))+";
-  private static String SUMMAND_PATTERN = "(?'VALUE') | (?'PRODUCT') | \\( (?: (?'SUM') | (?'PRODUCT') ) \\)";
-  private static String MULTIPLICATIVE_PATTERN = "(?'FACTOR')(?:(?'MULTIPLICATIVE_OP')(?'FACTOR'))+";
-  private static String FACTOR_PATTERN = "(?'VALUE')| \\( (?: (?'SUM') | (?'PRODUCT') ) \\)";
-  private static String VALUE_PATTERN = "(?'NUMBER')|(?'LVALUE')";
-  private static String RVALUE_PATTERN = "(?'VALUE')|(?'SUM')|(?'PRODUCT')";
-  private static String BOOLEAN_PATTERN = "true|false|(?'LVALUE')(?'COMPARISON_OP')(?'LVALUE')";
-  private static String GENERAL_REGEX = "" +
+  //String patterns
+  public static final String IDENTIFIER_PATTERN = "[A-Za-z_][A-Za-z0-9_]*";
+  public static final String NUMBER_PATTERN = "\\d+";
+  public static final String SUBSCRIPT_PATTERN = "\\[(?'NUMBER')\\]";
+  public static final String ADDITIVE_OPERATOR = "[-+]";
+  public static final String MULTIPLICATIVE_OPERATOR = "[*/]";
+  public static final String COMPARISON_OPERATOR = "[<>]=?|==|!=";
+  public static final String ADDITIVE_PATTERN = "(?'SUMMAND')(?:\\s(?'ADDITIVEOP')\\s(?'SUMMAND'))+";
+  public static final String SUMMAND_PATTERN = "(?'VALUE') | (?'PRODUCT') | \\( (?: (?'SUM') | (?'PRODUCT') ) \\)";
+  public static final String MULTIPLICATIVE_PATTERN = "(?'FACTOR')(?:(?'MULTIPLICATIVEOP')\\s(?'FACTOR'))+";
+  public static final String FACTOR_PATTERN = "(?'VALUE')| \\( \\s (?: (?'SUM') | (?'PRODUCT') ) \\s \\)";
+  public static final String VALUE_PATTERN = "(?'NUMBER')|(?'LVALUE')";
+  public static final String RVALUE_PATTERN = "(?'VALUE')|(?'SUM')|(?'PRODUCT')";
+  public static final String BOOLEAN_PATTERN = "true|false|(?'RVALUE')\\s(?'COMPARISONOP')\\s(?'RVALUE')";
+  public static final String GENERAL_REGEX = "" +
       "(?x)(?(DEFINE)" +
-      "(?<ADDITIVE_OP>" + ADDITIVE_OPERATOR + ")" +
-      "(?<MULTIPLICATIVE_OP>" + MULTIPLICATIVE_OPERATOR + ")" +
-      "(?<COMPARISON_OP>" + COMPARISON_OPERATOR + ")" +
+      "(?<ADDITIVEOP>" + ADDITIVE_OPERATOR + ")" +
+      "(?<MULTIPLICATIVEOP>" + MULTIPLICATIVE_OPERATOR + ")" +
+      "(?<COMPARISONOP>" + COMPARISON_OPERATOR + ")" +
       "(?<RVALUE>" + RVALUE_PATTERN + ")" +
       "(?<BOOLEAN>" + BOOLEAN_PATTERN + ")" +
       "(?<SUM>" + ADDITIVE_PATTERN + ")" +
@@ -44,29 +44,30 @@ public class Parser {
       "(?<NUMBER>" + NUMBER_PATTERN + ")" +
       "(?<VALUE>" + VALUE_PATTERN + ")" +
       "(?<IDENTIFIER>" + IDENTIFIER_PATTERN + ")" +
-      "(?<LVALUE>(?'IDENTIFIER')(" + SUBSCRIPT_PATTERN + ")?)" +
+      "(?<SUBSCRIPT>" + SUBSCRIPT_PATTERN + ")" +
+      "(?<LVALUE>(?'IDENTIFIER')(?'SUBSCRIPT')?)" +
       "(?<FACTOR>" + FACTOR_PATTERN + ")" +
       ")";
 
-  public static Pattern INSTANTIATION_PATTERN = Pattern.compile(
+  public static final Pattern INSTANTIATION_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(var)(?'LVALUE')"
+          "(var)\\s(?'LVALUE')"
   );
-  public static Pattern ASSIGNMENT_PATTERN = Pattern.compile(
+  public static final Pattern ASSIGNMENT_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(?'LVALUE')=(?'RVALUE')"
+          "(?'LVALUE')\\s=\\s(?'RVALUE')"
   );
-  public static Pattern DIRECT_ASSIGNMENT_PATTERN = Pattern.compile(
+  public static final Pattern DIRECT_ASSIGNMENT_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(var)(?'IDENTIFIER')=(?'RVALUE')"
+          "(var)\\s(?'IDENTIFIER')\\s=\\s(?'RVALUE')"
   );
-  public static Pattern IF_PATTERN = Pattern.compile(
+  public static final Pattern IF_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(if)\\((?'BOOLEAN')\\)"
+          "(if)\\s\\(\\s(?'BOOLEAN')\\s\\)"
   );
-  public static Pattern WHILE_PATTERN = Pattern.compile(
+  public static final Pattern WHILE_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(while)\\((?'BOOLEAN')\\)"
+          "(while)\\s\\(\\s(?'BOOLEAN')\\s\\)"
   );
 
   public static ArrayList<Instruction> compile(ArrayList<String> lines) throws ParserException {
@@ -80,13 +81,24 @@ public class Parser {
     boolean stopped = false;
     for (int i = 0; i < lines.size(); ++i) {
       String line = lines.get(i);
-      line = line.replaceAll(" +|[;]|\\t", "");
+      line = line.replaceAll("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))", " ");
+      line = line.replaceAll("(?<=\\[)\\s+|\\s+(?=])", "");
+      line = line.replaceAll("\\s+", " ").trim();
 //            System.out.println(line);
-      if (line.matches("[A-Za-z][A-Za-z0-9]*=([A-Za-z][A-Za-z0-9]*|[0-9]+|[-+*/()])+")) {
-//				System.out.println("assignment");
-        SimpleStatementNode statementNode = new SimpleStatementNode(line, i + 1);
+
+      if (Pattern.matches(ASSIGNMENT_PATTERN.toString(), line)) {
+        System.out.println("assignment");
+        SimpleStatementNode statementNode = new AssignmentNode(line, i + 1, false);
         parent.addStatement(statementNode);
-      } else if (line.matches("if[(](([0-9]+|[A-Za-z][A-Za-z0-9]*+)(<|<=|>=|>|==|!=)([0-9]+|[A-Za-z][A-Za-z0-9]*+)|true|false)[)]")) {
+      } else if (Pattern.matches(INSTANTIATION_PATTERN.toString(), line)) {
+        System.out.println("instantiation");
+        SimpleStatementNode statementNode = new InstantiationNode(line, i + 1);
+        parent.addStatement(statementNode);
+      } else if (Pattern.matches(DIRECT_ASSIGNMENT_PATTERN.toString(), line)) {
+        System.out.println("direct assignment");
+        SimpleStatementNode statementNode = new AssignmentNode(line, i + 1, true);
+        parent.addStatement(statementNode);
+      } else if (Pattern.matches(IF_PATTERN.toString(), line)) {
 //				System.out.println("if");
         IfNode ifNode = new IfNode(line, i + 1);
         parent.addStatement(ifNode);
@@ -104,7 +116,7 @@ public class Parser {
           throw new ParserException("endif statement without if at line " + (i + 1));
         }
         parent = (MultipleStatementNode) st.getParent();
-      } else if (line.matches("while[(](([0-9]+|[A-Za-z][A-Za-z0-9]*)(<|<=|>=|>|==|!=)([0-9]+|[A-Za-z][A-Za-z0-9]*)|true|false)[)]")) {
+      } else if (Pattern.matches(WHILE_PATTERN.toString(), line)) {
 //                System.out.println("while");
         WhileNode whileNode = new WhileNode(line, i + 1);
         parent.addStatement(whileNode);
@@ -415,5 +427,81 @@ public class Parser {
       strarr.add(in.toString());
     }
     return strarr;
+  }
+
+  public static ArrayList<String> parseArithmetic(String infix, int lineNumber) throws ParserException {
+    // Convert infix to postfix
+    List<String> tokens = Arrays.asList(infix.split(" "));
+    ArrayList<String> outputQueue = new ArrayList<>();
+    Stack<String> opStack = new Stack<>();
+    for (String s : tokens) {
+      if (s.matches(NUMBER_PATTERN + "|" + IDENTIFIER_PATTERN + "(?:\\[\\d+])?")) {
+        outputQueue.add(s);
+      } else if (s.matches(ADDITIVE_OPERATOR)) {
+        while (!opStack.empty()
+            && opStack.peek().matches(ADDITIVE_OPERATOR + "|" + MULTIPLICATIVE_OPERATOR)
+            && !opStack.peek().matches("\\("))
+          outputQueue.add(opStack.pop());
+        opStack.push(s);
+      } else if (s.matches(MULTIPLICATIVE_OPERATOR)) {
+        while (!opStack.empty()
+            && opStack.peek().matches(MULTIPLICATIVE_OPERATOR)
+            && !opStack.peek().matches("\\("))
+          outputQueue.add(opStack.pop());
+        opStack.push(s);
+      } else if (s.matches("\\(")) {
+        opStack.push(s);
+      } else if (s.matches("\\)")) {
+        boolean match = false;
+        while (!opStack.empty() && !(match = opStack.peek().matches("\\(")))
+          outputQueue.add(opStack.pop());
+        if (match) opStack.pop();
+        else throw new ParserException("Mismatched parentheses at line " + lineNumber);
+      }
+    }
+    while (!opStack.empty()) {
+      String s = opStack.pop();
+      if (s.matches("[()]")) throw new ParserException("Mismatched parentheses at line " + lineNumber);
+      outputQueue.add(s);
+    }
+
+    // Contract operation between numbers (e.g. a + 1 + 2 becomes a + 3)
+    Stack<ArrayList<String>> contractedStack = new Stack<>();
+    for (String token : outputQueue) {
+      if (Pattern.matches(NUMBER_PATTERN + "|" + IDENTIFIER_PATTERN + "(?:\\[\\d+\\])?", token)) {
+        ArrayList<String> a = new ArrayList<>();
+        a.add(token);
+        contractedStack.push(a);
+      } else {
+        ArrayList<String> second = contractedStack.pop();
+        ArrayList<String> first = contractedStack.pop();
+        if (first.size() == 1 && Pattern.matches(NUMBER_PATTERN, first.get(0)) &&
+            second.size() == 1 && Pattern.matches(NUMBER_PATTERN, second.get(0))) {
+          int result = 0, a = Integer.parseInt(first.get(0)), b = Integer.parseInt(second.get(0));
+          switch (token) {
+            case "+":
+              result = a + b;
+              break;
+            case "-":
+              result = a - b;
+              break;
+            case "*":
+              result = a * b;
+              break;
+            case "/":
+              result = a / b;
+              break;
+          }
+          ArrayList<String> arr = new ArrayList<>();
+          arr.add(Integer.toString(result));
+          contractedStack.push(arr);
+        } else {
+          first.addAll(second);
+          first.add(token);
+          contractedStack.push(first);
+        }
+      }
+    }
+    return contractedStack.pop();
   }
 }
