@@ -1,10 +1,7 @@
 package main;
 
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.*;
 
-import com.florianingerl.util.regex.Matcher;
 import com.florianingerl.util.regex.Pattern;
 import statement.*;
 
@@ -17,7 +14,22 @@ public class Parser {
   public final static int LINE_INIT_POS = 0;
   private static MultipleStatementNode root = new MultipleStatementNode();
 
+
+  private static SymbolTable symbolTable = new SymbolTable();
+
+  /**
+   * String1: nodeID
+   * String2: parentNodeID
+   */
+  private static HashMap<String, String> nodeTreeTable;
+
+  /**
+   * Instead of using exceptions, errors are stored here.
+   */
+  private static ArrayList<String> errors;
+
   //String patterns
+  public static final String KEYWORDS = "var|if|else|endif|while|endwhile|endprogram|break|continue";
   public static final String IDENTIFIER_PATTERN = "[A-Za-z_][A-Za-z0-9_]*";
   public static final String NUMBER_PATTERN = "\\d+";
   public static final String SUBSCRIPT_PATTERN = "\\[(?'NUMBER')\\]";
@@ -32,81 +44,153 @@ public class Parser {
   public static final String RVALUE_PATTERN = "(?'VALUE')|(?'SUM')|(?'PRODUCT')";
   public static final String BOOLEAN_PATTERN = "true|false|(?'RVALUE')\\s(?'COMPARISONOP')\\s(?'RVALUE')";
   public static final String GENERAL_REGEX = "" +
-      "(?x)(?(DEFINE)" +
-      "(?<ADDITIVEOP>" + ADDITIVE_OPERATOR + ")" +
-      "(?<MULTIPLICATIVEOP>" + MULTIPLICATIVE_OPERATOR + ")" +
-      "(?<COMPARISONOP>" + COMPARISON_OPERATOR + ")" +
-      "(?<RVALUE>" + RVALUE_PATTERN + ")" +
-      "(?<BOOLEAN>" + BOOLEAN_PATTERN + ")" +
-      "(?<SUM>" + ADDITIVE_PATTERN + ")" +
-      "(?<SUMMAND>" + SUMMAND_PATTERN + ")" +
-      "(?<PRODUCT>" + MULTIPLICATIVE_PATTERN + ")" +
-      "(?<NUMBER>" + NUMBER_PATTERN + ")" +
-      "(?<VALUE>" + VALUE_PATTERN + ")" +
-      "(?<IDENTIFIER>" + IDENTIFIER_PATTERN + ")" +
-      "(?<SUBSCRIPT>" + SUBSCRIPT_PATTERN + ")" +
-      "(?<LVALUE>(?'IDENTIFIER')(?'SUBSCRIPT')?)" +
-      "(?<FACTOR>" + FACTOR_PATTERN + ")" +
-      ")";
+                                             "(?x)(?(DEFINE)" +
+                                             "(?<ADDITIVEOP>" + ADDITIVE_OPERATOR + ")" +
+                                             "(?<MULTIPLICATIVEOP>" + MULTIPLICATIVE_OPERATOR + ")" +
+                                             "(?<COMPARISONOP>" + COMPARISON_OPERATOR + ")" +
+                                             "(?<RVALUE>" + RVALUE_PATTERN + ")" +
+                                             "(?<BOOLEAN>" + BOOLEAN_PATTERN + ")" +
+                                             "(?<SUM>" + ADDITIVE_PATTERN + ")" +
+                                             "(?<SUMMAND>" + SUMMAND_PATTERN + ")" +
+                                             "(?<PRODUCT>" + MULTIPLICATIVE_PATTERN + ")" +
+                                             "(?<NUMBER>" + NUMBER_PATTERN + ")" +
+                                             "(?<VALUE>" + VALUE_PATTERN + ")" +
+                                             "(?<IDENTIFIER>" + IDENTIFIER_PATTERN + ")" +
+                                             "(?<SUBSCRIPT>" + SUBSCRIPT_PATTERN + ")" +
+                                             "(?<LVALUE>(?'IDENTIFIER')(?'SUBSCRIPT')?)" +
+                                             "(?<FACTOR>" + FACTOR_PATTERN + ")" +
+                                             ")";
 
   public static final Pattern INSTANTIATION_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(var)\\s(?'LVALUE')"
+      "(var)\\s(?'LVALUE')"
   );
   public static final Pattern ASSIGNMENT_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(?'LVALUE')\\s=\\s(?'RVALUE')"
+      "(?'LVALUE')\\s=\\s(?'RVALUE')"
   );
   public static final Pattern DIRECT_ASSIGNMENT_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(var)\\s(?'IDENTIFIER')\\s=\\s(?'RVALUE')"
+      "(var)\\s(?'IDENTIFIER')\\s=\\s(?'RVALUE')"
   );
   public static final Pattern IF_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(if)\\s\\(\\s(?'BOOLEAN')\\s\\)"
+      "(if)\\s\\(\\s(?'BOOLEAN')\\s\\)"
   );
   public static final Pattern WHILE_PATTERN = Pattern.compile(
       GENERAL_REGEX +
-          "(while)\\s\\(\\s(?'BOOLEAN')\\s\\)"
+      "(while)\\s\\(\\s(?'BOOLEAN')\\s\\)"
   );
 
-  public static ArrayList<Instruction> compile(ArrayList<String> lines) throws ParserException {
+  // For node ID purposes
+  private static int mulCount = 0;
+  private static int ifCount = 0;
+  private static int whileCount = 0;
+  private static int singleCount = 0;
+
+  // count getters
+  public static int getIfCount() {
+    return ifCount++;
+  }
+  public static int getMulCount() {
+    return mulCount++;
+  }
+  public static int getWhileCount() {
+    return whileCount++;
+  }
+  public static int getSingleCount() {
+    return singleCount++;
+  }
+
+  private enum LineType {
+    ASSIGNMENT,
+    INSTANTIATION,
+    DIRECT_ASSIGNMENT,
+    IF, ELSE, ENDIF,
+    WHILE, ENDWHILE,
+    BREAK, CONTINUE,
+    NULL
+  }
+
+  private static LineType getLineType(String line) {
+    if (Pattern.matches(ASSIGNMENT_PATTERN.toString(), line)) return LineType.ASSIGNMENT;
+    else if (Pattern.matches(INSTANTIATION_PATTERN.toString(), line)) return LineType.INSTANTIATION;
+    else if (Pattern.matches(DIRECT_ASSIGNMENT_PATTERN.toString(), line)) return LineType.DIRECT_ASSIGNMENT;
+    else if (Pattern.matches(IF_PATTERN.toString(), line)) return LineType.IF;
+    else if (Pattern.matches(WHILE_PATTERN.toString(), line)) return LineType.WHILE;
+    else if (line.matches("else")) return LineType.ELSE;
+    else if (line.matches("endif")) return LineType.ENDIF;
+    else if (line.matches("endwhile")) return LineType.ENDWHILE;
+    else if (line.matches("break")) return LineType.BREAK;
+    else if (line.matches("continue")) return LineType.CONTINUE;
+    else return LineType.NULL;
+  }
+
+  private static void reset(){
+    mulCount = ifCount = whileCount = singleCount = 0;
     if (variables != null) variables.clear();
     if (instructions != null) instructions.clear();
     root = new MultipleStatementNode();
+    root.setNodeID("MUL" + mulCount++);
+  }
+
+  public static ArrayList<Instruction> compile(ArrayList<String> lines) throws ParserException {
+    reset();
+
     MultipleStatementNode parent = root;
     ArrayList<InstructionOffset> instructionOffsets = new ArrayList<>();
 
-    int size = lines.size();
-    boolean stopped = false;
+    // === FORMAT CLEANUP ===
     for (int i = 0; i < lines.size(); ++i) {
       String line = lines.get(i);
-      line = line.replaceAll("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))", " ");
-      line = line.replaceAll("(?<=\\[)\\s+|\\s+(?=])", "");
-      line = line.replaceAll("\\s+", " ").trim();
-//            System.out.println(line);
 
-      if (Pattern.matches(ASSIGNMENT_PATTERN.toString(), line)) {
-        System.out.println("assignment");
-        SimpleStatementNode statementNode = new AssignmentNode(line, i + 1, false);
+      // add space around operators and brackets
+      line = line.replaceAll("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))", " ");
+
+      // remove space in subscripts
+      line = line.replaceAll("(?<=\\[)\\s+|\\s+(?=])", "");
+
+      // replace excess whitespace with single space character
+      // remove leading and trailing whitespace
+      line = line.replaceAll("\\s+", " ").trim();
+      lines.set(i, line);
+    }
+
+    int codeSize = lines.size();
+    boolean stopped = false;
+
+    for (int i = 0; i < codeSize; ++i) {
+      String line = lines.get(i);
+      LineType lineType = getLineType(line);
+      if (line.isEmpty()) continue;
+
+      if (lineType == LineType.ASSIGNMENT) {
+//        System.out.println("assignment");
+        SingleStatementNode statementNode = new AssignmentNode(line, i + 1, false);
         parent.addStatement(statementNode);
-      } else if (Pattern.matches(INSTANTIATION_PATTERN.toString(), line)) {
-        System.out.println("instantiation");
-        SimpleStatementNode statementNode = new InstantiationNode(line, i + 1);
+
+      } else if (lineType == LineType.INSTANTIATION) {
+//        System.out.println("instantiation");
+        SingleStatementNode statementNode = new InstantiationNode(line, i + 1);
         parent.addStatement(statementNode);
-      } else if (Pattern.matches(DIRECT_ASSIGNMENT_PATTERN.toString(), line)) {
-        System.out.println("direct assignment");
-        SimpleStatementNode statementNode = new AssignmentNode(line, i + 1, true);
+
+      } else if (lineType == LineType.DIRECT_ASSIGNMENT) {
+//        System.out.println("direct assignment");
+        SingleStatementNode statementNode = new AssignmentNode(line, i + 1, true);
         parent.addStatement(statementNode);
-      } else if (Pattern.matches(IF_PATTERN.toString(), line)) {
+
+      } else if (lineType == LineType.IF) {
 //				System.out.println("if");
         IfNode ifNode = new IfNode(line, i + 1);
         parent.addStatement(ifNode);
         parent = ifNode.getTrueChild();
-      } else if (line.matches("else")) {
+
+      } else if (lineType == LineType.ELSE) {
 //				System.out.println("else");
-        parent = ((IfNode) parent.getParent()).createFalseChild();
-      } else if (line.matches("endif")) {
+        if (!(parent.getParent() instanceof IfNode)) errors.add("Else statement without if at line " + (i + 1));
+        else parent = ((IfNode) parent.getParent()).createFalseChild();
+
+      } else if (lineType == LineType.ENDIF) {
 //				System.out.println("endif");
         StatementNode st = parent;
         while (st != null && !(st instanceof IfNode)) {
@@ -116,12 +200,14 @@ public class Parser {
           throw new ParserException("endif statement without if at line " + (i + 1));
         }
         parent = (MultipleStatementNode) st.getParent();
-      } else if (Pattern.matches(WHILE_PATTERN.toString(), line)) {
+
+      } else if (lineType == LineType.WHILE) {
 //                System.out.println("while");
         WhileNode whileNode = new WhileNode(line, i + 1);
         parent.addStatement(whileNode);
         parent = whileNode.getChildren();
-      } else if (line.matches("endwhile")) {
+
+      } else if (lineType == LineType.ENDWHILE) {
 //                System.out.println("endwhile");
         StatementNode st = parent;
         while (st != null && !(st instanceof WhileNode)) {
@@ -131,7 +217,8 @@ public class Parser {
           throw new ParserException("endwhile statement without while at line " + (i + 1));
         }
         parent = (MultipleStatementNode) st.getParent();
-      } else if (line.matches("break")) {
+
+      } else if (lineType == LineType.BREAK) {
 //                System.out.println("break");
         StatementNode st = parent;
         while (st != null && !(st instanceof WhileNode)) {
@@ -141,7 +228,8 @@ public class Parser {
           throw new ParserException("break statement without while at line " + (i + 1));
         }
         parent.addStatement(new KeywordStatement(Keyword.BREAK, i + 1));
-      } else if (line.matches("continue")) {
+
+      } else if (lineType == LineType.CONTINUE) {
 //                System.out.println("continue");
         StatementNode st = parent;
         while (st != null && !(st instanceof WhileNode)) {
@@ -151,12 +239,15 @@ public class Parser {
           throw new ParserException("continue statement without while at line " + (i + 1));
         }
         parent.addStatement(new KeywordStatement(Keyword.CONTINUE, i + 1));
+
       } else if (line.matches("endprogram")) {
         stopped = true;
         break;
-      } else if (line.isEmpty()) {
+
       } else throw new ParserException("Invalid syntax at line " + (i + 1));
     }
+
+
     if (parent.getParent() != null) {
       throw new ParserException("Missing end of file");
     }
@@ -184,225 +275,6 @@ public class Parser {
     return instructions;
   }
 
-  public static ArrayList<Instruction> parseAssignStatement(ArrayList<String> line, int lineNumber) throws ParserException {
-    instructions = new ArrayList<>();
-
-    // remove semicolon if assign statement
-    //String last = line.get(line.size() - 1);
-    //line.set(line.size() - 1, last.substring(0, last.length() - 1));
-
-    String val = line.get(0);
-    String assignSymbol = line.get(1);
-
-    if (!isNumeric(val) || !assignSymbol.equals("=")) {
-      // syntax: val = res
-      Object res = addAssignInstruction(new ArrayList<>(line.subList(2, line.size())), lineNumber);
-
-      boolean isRegister = (Register.isRegister(val) != -1);
-      Register r;
-      if (isRegister) {
-        r = Register.getRegister(Register.isRegister(val));
-        if (Register.isReserved(r)) throw new ParserException("Use of reserved register at line " + (lineNumber));
-      } else
-        r = Register.R14;
-
-      if (res instanceof Register) {
-        // syntax: register1 = register2
-        int resIndex = ((Register) res).ordinal();
-        int valIndex = r.ordinal();
-        if (resIndex != valIndex) // not same register
-          instructions.add(new Instruction(MOVR, r, (Register) res));
-      } else if (res instanceof Integer) {
-        // syntax: register = integer
-        int numericVal = (Integer) res;
-        instructions.add(new Instruction(MOVI, r, new Immediate(numericVal)));
-      } else if (((String) res).matches("[A-Za-z][A-Za-z0-9]*")) {
-        VariableLocation varLocation = initVariable(res.toString());
-//                instructions.add(new Instruction(MOVI, Register.R14, new Immediate(varLocation)));
-        Memory varMemory = new Memory(Register.R15, new Immediate(varLocation));
-        instructions.add(new Instruction(MOVM, r, varMemory));
-      }
-
-      if (!isRegister) {
-        VariableLocation varLocation = initVariable(val);
-//                instructions.add(new Instruction(MOVI, Register.R12, new Immediate(varLocation)));
-        Memory varMemory = new Memory(Register.R15, new Immediate(varLocation));
-        instructions.add(new Instruction(MOV, varMemory, r));
-      }
-    } else {
-      throw new ParserException("Incorrect syntax at statement " + lineNumber);
-    }
-
-    return instructions;
-  }
-
-  /**
-   * Add assign and arithmetic instructions
-   *
-   * @param tokens - ArrayList of string from splitted line
-   * @return object to be moved into first value
-   */
-  private static Object addAssignInstruction(ArrayList<String> tokens, int lineNumber) throws ParserException {
-    Stack<Object> values = new Stack<>();
-    Stack<Token> operands = new Stack<>();
-
-    int size = tokens.size();
-    for (int i = 0; i < size; ++i) {
-      String s = tokens.get(i);
-//            System.out.println(tokens.get(i));
-      if (s.equals("")) {
-        continue;
-      } else if (s.equals("(")) {
-        operands.push(Token.LB);
-      } else if (s.equals(")")) {
-        while (!operands.peek().equals(Token.LB))
-          values.push(applyOp(operands.pop(), values.pop(), values.pop()));
-        operands.pop();
-      } else if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/")) {
-        while (!operands.empty() && Token.hasPrecedence(Token.getToken(s), operands.peek()))
-          values.push(applyOp(operands.pop(), values.pop(), values.pop()));
-        operands.push(Token.getToken(s));
-      } else if (isNumeric(s)) {
-        values.push(Integer.parseInt(s));
-      } else if (Register.isRegister(s) != -1) {
-        int index = Register.isRegister(s);
-        Register r = Register.getRegister(index);
-        if (Register.isReserved(r))
-          throw new ParserException("Cannot use reserved register");
-        values.push(r);
-      } else if (s.matches("[A-Za-z][A-Za-z0-9]*")) {
-        values.push(s);
-      } else {
-        throw new ParserException("Incorrect syntax at statement " + lineNumber);
-      }
-    }
-
-    // Apply operations to remaining values and operands in stack
-    while (!operands.empty())
-      values.push(applyOp(operands.pop(), values.pop(), values.pop()));
-
-    return values.pop();
-  }
-
-  /**
-   * Apply operation, add instruction and return result as object
-   *
-   * @param token - operand
-   * @param val1  - value 1
-   * @param val2  - value 2
-   * @return object to be pushed into equation
-   */
-  public static Object applyOp(Token token, Object val1, Object val2) throws ParserException {
-    if (val1 instanceof Integer && val2 instanceof Integer) {
-      Integer res = 0;
-      switch (token.getKeyword()) {
-        case "+":
-          res = ((Integer) val2 + (Integer) val1);
-          break;
-        case "-":
-          res = ((Integer) val2 - (Integer) val1);
-          break;
-        case "*":
-          res = ((Integer) val2 * (Integer) val1);
-          break;
-        case "/":
-          res = ((Integer) val2 / (Integer) val1);
-          break;
-      }
-      if (res < 0) {
-        throw new ParserException("Negative numbers not supported");
-      } else {
-        return res;
-      }
-    } else if (val2 instanceof Register && val1 instanceof Integer) {
-      // example: R1 (val2) - 5 (val1)
-      Register r = Register.R14;
-      switch (token.getKeyword()) {
-        case "+":
-          instructions.add(new Instruction(ADDI, r, (Register) val2, new Immediate((int) val1)));
-          break;
-        case "-":
-          instructions.add(new Instruction(SUBI, r, (Register) val2, new Immediate((int) val1)));
-          break;
-        case "*":
-          instructions.add(new Instruction(MULI, r, (Register) val2, new Immediate((int) val1)));
-          break;
-        case "/":
-          instructions.add(new Instruction(DIVI, r, (Register) val2, new Immediate((int) val1)));
-          break;
-      }
-      return r;
-    } else if (val1 instanceof Register && val2 instanceof Integer) {
-      // example: 5 (val2) - R1 (val1)
-      Register r = Register.R14;
-      switch (token.getKeyword()) {
-        case "+":
-          instructions.add(new Instruction(ADDI, r, (Register) val1, new Immediate((int) val2)));
-          break;
-        case "*":
-          instructions.add(new Instruction(MULI, r, (Register) val1, new Immediate((int) val2)));
-          break;
-        case "-":
-          instructions.add(new Instruction(MOVI, r, new Immediate((int) val2)));
-          instructions.add(new Instruction(SUB, r, r, (Register) val1));
-          break;
-        case "/":
-          instructions.add(new Instruction(MOVI, r, new Immediate((int) val2)));
-          instructions.add(new Instruction(DIV, r, r, (Register) val1));
-          break;
-      }
-      return r;
-    } else if (val1 instanceof Register && val2 instanceof Register) {
-      Register r = Register.R14;
-      switch (token.getKeyword()) {
-        case "+":
-          instructions.add(new Instruction(ADD, r, (Register) val2, (Register) val1));
-          break;
-        case "-":
-          instructions.add(new Instruction(SUB, r, (Register) val2, (Register) val1));
-          break;
-        case "*":
-          instructions.add(new Instruction(MUL, r, (Register) val2, (Register) val1));
-          break;
-        case "/":
-          instructions.add(new Instruction(DIV, r, (Register) val2, (Register) val1));
-          break;
-      }
-      return r;
-    } else {
-      if (val1 instanceof String && ((String) val1).matches("[A-Za-z][A-Za-z0-9]*")) {
-        Register r = Register.R14;
-        VariableLocation varLocation = initVariable(val1.toString());
-//                instructions.add(new Instruction(MOVI, r, new Immediate(varLocation)));
-        Memory varMemory = new Memory(Register.R15, new Immediate(varLocation));
-        instructions.add(new Instruction(MOVM, r, varMemory));
-        val1 = r;
-      }
-      if (val2 instanceof String && ((String) val2).matches("[A-Za-z][A-Za-z0-9]*")) {
-        Register r = Register.R13;
-        VariableLocation varLocation = initVariable(val2.toString());
-//                instructions.add(new Instruction(MOVI, r, new Immediate(varLocation)));
-        Memory varMemory = new Memory(Register.R15, new Immediate(varLocation));
-        instructions.add(new Instruction(MOVM, r, varMemory));
-        val2 = r;
-      }
-      return applyOp(token, val1, val2);
-    }
-  }
-
-  /**
-   * Check if string is a number or not
-   *
-   * @param s
-   * @return whether string is number or not
-   */
-  public static boolean isNumeric(String s) {
-    NumberFormat formatter = NumberFormat.getInstance();
-    ParsePosition pos = new ParsePosition(0);
-    formatter.parse(s, pos);
-    return s.length() == pos.getIndex();
-  }
-
   public static VariableLocation initVariable(String varName) {
     if (variables.containsKey(varName)) {
       return variables.get(varName);
@@ -411,6 +283,19 @@ public class Parser {
       variables.put(varName, i);
       return i;
     }
+  }
+
+  public static void insertVariable(String varName, SymbolType type, int size, String nodeID, int lineNumber) {
+    if (!symbolTable.insert(varName, type, size, nodeID, lineNumber))
+      errors.add(varName + " already declared in this scope (at line " + lineNumber + ")");
+  }
+
+  public static Symbol lookupVariable(String varName, String nodeID) {
+    Symbol symbol = null;
+    String parentID = nodeID;
+    while(parentID != null && (symbol = symbolTable.lookup(varName, parentID)) == null)
+      parentID = nodeTreeTable.get(nodeID);
+    return symbol;
   }
 
   public static HashMap<String, VariableLocation> getVariables() {
@@ -439,14 +324,14 @@ public class Parser {
         outputQueue.add(s);
       } else if (s.matches(ADDITIVE_OPERATOR)) {
         while (!opStack.empty()
-            && opStack.peek().matches(ADDITIVE_OPERATOR + "|" + MULTIPLICATIVE_OPERATOR)
-            && !opStack.peek().matches("\\("))
+               && opStack.peek().matches(ADDITIVE_OPERATOR + "|" + MULTIPLICATIVE_OPERATOR)
+               && !opStack.peek().matches("\\("))
           outputQueue.add(opStack.pop());
         opStack.push(s);
       } else if (s.matches(MULTIPLICATIVE_OPERATOR)) {
         while (!opStack.empty()
-            && opStack.peek().matches(MULTIPLICATIVE_OPERATOR)
-            && !opStack.peek().matches("\\("))
+               && opStack.peek().matches(MULTIPLICATIVE_OPERATOR)
+               && !opStack.peek().matches("\\("))
           outputQueue.add(opStack.pop());
         opStack.push(s);
       } else if (s.matches("\\(")) {
@@ -504,4 +389,17 @@ public class Parser {
     }
     return contractedStack.pop();
   }
+
+  public static void createRelationship(String childID, String parentID){
+    nodeTreeTable.put(childID, parentID);
+  }
+
+  public static void addError(String error){
+    errors.add(error);
+  }
+
+  public static void addErrorList(ArrayList<String> errorList){
+    errors.addAll(errorList);
+  }
+
 }

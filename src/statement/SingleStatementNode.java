@@ -9,6 +9,4 @@ import main.Parser;
 import main.Instruction;
 import main.ParserException;
 
-public abstract class SimpleStatementNode extends StatementNode {
-
-}
+public abstract class SingleStatementNode extends StatementNode {}

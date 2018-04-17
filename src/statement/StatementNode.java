@@ -10,8 +10,7 @@ public abstract class StatementNode {
   private String line;
   private Integer lineNumber;
   private Integer offset;
-  private HashMap<String, Immediate> symbolTable;
-  private int localTableSize;
+  private String nodeID;
 
   public StatementNode getParent() {
     return parent;
@@ -19,6 +18,7 @@ public abstract class StatementNode {
 
   public void setParent(StatementNode parent) {
     this.parent = parent;
+    Parser.createRelationship(getNodeID(), parent.getNodeID());
   }
 
   public abstract ArrayList<InstructionOffset> parse() throws ParserException;
@@ -47,51 +47,11 @@ public abstract class StatementNode {
     return offset;
   }
 
-  public HashMap<String, Immediate> getSymbolTable() {
-    return symbolTable;
+  public void setNodeID(String nodeID) {
+    this.nodeID = nodeID;
   }
 
-  /**
-   * Adds a variable to the symbol table.
-   *
-   * @param variableName the name of the added variable
-   */
-  public void addVarToSymbolTable(String variableName) {
-    symbolTable.put(variableName, new Immediate(getGlobalTableSize()));
-    localTableSize += Parser.LINE_SIZE;
-  }
-
-  /**
-   * Adds an array to the symbol table
-   *
-   * @param arrayName the name of the added array
-   * @param size      size of the array
-   */
-  public void addArrToSymbolTable(String arrayName, int size) {
-    symbolTable.put(arrayName, new Immediate(getGlobalTableSize()));
-    localTableSize += size * Parser.LINE_SIZE;
-  }
-
-
-  public int getGlobalTableSize() {
-    int size = 0;
-    StatementNode current = this;
-    while (current != null) {
-      size += current.getLocalTableSize();
-      current = current.getParent();
-    }
-    return size;
-  }
-
-  public int getLocalTableSize() {
-    return localTableSize;
-  }
-
-  public Immediate getLocation(String identifier) {
-    Immediate loc;
-    StatementNode current = this;
-    while ((loc = current.symbolTable.get(identifier)) == null && current.getParent() != null)
-      current = current.getParent();
-    return loc;
+  public String getNodeID() {
+    return nodeID;
   }
 }
