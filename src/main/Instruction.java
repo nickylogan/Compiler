@@ -64,6 +64,7 @@ public class Instruction {
         if (operands.length != 1 || !(operands[0] instanceof Register))
           throw new InstructionException("Invalid operands for " + operator.name() + ". Required: [register] [memory]");
         break;
+      case JNE:
       case JE:
       case JLT:
       case JGT:

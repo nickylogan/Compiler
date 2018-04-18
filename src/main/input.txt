@@ -1,13 +1,9 @@
-a = 16 * 16 - 90 + 7 * (3 + 2)
-r2 = 5
-r3 = 7
-r1 = r2 + r3
-b = 0
-while(b<=10)
-    c = 0
-    while(c<b)
-        c = c + 1
-    endwhile
-    a = a + c
-    b = b + 1
+var a = 0
+while(true)
+a = a + 1
+if(a>=5)
+a = a+3
+else
+a = a+2
+endif
 endwhile

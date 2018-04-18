@@ -16,8 +16,9 @@ import static main.Register.*;
 public class Main extends Application {
   public static Window window;
 
-  public static void main(String[] args) {
-    launch(args);
+  public static void main(String[] args) throws Exception {
+//    launch(args);
+    test();
   }
 
 
@@ -44,5 +45,25 @@ public class Main extends Application {
     window = new Window(controller);
 //    window.initialize();
     window.show();
+  }
+
+  private static void test() throws IOException {
+    FileReader fileReader = new FileReader("C:\\Users\\Nicky\\IdeaProjects\\Compiler\\src\\main\\input.txt");
+    BufferedReader bufferedReader = new BufferedReader(fileReader);
+    String line;
+    ArrayList<String> text = new ArrayList<>();
+    while ((line = bufferedReader.readLine()) != null) text.add(line);
+    for (String s : text) System.out.println(s);
+    try {
+      ArrayList<Instruction> ins = Parser.compile(text);
+      System.out.println("Instructions: ");
+      int i = 0 ;
+      for (Instruction in : ins) {
+        System.out.println("[" + i*4 + "] " + in.toString());
+        ++i;
+      }
+    } catch (ParserException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

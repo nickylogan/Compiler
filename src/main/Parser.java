@@ -115,6 +115,11 @@ public class Parser {
   }
 
   private static LineType getLineType(String line) {
+//    System.out.println("Ins: " + Pattern.matches(INSTANTIATION_PATTERN.toString(),line));
+//    System.out.println("Ass: " + Pattern.matches(ASSIGNMENT_PATTERN.toString(),line));
+//    System.out.println("Dir: " + Pattern.matches(DIRECT_ASSIGNMENT_PATTERN.toString(),line));
+//    System.out.println("If: " + Pattern.matches(IF_PATTERN.toString(),line));
+//    System.out.println("While: " + Pattern.matches(WHILE_PATTERN.toString(),line));
     if (Pattern.matches(ASSIGNMENT_PATTERN.toString(), line)) return LineType.ASSIGNMENT;
     else if (Pattern.matches(INSTANTIATION_PATTERN.toString(), line)) return LineType.INSTANTIATION;
     else if (Pattern.matches(DIRECT_ASSIGNMENT_PATTERN.toString(), line)) return LineType.DIRECT_ASSIGNMENT;
@@ -147,7 +152,7 @@ public class Parser {
       String line = lines.get(i);
 
       // add space around operators and brackets
-      line = line.replaceAll("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))", " ");
+      line = line.replaceAll("(?=[-+*/()<>!]|(?<![<>=!])=)|(?<=[-+*/()]|[<>=!](?!=))|(?=&&|\\|\\|)|(?<=&&|\\|\\|)", " ");
 
       // remove space in subscripts
       line = line.replaceAll("(?<=\\[)\\s+|\\s+(?=])", "");
@@ -163,7 +168,9 @@ public class Parser {
 
     for (int i = 0; i < codeSize; ++i) {
       String line = lines.get(i);
+      System.out.println(line);
       LineType lineType = getLineType(line);
+      System.out.println(lineType);
       if (line.isEmpty()) continue;
 
       if (lineType == LineType.ASSIGNMENT) {
@@ -199,9 +206,8 @@ public class Parser {
           st = st.getParent();
         }
         if (st == null) {
-          throw new ParserException("endif statement without if at line " + (i + 1));
-        }
-        parent = (MultipleStatementNode) st.getParent();
+          errors.add("endif statement without if at line " + (i + 1));
+        } else parent = (MultipleStatementNode) st.getParent();
 
       } else if (lineType == LineType.WHILE) {
 //                System.out.println("while");
@@ -216,9 +222,8 @@ public class Parser {
           st = st.getParent();
         }
         if (st == null) {
-          throw new ParserException("endwhile statement without while at line " + (i + 1));
-        }
-        parent = (MultipleStatementNode) st.getParent();
+          errors.add("endwhile statement without while at line " + (i + 1));
+        } else parent = (MultipleStatementNode) st.getParent();
 
       } else if (lineType == LineType.BREAK) {
 //                System.out.println("break");
@@ -227,9 +232,8 @@ public class Parser {
           st = st.getParent();
         }
         if (st == null) {
-          throw new ParserException("break statement without while at line " + (i + 1));
-        }
-        parent.addStatement(new KeywordStatement(Keyword.BREAK, i + 1));
+          errors.add("break statement without while at line " + (i + 1));
+        } else parent.addStatement(new KeywordStatement(Keyword.BREAK, i + 1));
 
       } else if (lineType == LineType.CONTINUE) {
 //                System.out.println("continue");
@@ -238,23 +242,42 @@ public class Parser {
           st = st.getParent();
         }
         if (st == null) {
-          throw new ParserException("continue statement without while at line " + (i + 1));
-        }
-        parent.addStatement(new KeywordStatement(Keyword.CONTINUE, i + 1));
+          errors.add("continue statement without while at line " + (i + 1));
+        } else parent.addStatement(new KeywordStatement(Keyword.CONTINUE, i + 1));
 
       } else if (line.matches("endprogram")) {
         stopped = true;
         break;
 
-      } else throw new ParserException("Invalid syntax at line " + (i + 1));
+      } else errors.add("Invalid syntax at line " + (i + 1));
     }
 
 
     if (parent.getParent() != null) {
       throw new ParserException("Missing end of file");
     }
+
+    if (!errors.isEmpty()) {
+      System.out.println("error 1");
+      StringBuilder sb = new StringBuilder();
+      for (String err : errors)
+        sb.append(err).append("\n");
+      throw new ParserException(sb.toString());
+    }
+
     ArrayList<InstructionOffset> temp = root.parse();
-    Instruction init = new Instruction(Operator.MOVI, Register.R15, new Immediate((2 + temp.size()) * LINE_SIZE));
+
+    System.out.println(temp);
+
+    if (!errors.isEmpty()) {
+      System.out.println("error 2");
+      StringBuilder sb = new StringBuilder();
+      for (String err : errors)
+        sb.append(err).append("\n");
+      throw new ParserException(sb.toString());
+    }
+
+    Instruction init = new Instruction(Operator.MOVI, Register.R0, new Immediate(0));
     instructionOffsets.add(new InstructionOffset(init, 0));
     for (InstructionOffset io : temp) {
       io.setOffset(io.getOffset() + 1);
@@ -274,21 +297,22 @@ public class Parser {
       instructions.add(ins);
     }
 
+    int i = instructions.size() * 4;
+    for (String key : symbolTable.keySet()) {
+      HashMap<String, Symbol> hs = symbolTable.get(key);
+      for (String scope : hs.keySet()) {
+        Symbol s = hs.get(scope);
+        s.getLocation().setValue(i);
+        i += s.getSize();
+      }
+    }
+    System.out.println(symbolTable.toString());
+
     return instructions;
   }
 
-  public static VariableLocation initVariable(String varName) {
-    if (variables.containsKey(varName)) {
-      return variables.get(varName);
-    } else {
-      VariableLocation i = new VariableLocation(variables.size() * LINE_SIZE);
-      variables.put(varName, i);
-      return i;
-    }
-  }
-
   public static boolean insertVariable(String varName, SymbolType type, int size, String nodeID, int lineNumber) {
-    if (!symbolTable.insert(varName, type, size, nodeID, lineNumber)){
+    if (!symbolTable.insert(varName, type, size, nodeID, lineNumber)) {
       errors.add(varName + " already declared in this scope (at line " + lineNumber + ")");
       return false;
     }
@@ -299,16 +323,8 @@ public class Parser {
     Symbol symbol = null;
     String parentID = nodeID;
     while (parentID != null && (symbol = symbolTable.lookup(varName, parentID)) == null)
-      parentID = nodeTreeTable.get(nodeID);
+      parentID = nodeTreeTable.get(parentID);
     return symbol;
-  }
-
-  public static HashMap<String, VariableLocation> getVariables() {
-    return variables;
-  }
-
-  public static void setVariables(HashMap<String, VariableLocation> variables) {
-    Parser.variables = variables;
   }
 
   public static ArrayList<String> convertInstructionsToString(ArrayList<Instruction> instructions) {
@@ -487,6 +503,7 @@ public class Parser {
     if (tempErrors.size() > 1) {
       return tempErrors;
     } else {
+      System.out.println(contractedStack.peek());
       return contractedStack.pop();
     }
   }
@@ -500,6 +517,8 @@ public class Parser {
       @NotNull String nodeID,
       @NotNull ArrayList<String> tempErrors,
       int currentRegister) {
+    ArrayList<Instruction> instructions = new ArrayList<>();
+
     for (String token : RPN) {
       if (token.matches(Parser.NUMBER_PATTERN)) {
         // Move constant into RX
@@ -537,7 +556,7 @@ public class Parser {
       } else if (token.matches(Parser.IDENTIFIER_PATTERN + "\\[" + Parser.NUMBER_PATTERN + "]")) {
         String sArr[] = token.split("(?<=[\\[\\]])|(?=[\\[\\]])");
         String arrName = sArr[0];
-        int index = Integer.parseInt(sArr[2]);
+        int index = Integer.parseInt(sArr[2]) * LINE_SIZE;
         Symbol s = Parser.lookupVariable(arrName, nodeID);
         if (s == null)
           tempErrors.add("Cannot resolve symbol '" + arrName + "' at line " + lineNumber);
@@ -561,6 +580,7 @@ public class Parser {
           );
         }
       } else if (token.matches("[-+*/]")) {
+        ++currentRegister;
         Operator operator = null;
         switch (token) {
           case "+": operator = Operator.ADD; break;
@@ -575,10 +595,137 @@ public class Parser {
                 operator,
                 Register.getRegister(currentRegister + 1),
                 Register.getRegister(currentRegister + 1),
-                Register.getRegister(currentRegister++)
+                Register.getRegister(currentRegister)
+            )
+        );
+      } else if (token.matches("[<>]=?|==|!=")) {
+        ++currentRegister;
+//        System.out.println(token + ", reg: "+ currentRegister);
+        Operator operator = null;
+        int first = 1, second = 0;
+        // set operator
+        switch (token) {
+          case "==": case "!=": operator = Operator.JE; break;
+          case "<": case ">=": operator = Operator.JLT; break;
+          case ">": case "<=": operator = Operator.JGT; break;
+        }
+
+        if (token.matches("[!<>]=")) {first = 0; second = 1;}
+
+        //    J_ RX, RY, x
+        //    MOVI RX, second
+        //    JMP y
+        // x: MOVI RX, first
+        // y: ...
+        instructions.add(
+            new Instruction(
+                operator,
+                Register.getRegister(currentRegister + 1),
+                Register.getRegister(currentRegister),
+                new Immediate(instructions.size() + 3)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.MOVI,
+                Register.getRegister(currentRegister + 1),
+                new Immediate(second)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.JMP,
+                new Immediate(instructions.size() + 2)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.MOVI,
+                Register.getRegister(currentRegister + 1),
+                new Immediate(first)
+            )
+        );
+//        ++currentRegister;
+      } else if (token.equals("!")) {
+        ++currentRegister;
+//        System.out.println(token + ", reg: "+ currentRegister);
+        //    JE RX, R0, x
+        //    MOVI RX, 0
+        //    JMP y
+        // x: MOVI RX, 1
+        // y: ...
+        instructions.add(
+            new Instruction(
+                Operator.JE,
+                Register.getRegister(currentRegister),
+                Register.R0,
+                new Immediate(instructions.size() + 3)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.MOVI,
+                Register.getRegister(currentRegister),
+                new Immediate(0)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.JMP,
+                new Immediate(instructions.size() + 2)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.MOVI,
+                Register.getRegister(currentRegister),
+                new Immediate(1)
+            )
+        );
+      } else if (token.matches("&&|\\|\\|")) {
+        ++currentRegister;
+//        System.out.println(token + ", reg: "+ currentRegister);
+        Operator op = null;
+        switch (token) {
+          case "&&": op = Operator.MUL; break;
+          case "||": op = Operator.ADD; break;
+        }
+        // && =>
+        //    MUL RX RX RY
+        //    JNE R14 RO x
+        //    MOVI RX 1
+        // x: ...
+
+        // || =>
+        //    ADD RX RX RY
+        //    JNE R14 RO x
+        //    MOVI RX 1
+        // x: ...
+        instructions.add(
+            new Instruction(
+                op,
+                Register.getRegister(currentRegister + 1),
+                Register.getRegister(currentRegister + 1),
+                Register.getRegister(currentRegister)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.JE,
+                Register.getRegister(currentRegister + 1),
+                Register.R0,
+                new Immediate(instructions.size() + 2)
+            )
+        );
+        instructions.add(
+            new Instruction(
+                Operator.MOVI,
+                Register.getRegister(currentRegister + 1),
+                new Immediate(1)
             )
         );
       }
+      System.out.println(token + ", reg: "+ currentRegister);
     }
     return instructions;
   }

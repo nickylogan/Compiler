@@ -53,7 +53,7 @@ public class WhileNode extends StatementNode {
           new Instruction(
               Operator.JE,
               Register.R14,
-              new Immediate(0),
+              Register.R0,
               endLabel
           )
       );
@@ -91,6 +91,12 @@ public class WhileNode extends StatementNode {
       }
       io.setOffset(io.getOffset() + offset);
     }
+    childInstructions.add(new InstructionOffset(
+        new Instruction(
+            Operator.JMP,
+            startLabel
+        ), offset + childInstructions.size()
+    ));
 
     // update labels
     endLabel.setValue(offset + childInstructions.size());
