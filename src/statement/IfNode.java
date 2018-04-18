@@ -19,7 +19,7 @@ public class IfNode extends StatementNode {
   }
 
   @Override
-  public ArrayList<InstructionOffset> parse() throws ParserException {
+  public ArrayList<InstructionOffset> parse(){
     String s = getLine();
     String[] ss = s.split("(?=if)|(?<=if)|(?=[><!()]|(?<![<>=!])=)|(?<=[()=<>!])(?!=)");
     Boolean aBoolean = null;
@@ -47,7 +47,6 @@ public class IfNode extends StatementNode {
           op = Operator.JLT;
           break;
       }
-
       if (ss[2].matches("[0-9]+") && ss[4].matches("[0-9]+")) {
         deterministic = true;
         int l = Integer.parseInt(ss[2]);

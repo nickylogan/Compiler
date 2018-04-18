@@ -14,7 +14,7 @@ public class InstantiationNode extends SingleStatementNode {
     setNodeID("SINGLE" + Parser.getSingleCount());
   }
   @Override
-  public ArrayList<InstructionOffset> parse() throws ParserException {
+  public ArrayList<InstructionOffset> parse(){
     String tokens[] = getLine().split(" ");
     String error = null;
     // syntax is "var identifier"
@@ -22,14 +22,16 @@ public class InstantiationNode extends SingleStatementNode {
     if(identifier.matches(Parser.KEYWORDS)){
       error = "Use of reserved keyword at line " + getLineNumber();
     } else if (identifier.matches(Parser.IDENTIFIER_PATTERN)) {
-      Parser.insertVariable(identifier, SymbolType.VAR, Parser.LINE_SIZE, getParent().getNodeID(), getLineNumber());
+      if(!Parser.insertVariable(identifier, SymbolType.VAR, Parser.LINE_SIZE, getParent().getNodeID(), getLineNumber()))
+        error = identifier + " already declared in this scope (at line " + getLineNumber() + ")";
     } else if (identifier.matches(Parser.IDENTIFIER_PATTERN + "\\[" + Parser.NUMBER_PATTERN + "]")) {
       String sArr[] = identifier.split("(?<=[\\[\\]])|(?=[\\[\\]])");
       String arrName = sArr[0];
       int len = Integer.parseInt(sArr[2]);
-      Parser.insertVariable(arrName, SymbolType.VAR, Parser.LINE_SIZE * len, getParent().getNodeID(), getLineNumber());
+      if(!Parser.insertVariable(arrName, SymbolType.VAR, Parser.LINE_SIZE * len, getParent().getNodeID(), getLineNumber()))
+        error = arrName + " already declared in this scope (at line " + getLineNumber() + ")";
     } else
-      error = "Invalid identifier pattern at line " + getLineNumber() + 1;
+      error = "Invalid identifier pattern at line " + getLineNumber();
 
     if (error != null){
       Parser.addError(error);

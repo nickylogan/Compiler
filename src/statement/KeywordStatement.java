@@ -22,7 +22,7 @@ public class KeywordStatement extends StatementNode {
   }
 
   @Override
-  public ArrayList<InstructionOffset> parse() throws ParserException {
+  public ArrayList<InstructionOffset> parse(){
     ArrayList<InstructionOffset> ins = new ArrayList<>();
     InstructionOffset in = null;
     if (keyword == Keyword.BREAK) {

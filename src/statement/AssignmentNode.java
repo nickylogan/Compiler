@@ -15,7 +15,7 @@ public class AssignmentNode extends SingleStatementNode {
   }
 
   @Override
-  public ArrayList<InstructionOffset> parse() throws ParserException {
+  public ArrayList<InstructionOffset> parse(){
     ArrayList<Instruction> instructions = new ArrayList<>();
     ArrayList<String> tempErrors = new ArrayList<>();
     String tokens[] = getLine().split(" ");
@@ -28,8 +28,8 @@ public class AssignmentNode extends SingleStatementNode {
       if(lValue.matches(Parser.KEYWORDS)) {
         tempErrors.add("Use of reserved keyword at line " + getLineNumber());
       } else if (lValue.matches(Parser.IDENTIFIER_PATTERN)) {
-        getParent().addVarToSymbolTable(lValue);
-        Parser.insertVariable(lValue, SymbolType.VAR, Parser.LINE_SIZE, getParent().getNodeID(), getLineNumber());
+        if(!Parser.insertVariable(lValue, SymbolType.VAR, Parser.LINE_SIZE, getParent().getNodeID(), getLineNumber()))
+          tempErrors.add(lValue + " already declared in this scope (at line " + getLineNumber() + ")");
       } else if (lValue.matches(Parser.IDENTIFIER_PATTERN + "\\[" + Parser.NUMBER_PATTERN + "]")) {
         tempErrors.add("Direct assignments for arrays are not supported (at line " + getLineNumber() + ")");
       } else {
@@ -67,96 +67,21 @@ public class AssignmentNode extends SingleStatementNode {
       if (i > (directAssignment ? 3 : 2)) sb.append(" ");
       sb.append(tokens[i]);
     }
-    int currentRegister = 14;
     String infix = sb.toString();
 
     // Parses the arithmetic infix notation into RPN (Reverse Polish Notation)/postfix
     ArrayList<String> RPN = Parser.parseArithmetic(infix, getLineNumber());
-
-    // Parses RPN into machine instructions
-    for (String token : RPN) {
-      if (token.matches(Parser.NUMBER_PATTERN)) {
-        // Move constant into RX
-        // MOVI RX constant
-        instructions.add(
-            new Instruction(
-                Operator.MOVI,
-                Register.getRegister(currentRegister--),
-                new Immediate(Integer.parseInt(token))
-            )
-        );
-      } else if (token.matches(Parser.IDENTIFIER_PATTERN)) {
-        Symbol s = Parser.lookupVariable(token, getNodeID());
-        if (s == null)
-          tempErrors.add("'" + token + "' not declared in this scope (at line " + getLineNumber() + ")");
-        else{
-          instructions.add(
-            new Instruction(
-                Operator.MOVI,
-                Register.R15,
-                s.getLocation()
-            )
-          );
-          // Copy variable data into RX
-          // MOVM RX [R15 + 0]
-          instructions.add(
-              new Instruction(
-                  Operator.MOVM,
-                  Register.getRegister(currentRegister--),
-                  new Memory(Register.R15, new Immediate(0))
-              )
-          );
-        }
-      } else if (token.matches(Parser.IDENTIFIER_PATTERN + "\\[" + Parser.NUMBER_PATTERN + "]")) {
-        String sArr[] = token.split("(?<=[\\[\\]])|(?=[\\[\\]])");
-        String arrName = sArr[0];
-        int index = Integer.parseInt(sArr[2]);
-        Symbol s = Parser.lookupVariable(arrName, getNodeID());
-        if (s == null)
-          tempErrors.add("'" + arrName + "' not declared in this scope (at line " + getLineNumber() + ")");
-        else {
-          instructions.add(
-              new Instruction(
-                  Operator.MOVI,
-                  Register.R15,
-                  s.getLocation()
-              )
-          );
-          // Copy array element data into RX
-          // MOVM RX [R15 + locationOffset + arrayIndex]
-          instructions.add(
-              new Instruction(
-                  Operator.MOVM,
-                  Register.getRegister(currentRegister--),
-                  new Memory(Register.R15, new Immediate(index))
-              )
-          );
-        }
-      } else if (token.matches(Parser.ADDITIVE_OPERATOR + "|" + Parser.MULTIPLICATIVE_OPERATOR)) {
-        Operator operator = null;
-        switch (token) {
-          case "+": operator = Operator.ADD; break;
-          case "-": operator = Operator.SUB; break;
-          case "*": operator = Operator.MUL; break;
-          case "/": operator = Operator.DIV; break;
-        }
-        // Applies operation to the two top register "Stack"
-        // OP RX RX RY, meaning RX = RX (OP) RY. OP can be either ADD, SUB, MUL, or DIV.
-        instructions.add(
-            new Instruction(
-                operator,
-                Register.getRegister(currentRegister + 1),
-                Register.getRegister(currentRegister + 1),
-                Register.getRegister(currentRegister++)
-            )
-        );
-      }
+    if(RPN.get(0).equals("#ERROR")){
+      tempErrors.addAll(RPN.subList(1, RPN.size()));
     }
 
     if(!tempErrors.isEmpty()) {
       Parser.addErrorList(tempErrors);
       return null;
     }
+
+    ArrayList<Instruction> arithmeticInstructions = Parser.parseRPNtoInstruction(RPN, getLineNumber(), getNodeID(), tempErrors, 14);
+    instructions.addAll(arithmeticInstructions);
 
     // Assigns the value into the variable
     // MOV R14 [R15+lValueOffset]

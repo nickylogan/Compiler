@@ -20,11 +20,12 @@ public class MultipleStatementNode extends StatementNode {
   }
 
   @Override
-  public ArrayList<InstructionOffset> parse() throws ParserException {
+  public ArrayList<InstructionOffset> parse(){
     ArrayList<InstructionOffset> arr = new ArrayList<>();
     int i = 0;
     for (StatementNode s : children) {
       ArrayList<InstructionOffset> ins = s.parse();
+      if(ins == null) return null;
       for (InstructionOffset in : ins) {
         in.setOffset(i + in.getOffset());
       }

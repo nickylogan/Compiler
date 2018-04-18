@@ -21,7 +21,7 @@ public abstract class StatementNode {
     Parser.createRelationship(getNodeID(), parent.getNodeID());
   }
 
-  public abstract ArrayList<InstructionOffset> parse() throws ParserException;
+  public abstract ArrayList<InstructionOffset> parse();
 
   public void setLine(String line) {
     this.line = line;
