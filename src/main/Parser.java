@@ -135,10 +135,12 @@ public class Parser {
 
   private static void reset() {
     mulCount = ifCount = whileCount = singleCount = 0;
-    if (variables != null) variables.clear();
     if (instructions != null) instructions.clear();
     root = new MultipleStatementNode();
     root.setNodeID("MUL" + mulCount++);
+    symbolTable.clear();
+    errors.clear();
+    nodeTreeTable.clear();
   }
 
   public static ArrayList<Instruction> compile(ArrayList<String> lines) throws ParserException {
@@ -168,9 +170,9 @@ public class Parser {
 
     for (int i = 0; i < codeSize; ++i) {
       String line = lines.get(i);
-      System.out.println(line);
+//      System.out.println(line);
       LineType lineType = getLineType(line);
-      System.out.println(lineType);
+//      System.out.println(lineType);
       if (line.isEmpty()) continue;
 
       if (lineType == LineType.ASSIGNMENT) {
@@ -267,7 +269,7 @@ public class Parser {
 
     ArrayList<InstructionOffset> temp = root.parse();
 
-    System.out.println(temp);
+//    System.out.println(temp);
 
     if (!errors.isEmpty()) {
       System.out.println("error 2");
@@ -306,7 +308,7 @@ public class Parser {
         i += s.getSize();
       }
     }
-    System.out.println(symbolTable.toString());
+//    System.out.println(symbolTable.toString());
 
     return instructions;
   }
@@ -503,7 +505,7 @@ public class Parser {
     if (tempErrors.size() > 1) {
       return tempErrors;
     } else {
-      System.out.println(contractedStack.peek());
+//      System.out.println(contractedStack.peek());
       return contractedStack.pop();
     }
   }
@@ -725,7 +727,7 @@ public class Parser {
             )
         );
       }
-      System.out.println(token + ", reg: "+ currentRegister);
+//      System.out.println(token + ", reg: "+ currentRegister);
     }
     return instructions;
   }

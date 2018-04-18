@@ -98,7 +98,7 @@ public class MainWindowController extends BorderPane implements Initializable {
   //STRING PATTERNS
   //Pseudocode patterns
   private static final String[] KEYWORDS = new String[]{
-      "if", "endif", "break", "while", "endwhile", "else", "continue"
+      "if", "endif", "break", "while", "endwhile", "else", "continue", "var"
   };
   private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
   private static final String PAREN_PATTERN = "\\(|\\)";
@@ -462,6 +462,10 @@ public class MainWindowController extends BorderPane implements Initializable {
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
+      Alert alert = new Alert(Alert.AlertType.INFORMATION, "Compilation successful!");
+      alert.setHeaderText(null);
+      alert.setTitle("Compilation successful!");
+      alert.showAndWait();
     } catch (ParserException e) {
       Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
       alert.setHeaderText(null);
