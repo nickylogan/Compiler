@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="25.0" prefWidth="384.0" text="SYMBOL TABLE" textAlignment="CENTER" />
+            <AnchorPane fx:id="symbolTable" prefHeight="225.0" prefWidth="461.0" />
+            <HBox prefHeight="150.0" prefWidth="461.0">
+               <children>
+                  <AnchorPane fx:id="registerStatus" prefHeight="200.0" prefWidth="200.0" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+   <left>
+      <VBox prefHeight="400.0" prefWidth="215.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="215.0" style="-fx-background-color: none;" text="COMPILED CODE" />
+            <AnchorPane fx:id="compiledCode" prefHeight="378.0" prefWidth="215.0" />
+         </children>
+      </VBox>
+   </left>
+</BorderPane>
