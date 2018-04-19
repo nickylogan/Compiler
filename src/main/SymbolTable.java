@@ -30,4 +30,17 @@ public class SymbolTable extends HashMap<String, HashMap<String, Symbol>>{
     return temp.get(nodeID);
   }
 
+  @Override
+  public String toString(){
+    StringBuilder sb = new StringBuilder();
+    for(String key : keySet()){
+      HashMap<String, Symbol> hs = get(key);
+      for(String scope : hs.keySet()){
+        Symbol s = hs.get(scope);
+        sb.append(s.toString()).append("\n");
+      }
+    }
+    return sb.toString();
+  }
+
 }

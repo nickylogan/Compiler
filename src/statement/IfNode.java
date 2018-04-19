@@ -52,7 +52,7 @@ public class IfNode extends StatementNode {
           new Instruction(
               Operator.JE,
               Register.R14,
-              new Immediate(0),
+              Register.R0,
               elseLabel
           )
       );
@@ -96,6 +96,7 @@ public class IfNode extends StatementNode {
           Operator.JMP,
           endLabel
         );
+        System.out.println(offset);
         trueInstructions.add(new InstructionOffset(exit, offset));
 
         // increment label for else because an exit instruction is added

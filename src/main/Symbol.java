@@ -14,6 +14,7 @@ public class Symbol {
     this.size = size;
     this.lineNumber = lineNumber;
     this.nodeID = nodeID;
+    this.location = new Immediate(0);
   }
 
   public void setLocation(Immediate location) {
@@ -42,5 +43,10 @@ public class Symbol {
 
   public String getSymbolName() {
     return symbolName;
+  }
+
+  @Override
+  public String toString() {
+    return symbolName + " => " + getLocation().getIntValue();
   }
 }

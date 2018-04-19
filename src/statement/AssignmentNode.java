@@ -71,6 +71,7 @@ public class AssignmentNode extends SingleStatementNode {
 
     // Parses the arithmetic infix notation into RPN (Reverse Polish Notation)/postfix
     ArrayList<String> RPN = Parser.parseArithmetic(infix, getLineNumber());
+
     if(RPN.get(0).equals("#ERROR")){
       tempErrors.addAll(RPN.subList(1, RPN.size()));
     }
@@ -82,7 +83,7 @@ public class AssignmentNode extends SingleStatementNode {
 
     ArrayList<Instruction> arithmeticInstructions = Parser.parseRPNtoInstruction(RPN, getLineNumber(), getNodeID(), tempErrors, 14);
     instructions.addAll(arithmeticInstructions);
-
+//    System.out.println(memLoc);
     // Assigns the value into the variable
     // MOV R14 [R15+lValueOffset]
     instructions.add(
@@ -95,8 +96,8 @@ public class AssignmentNode extends SingleStatementNode {
     instructions.add(
         new Instruction(
             Operator.MOV,
-            Register.R14,
-            new Memory(Register.R15, lValueOffset)
+            new Memory(Register.R15, lValueOffset),
+            Register.R14
         )
     );
 
