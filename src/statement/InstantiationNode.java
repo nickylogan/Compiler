@@ -28,7 +28,7 @@ public class InstantiationNode extends SingleStatementNode {
       String sArr[] = identifier.split("(?<=[\\[\\]])|(?=[\\[\\]])");
       String arrName = sArr[0];
       int len = Integer.parseInt(sArr[2]);
-      if(!Parser.insertVariable(arrName, SymbolType.VAR, Parser.LINE_SIZE * len, getParent().getNodeID(), getLineNumber()))
+      if(!Parser.insertVariable(arrName, SymbolType.ARRAY, Parser.LINE_SIZE * len, getParent().getNodeID(), getLineNumber()))
         error = arrName + " already declared in this scope (at line " + getLineNumber() + ")";
     } else
       error = "Invalid identifier pattern at line " + getLineNumber();

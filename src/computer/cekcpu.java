@@ -4,6 +4,12 @@ import java.io.*;
 import java.util.Scanner;
 
 public class cekcpu implements OperationCode {
+//  public void cekcpu(){
+//
+//  }
+//  public void shutdown(){
+//
+//  }
 //  public static void main(String[] args) throws IOException {
 //    Scanner konsol = new Scanner(System.in);
 //    Computer comp = new Computer();
@@ -88,4 +94,6 @@ public class cekcpu implements OperationCode {
 //    comp.powerOff();
 //
 //  } // main
+
+
 }

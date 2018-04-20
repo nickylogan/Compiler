@@ -10,7 +10,7 @@ import static main.Operator.*;
 
 public class Parser {
   private static HashMap<String, VariableLocation> variables = new HashMap<>();
-  private static ArrayList<Instruction> instructions;
+  private static ArrayList<Instruction> instructions = new ArrayList<>();
   public final static int LINE_SIZE = 4;
   public final static int LINE_INIT_POS = 0;
   private static MultipleStatementNode root = new MultipleStatementNode();
@@ -287,7 +287,7 @@ public class Parser {
     }
     instructionOffsets.add(new InstructionOffset(new Instruction(HALT), instructionOffsets.size()));
 
-    ArrayList<Instruction> instructions = new ArrayList<>();
+//    ArrayList<Instruction> instructions = new ArrayList<>();
     for (InstructionOffset io : instructionOffsets) {
       Instruction ins = io.getInstruction();
       Operator op = ins.getOperator();
@@ -308,7 +308,7 @@ public class Parser {
         i += s.getSize();
       }
     }
-//    System.out.println(symbolTable.toString());
+    System.out.println(symbolTable.toString());
 
     return instructions;
   }
@@ -744,4 +744,7 @@ public class Parser {
     errors.addAll(errorList);
   }
 
+  public static Program createProgram(String fileName){
+    return new Program(instructions, symbolTable, fileName);
+  }
 }

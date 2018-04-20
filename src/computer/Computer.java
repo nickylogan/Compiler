@@ -8,14 +8,14 @@ public class Computer implements OperationCode {
   private boolean computerHealth; // default: OK
   private byte endExecution; // opcode
 
-  //    Processor cpu = new Processor(Endian.littleEndian);
-  Processor cpu = new Processor();
-  Memory mainMemory = new Memory();
+//      Processor cpu = new Processor(Endian.littleEndian);
+  public Processor cpu = new Processor();
+  public Memory mainMemory = new Memory();
   public ControlUnit cntrl_unit;
   public int r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, PC;
 
 
-  Computer() {
+  public Computer() {
     powerUp = false; // Power-off
     computerHealth = true; // OK, sehat
   }
@@ -247,6 +247,10 @@ public class Computer implements OperationCode {
     r15 = cpu.aRegister[15];
     PC = cpu.PC;
     // tambahkan register lainnya
+  }
+
+  public int[] getRegisters(){
+    return cpu.aRegister;
   }
 
   public void monitorStatus() {

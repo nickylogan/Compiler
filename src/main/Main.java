@@ -1,20 +1,15 @@
 package main;
 
 import GUI.MainWindowController;
-import GUI.Window;
+import GUI.MainWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import statement.*;
 
-import javax.swing.plaf.nimbus.State;
 import java.io.*;
 import java.util.ArrayList;
 
-import static main.Operator.*;
-import static main.Register.*;
-
 public class Main extends Application {
-  public static Window window;
+  public static MainWindow mainWindow;
 
   public static void main(String[] args) throws Exception {
     launch(args);
@@ -41,10 +36,11 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
+    setUserAgentStylesheet(STYLESHEET_MODENA);
     MainWindowController controller = new MainWindowController();
-    window = new Window(controller);
+    mainWindow = new MainWindow(controller);
 //    window.initialize();
-    window.show();
+    mainWindow.show();
   }
 
   private static void test() throws IOException {

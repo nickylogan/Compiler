@@ -7,11 +7,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.Parser;
+import main.Program;
 
 import java.io.File;
 import java.util.Optional;
 
-public class Window extends Stage{
+public class MainWindow extends Stage{
   private Scene scene;
   private MainWindowController mainWindow;
   public static final String FILE_TYPE = "Pseudocode";
@@ -20,8 +22,9 @@ public class Window extends Stage{
   //States
   BooleanProperty saved = new SimpleBooleanProperty();
   private File file;
+  private String compiledFile;
 
-  public Window(MainWindowController controller) {
+  public MainWindow(MainWindowController controller) {
     mainWindow = controller;
     scene = new Scene(controller);
     setScene(scene);
@@ -165,7 +168,7 @@ public class Window extends Stage{
     }
   }
 
-  public void compile() {
+  public String compile() {
     System.out.println("Compile");
     if (file == null) saveAs();
     if (file != null) {
@@ -174,9 +177,13 @@ public class Window extends Stage{
       int pos = s.lastIndexOf('.');
       s = s.substring(0, pos);
 //      System.out.println(s);
-      File file = new File(s + ".mcd");
+      compiledFile = s + ".mcd";
+      File file = new File(compiledFile);
+      System.out.println(compiledFile);
       mainWindow.compileToFile(file);
+      return file.getAbsolutePath();
     }
+    return "";
   }
 
   public void setFile(File file) {
@@ -194,6 +201,14 @@ public class Window extends Stage{
     mainWindow.reset();
   }
 
+  public void run(){
+    compile();
+    if(file == null) return;
+    Program p = Parser.createProgram(compiledFile);
+    DebuggerWindow window = new DebuggerWindow(p);
+    window.showAndWait();
+  }
+
   public void initialize() {
     reset();
     mainWindow.getNewMenu().setOnAction(e -> newFile());
@@ -202,6 +217,7 @@ public class Window extends Stage{
     mainWindow.getSaveAsMenu().setOnAction(e -> saveAs());
     mainWindow.getCompileMenu().setOnAction(e -> compile());
     mainWindow.getExitMenu().setOnAction(e -> quit());
+    mainWindow.getRunMenu().setOnAction(e -> run());
   }
 }
 

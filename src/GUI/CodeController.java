@@ -1,16 +1,11 @@
 package GUI;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -81,7 +76,7 @@ public class CodeController extends TabPane implements Initializable {
         decimal.setItems(decList);
 
         codeLine.setOnAction(e -> {
-            Main.window.setSaved(false);
+            Main.mainWindow.setSaved(false);
             code = codeLine.getText();
             rawCode.add(code);
             addLine(line, code);
