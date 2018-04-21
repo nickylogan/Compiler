@@ -1,10 +1,11 @@
 package main;
 
 import com.sun.istack.internal.NotNull;
+import compiler.Instruction;
+import compiler.Operator;
+import compiler.SymbolTable;
 import computer.Computer;
-import computer.Memory;
 import computer.OperationCode;
-import computer.Processor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class Program {
     int temp = currentExecution;
     if (currentExecution == -1) return currentExecution;
     byte opcode = comp.runInstruction(initLocation);
-    currentExecution = comp.PC()/4;
+    currentExecution = comp.PC() / 4;
     if (opcode == OperationCode.HALT) {
       currentExecution = -1;
     }
@@ -59,12 +60,16 @@ public class Program {
     comp.powerOff();
   }
 
-  public Memory getMemory() {
-    return comp.mainMemory;
+  public byte[] getMemory() {
+    return comp.mainMemory.getaCells();
   }
 
   public byte[] accessMemory(int address) {
     return comp.mainMemory.readWordMemory(address);
+  }
+
+  public byte accessByte(int address) {
+    return comp.mainMemory.readByteMemory(address);
   }
 
   public int[] getGeneralRegisters() {
@@ -109,5 +114,9 @@ public class Program {
 
   public String getFileName() {
     return fileName;
+  }
+
+  public int getMemorySize() {
+    return comp.mainMemory.memorySize();
   }
 }

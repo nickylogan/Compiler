@@ -73,7 +73,7 @@ public class ControlUnit implements OperationCode {
       opcode = decodePhase(IR); // asumsi operation code
     } // endwhile
     if (opcode == HALT) executePhase();
-    System.out.println("HLT statement");
+    System.out.println("HLT compiler.statement");
     isRunProgram = false; // completion
   }
 

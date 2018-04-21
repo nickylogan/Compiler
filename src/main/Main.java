@@ -1,8 +1,12 @@
 package main;
 
-import GUI.MainWindowController;
-import GUI.MainWindow;
+import GUI.mainWindow.MainWindowController;
+import GUI.mainWindow.MainWindow;
+import compiler.Instruction;
+import compiler.Parser;
+import compiler.ParserException;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -39,27 +43,28 @@ public class Main extends Application {
     setUserAgentStylesheet(STYLESHEET_MODENA);
     MainWindowController controller = new MainWindowController();
     mainWindow = new MainWindow(controller);
-//    window.initialize();
+    mainWindow.setMaximized(true);
+    mainWindow.getIcons().add(new Image("GUI/assets/icon.png"));
     mainWindow.show();
   }
 
-  private static void test() throws IOException {
-    FileReader fileReader = new FileReader("C:\\Users\\Nicky\\IdeaProjects\\Compiler\\src\\main\\input.txt");
-    BufferedReader bufferedReader = new BufferedReader(fileReader);
-    String line;
-    ArrayList<String> text = new ArrayList<>();
-    while ((line = bufferedReader.readLine()) != null) text.add(line);
-    for (String s : text) System.out.println(s);
-    try {
-      ArrayList<Instruction> ins = Parser.compile(text);
-      System.out.println("Instructions: ");
-      int i = 0 ;
-      for (Instruction in : ins) {
-        System.out.println("[" + i*4 + "] " + in.toString());
-        ++i;
-      }
-    } catch (ParserException e) {
-      System.out.println(e.getMessage());
-    }
-  }
+//  private static void test() throws IOException {
+//    FileReader fileReader = new FileReader("C:\\Users\\Nicky\\IdeaProjects\\Compiler\\src\\main\\input.txt");
+//    BufferedReader bufferedReader = new BufferedReader(fileReader);
+//    String line;
+//    ArrayList<String> text = new ArrayList<>();
+//    while ((line = bufferedReader.readLine()) != null) text.add(line);
+//    for (String s : text) System.out.println(s);
+//    try {
+//      ArrayList<Instruction> ins = Parser.compile(text);
+//      System.out.println("Instructions: ");
+//      int i = 0 ;
+//      for (Instruction in : ins) {
+//        System.out.println("[" + i*4 + "] " + in.toString());
+//        ++i;
+//      }
+//    } catch (ParserException e) {
+//      System.out.println(e.getMessage());
+//    }
+//  }
 }

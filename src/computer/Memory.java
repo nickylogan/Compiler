@@ -207,4 +207,7 @@ public class Memory {
     return descIdMemory;
   }
 
+  public byte[] getaCells() {
+    return aCells.clone();
+  }
 }
