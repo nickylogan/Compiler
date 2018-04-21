@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="markdown.css">
+<div class="markdown-body" style="padding: 50px">
+    <h1 id="simplecompiler">SIMPLE COMPILER</h1>
+    <h2 id="syntax">Syntax</h2>
+    <pre><code class="php language-php">// comment syntax
+
+// variable declaration
+var varName
+var arrName[length_in_number]
+
+// initialization
+var varName = arithmetic_expression
+
+// assignment
+varName = arithmetic_expression
+arrName[index_in_number] = arithmetic_expression
+
+// arithmetic expression
+// complex ones are supported, e.g. 5+3*(a+b)
+// supported operators: + - * /
+
+// if without else
+if(condition)
+  // code
+endif
+
+// if with else
+if(condition)
+  // code
+else
+  // code
+endif
+
+// while
+while(condition)
+// code
+endwhile
+
+// boolean expression
+// complex boolean expression supported, e.g.
+// !(a>b)||(a != b-1) && (5+3>=10)
+// supported logical operators: || && !
+// supported comparison operators: < <= > >= == !=
+</code></pre>
+    <h2 id="limitations">Limitations</h2>
+    <ul>
+        <li><code>else if</code> not supported</li>
+        <li><code>for</code> and <code>do while</code> unsupported</li>
+        <li>array initializer list unsupported</li>
+        <li>negative numbers unsupported</li>
+        <li>basic operators such as <code>++ -- %</code> unsupported</li>
+        <li>functions unsupported</li>
+        <li>ternary operator not supported</li>
+        <li><code>string</code> unsupported</li>
+        <li>all data types are 4 byte <code>int</code></li>
+    </ul>
+</div>

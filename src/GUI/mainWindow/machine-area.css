@@ -1,0 +1,78 @@
+.caret {
+    -fx-stroke: #f8f8f0;
+    -fx-stroke-width: 2px;
+    -fx-scale-y: .75;
+    -fx-translate-y: -1px;
+}
+
+.text {
+    -fx-fill: #abb2bf;
+}
+
+.keyword {
+    -fx-fill: #c678dd;
+    -fx-font-weight: bold;
+}
+
+.semicolon {
+    -fx-font-weight: bold;
+}
+
+.paren {
+    /*-fx-fill: firebrick;*/
+    -fx-font-weight: bold;
+}
+
+.bracket {
+    /*-fx-fill: darkgreen;*/
+    -fx-font-weight: bold;
+}
+
+.brace {
+    /*-fx-fill: teal;*/
+    -fx-font-weight: bold;
+}
+
+.lineno {
+    -fx-fill: #495162;
+}
+
+.memory {
+    -fx-fill: cadetblue;
+}
+
+.number {
+    -fx-fill: #d19a66;
+}
+.hex-number {
+    -fx-fill: #d19a66;
+}
+
+.hex-prefix {
+    -fx-fill: #c678dd;
+}
+
+.styled-text-area {
+    -fx-font-family: 'Consolas';
+    -fx-font-size: 11pt;
+    -fx-background-color: #282c34;
+    -fx-highlight-fill: #484e5b;
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #383e4a;
+}
+
+.lineno .text {
+    -fx-fill: #495162;
+}
+
+.lineno {
+    -fx-background-color: #282c34;
+    -fx-font-family: 'Consolas';
+    -fx-font-size: 11pt;
+    -fx-text-alignment: right;
+    -fx-pref-width: 40pt;
+    -fx-padding: 0 10pt 0 5pt;
+}
+
