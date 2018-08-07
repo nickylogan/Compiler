@@ -4,7 +4,7 @@ A simple compiler for a custom language and computer simulator. This project is 
 
 ## Usage
 
-To run the program, simply download the provided release and run it. You can also run the following command:
+To run the program, simply [download](https://github.com/Log-baseE/Compiler/releases/download/v1.0-beta/compiler.jar) the provided release and run it. You can also run the following command:
 
 ```sh
 # Make sure that the jar is present in the current working directory
