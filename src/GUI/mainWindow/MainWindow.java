@@ -235,20 +235,6 @@ public class MainWindow extends Stage{
     }
   }
 
-  private void help(){
-    WebView webView = new WebView();
-    Stage stage = new Stage();
-    stage.initOwner(this);
-    stage.initModality(Modality.WINDOW_MODAL);
-    URL url = this.getClass().getResource("help.html");
-    webView.getEngine().load(url.toExternalForm());
-    Scene scene = new Scene(webView);
-    stage.setTitle("Help");
-    stage.getIcons().add(new Image("GUI/assets/icon.png"));
-    stage.setScene(scene);
-    stage.showAndWait();
-  }
-
   private void initialize() {
     reset();
     mainWindow.getNewMenu().setOnAction(e -> newFile());
@@ -258,7 +244,6 @@ public class MainWindow extends Stage{
     mainWindow.getCompileMenu().setOnAction(e -> compile());
     mainWindow.getExitMenu().setOnAction(e -> quit());
     mainWindow.getRunMenu().setOnAction(e -> run());
-    mainWindow.getHelpMenu().setOnAction(e -> help());
   }
 }
 

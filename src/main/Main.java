@@ -29,5 +29,6 @@ public class Main extends Application {
     mainWindow.getIcons().add(new Image("GUI/assets/icon.png"));
     mainWindow.show();
     mainWindow.getController().getAboutMenu().setOnAction(e -> getHostServices().showDocument("https://github.com/Log-baseE/Compiler"));
+    mainWindow.getController().getHelpMenu().setOnAction(e -> getHostServices().showDocument("https://github.com/Log-baseE/Compiler/blob/master/README.md"));
   }
 }
