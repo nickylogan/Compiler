@@ -9,7 +9,7 @@ public class ObservableSymbol {
   private SimpleStringProperty scopeID;
   private SimpleStringProperty type;
   private SimpleIntegerProperty size;
-  private SimpleStringProperty location;
+  private SimpleIntegerProperty location;
   private SimpleIntegerProperty value;
   private byte[] byteRepresentation;
   private SimpleBooleanProperty changed;
@@ -19,7 +19,7 @@ public class ObservableSymbol {
     this.scopeID = new SimpleStringProperty(scopeID);
     this.type = new SimpleStringProperty(type);
     this.size = new SimpleIntegerProperty(size);
-    this.location = new SimpleStringProperty(Integer.toString(location));
+    this.location = new SimpleIntegerProperty(location);
     this.value = new SimpleIntegerProperty(0);
     this.byteRepresentation = new byte[4];
     this.changed = new SimpleBooleanProperty(false);
@@ -74,15 +74,15 @@ public class ObservableSymbol {
     this.size.set(size);
   }
 
-  public String getLocation() {
+  public Integer getLocation() {
     return location.get();
   }
 
-  public SimpleStringProperty locationProperty() {
+  public SimpleIntegerProperty locationProperty() {
     return location;
   }
 
-  public void setLocation(String location) {
+  public void setLocation(Integer location) {
     this.location.set(location);
   }
 

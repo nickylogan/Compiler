@@ -270,11 +270,24 @@
     -fx-background-color: #aaaaaa;
 }
 
-.label.focused {
+.label.memory.focused {
     -fx-border-color: rgba(255, 131, 101, 0.67);
     -fx-border-width: 2;
 }
 .label.memory:hover{
     -fx-background-color: #F0F0F0;
     -fx-cursor: hand;
+}
+.label.memory.changed {
+    -fx-background-color: #fb7f65;
+    -fx-text-fill: white;
+}
+
+.label.memory.changed:hover {
+    -fx-background-color: #ba5d54;
+}
+
+.label.memory.changed.focused {
+    -fx-border-color: #fba192;
+    -fx-border-width: 2;
 }

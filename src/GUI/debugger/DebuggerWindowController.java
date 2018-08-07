@@ -1,11 +1,8 @@
 package GUI.debugger;
 
-import compiler.Instruction;
-import compiler.Symbol;
-import compiler.SymbolTable;
-import compiler.SymbolType;
+import com.sun.istack.internal.NotNull;
+import compiler.*;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +17,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import main.*;
 import utils.StringUTILS;
 
@@ -62,7 +58,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
   @FXML
   private TreeTableColumn<ObservableSymbol, Number> sizeCol;
   @FXML
-  private TreeTableColumn<ObservableSymbol, String> locationCol;
+  private TreeTableColumn<ObservableSymbol, Number> locationCol;
   @FXML
   private TreeTableColumn<ObservableSymbol, Number> valueCol;
   @FXML
@@ -88,15 +84,18 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
   private TextField locator;
   @FXML
   private Button goTo;
-  private SimpleIntegerProperty page = new SimpleIntegerProperty(0);
-  private Label[] pageLabels = new Label[8];
-  private Label[][] memoryContentLabels = new Label[8][16];
+
   private int MAX_PAGES;
+  private static final int COLUMN_SIZE = 16;
+  private static final int ROW_SIZE = 8;
+  private SimpleIntegerProperty page = new SimpleIntegerProperty(0);
+  private Label[] pageLabels = new Label[ROW_SIZE];
+  private Label[][] memoryContentLabels = new Label[ROW_SIZE][COLUMN_SIZE];
 
   private Program program;
   private ObservableList<ObservableInstruction> instructionList = FXCollections.observableArrayList();
   private HashMap<Integer, ObservableSymbol> symbolHashMap = new HashMap<>();
-  private HashMap<Integer, TreeItem<ObservableSymbol>> locationTreeItemHashMap = new HashMap<>();
+  private ObservableList<Integer> changedList = FXCollections.observableArrayList();
 
   private int index = 0;
   private int index2 = 0;
@@ -143,12 +142,10 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
             );
             TreeItem<ObservableSymbol> elementTreeItem = new TreeItem<>(element);
             simpleSymbolTreeItem.getChildren().add(elementTreeItem);
-            locationTreeItemHashMap.put(loc1, elementTreeItem);
             symbolHashMap.put(loc1, element);
           }
         } else {
           symbolHashMap.put(loc, observableSymbol);
-          locationTreeItemHashMap.put(loc, simpleSymbolTreeItem);
         }
         root.getChildren().add(simpleSymbolTreeItem);
       }
@@ -196,7 +193,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
     // initialize next button
     nextButton.setOnAction(e -> next());
     // initialize memory viewer
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < ROW_SIZE; ++i) {
       Label label = new Label();
       memoryViewer.add(label, 0, i + 1);
       GridPane.setHgrow(label, Priority.ALWAYS);
@@ -205,8 +202,8 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       label.getStyleClass().add("bold");
       pageLabels[i] = label;
     }
-    for (int i = 0; i < 8; ++i) {
-      for (int j = 0; j < 16; ++j) {
+    for (int i = 0; i < ROW_SIZE; ++i) {
+      for (int j = 0; j < COLUMN_SIZE; ++j) {
         Label label = new Label();
         memoryViewer.add(label, j + 1, i + 1);
         GridPane.setHgrow(label, Priority.ALWAYS);
@@ -217,25 +214,26 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
         label.setMaxWidth(Double.MAX_VALUE);
         label.setAlignment(Pos.CENTER);
         int finalJ = j, finalI = i;
-        label.setOnMouseClicked(e -> selected.set(page.get() * 16 + finalI * 16 + finalJ));
+        label.setOnMouseClicked(e -> selected.set(page.get() * COLUMN_SIZE + finalI * COLUMN_SIZE + finalJ));
         label.getStyleClass().add("memory");
         memoryContentLabels[i][j] = label;
       }
     }
-    changeMemoryLabels();
+    updateMemoryLabels();
     page.addListener((observable, oldValue, newValue) -> {
-      changeMemoryLabels();
-      changeSelectedMemory(oldValue.intValue(), newValue.intValue(), selected.get(), selected.get());
+      updateMemoryLabels();
+      updateMemoryHighlights(oldValue.intValue(), newValue.intValue(), selected.get(), selected.get(), changedList, changedList);
     });
-    memoryScrollBar.setMax(MAX_PAGES - 8);
+    
+    memoryScrollBar.setMax(MAX_PAGES - ROW_SIZE);
     memoryScrollBar.setVisibleAmount(MAX_PAGES / 10.0);
     memoryScrollBar.valueProperty().bindBidirectional(page);
     memoryViewer.setOnScroll(e -> {
-      int newPage = Math.min(Math.max(0, page.get() + (e.getDeltaY() >= 0 ? -1 : 1)), MAX_PAGES - 8);
+      int newPage = Math.min(Math.max(0, page.get() + (e.getDeltaY() >= 0 ? -1 : 1)), MAX_PAGES - ROW_SIZE);
       page.set(newPage);
     });
     selected.addListener((observable, oldValue, newValue) -> {
-      changeSelectedMemory(page.get(), page.get(), oldValue.intValue(), newValue.intValue());
+      updateMemoryHighlights(page.get(), page.get(), oldValue.intValue(), newValue.intValue(), changedList, changedList);
       locator.setText(String.valueOf(newValue.intValue()));
     });
     locator.setOnAction(e -> {
@@ -243,7 +241,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
         int i = Integer.valueOf(locator.getText());
         if (i < program.getMemorySize()) {
           selected.set(i);
-          page.set(i / 16);
+          page.set(i / COLUMN_SIZE);
         } else {
           Alert alert = new Alert(Alert.AlertType.ERROR, "Out of bounds!");
           alert.setHeaderText(null);
@@ -251,51 +249,77 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
           alert.showAndWait();
         }
       }
-
     });
     locator.setOnKeyTyped(e -> {
       if (!e.getCharacter().matches("\\d")) e.consume();
     });
     goTo.setOnAction(e -> locator.fireEvent(new ActionEvent()));
+
+    symbolHashMap.forEach((integer, observableSymbol) -> {
+      observableSymbol.changedProperty().addListener((obs, oldV, newV) -> {
+        ObservableList<Integer> oldList = FXCollections.observableArrayList(changedList);
+        if(newV) changedList.add(observableSymbol.getLocation());
+        else changedList.remove(observableSymbol.getLocation());
+        updateMemoryHighlights(page.get(), page.get(), selected.get(), selected.get(), oldList, changedList);
+      });
+    });
   }
 
-  private void changeMemoryLabels() {
+  private void updateMemoryLabels() {
     int pageInt = page.get();
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < ROW_SIZE; ++i) {
       pageLabels[i].setText(
-          "0x" + StringUTILS.toHexStringWithLength(pageInt * 16 + i * 16, 4).toUpperCase()
+          "0x" + StringUTILS.toHexStringWithLength(pageInt * COLUMN_SIZE + i * COLUMN_SIZE, 4).toUpperCase()
       );
     }
     Set<Integer> keyset = symbolHashMap.keySet();
-    for (int i = 0; i < 8 * 16; ++i) {
-      int loc = pageInt * 16 + i;
+    for (int i = 0; i < ROW_SIZE * COLUMN_SIZE; ++i) {
+      int loc = pageInt * COLUMN_SIZE + i;
       if (keyset.contains(loc)) {
         byte[] bytes = symbolHashMap.get(loc).getBytes();
-        memoryContentLabels[i / 16][i++ % 16].setText(
+        memoryContentLabels[i / COLUMN_SIZE][i++ % COLUMN_SIZE].setText(
             StringUTILS.toHexStringWithLength(bytes[0], 2).toUpperCase());
-        memoryContentLabels[i / 16][i++ % 16].setText(
+        memoryContentLabels[i / COLUMN_SIZE][i++ % COLUMN_SIZE].setText(
             StringUTILS.toHexStringWithLength(bytes[1], 2).toUpperCase());
-        memoryContentLabels[i / 16][i++ % 16].setText(
+        memoryContentLabels[i / COLUMN_SIZE][i++ % COLUMN_SIZE].setText(
             StringUTILS.toHexStringWithLength(bytes[2], 2).toUpperCase());
-        memoryContentLabels[i / 16][i % 16].setText(
+        memoryContentLabels[i / COLUMN_SIZE][i % COLUMN_SIZE].setText(
             StringUTILS.toHexStringWithLength(bytes[3], 2).toUpperCase());
       } else {
-        memoryContentLabels[i / 16][i % 16].setText(
+        memoryContentLabels[i / COLUMN_SIZE][i % COLUMN_SIZE].setText(
             StringUTILS.toHexStringWithLength(program.accessByte(loc), 2).toUpperCase());
       }
     }
 
   }
 
-  private void changeSelectedMemory(int oldPage, int newPage, int oldSelected, int newSelected) {
-    int oldRow = (oldSelected - oldPage * 16) / 16;
-    int newRow = (newSelected - newPage * 16) / 16;
-    int oldCol = (oldSelected - oldPage * 16) % 16;
-    int newCol = (newSelected - newPage * 16) % 16;
-    if (0 <= oldRow && oldRow < 8 && 0 <= oldCol && oldCol < 16)
-      memoryContentLabels[oldRow][oldCol].getStyleClass().remove("focused");
-    if (0 <= newRow && newRow < 8 && 0 <= newCol && newCol < 16)
-      memoryContentLabels[newRow][newCol].getStyleClass().add("focused");
+  private void updateMemoryHighlights(int oldPage, int newPage, int oldSelected, int newSelected, @NotNull ObservableList<Integer> oldChangedList, @NotNull ObservableList<Integer> newChangedList) {
+    int oldFocusedRow = (oldSelected - oldPage * COLUMN_SIZE) / COLUMN_SIZE;
+    int oldFocusedCol = (oldSelected - oldPage * COLUMN_SIZE) % COLUMN_SIZE;
+    int newFocusedRow = (newSelected - newPage * COLUMN_SIZE) / COLUMN_SIZE;
+    int newFocusedCol = (newSelected - newPage * COLUMN_SIZE) % COLUMN_SIZE;
+    
+    if (0 <= oldFocusedRow && oldFocusedRow < ROW_SIZE && 0 <= oldFocusedCol && oldFocusedCol < COLUMN_SIZE)
+      memoryContentLabels[oldFocusedRow][oldFocusedCol].getStyleClass().remove("focused");
+    if (0 <= newFocusedRow && newFocusedRow < ROW_SIZE && 0 <= newFocusedCol && newFocusedCol < COLUMN_SIZE)
+      memoryContentLabels[newFocusedRow][newFocusedCol].getStyleClass().add("focused");
+    
+    for(int i = 0; i<oldChangedList.size(); ++i){
+      int location = oldChangedList.get(i);
+      for(int j = 0; j < 4; ++j){
+        int oldChangedRow = (location + j - oldPage * COLUMN_SIZE) / COLUMN_SIZE;
+        int oldChangedCol = (location + j - oldPage * COLUMN_SIZE) % COLUMN_SIZE;
+        memoryContentLabels[oldChangedRow][oldChangedCol].getStyleClass().remove("changed");
+      }
+    }
+    for(int i = 0; i<newChangedList.size(); ++i){
+      int location = newChangedList.get(i);
+      for(int j = 0; j < 4; ++j) {
+        int newChangedRow = (location + j - newPage * COLUMN_SIZE) / COLUMN_SIZE;
+        int newChangedCol = (location + j - newPage * COLUMN_SIZE) % COLUMN_SIZE;
+        memoryContentLabels[newChangedRow][newChangedCol].getStyleClass().add("changed");
+      }
+    }
   }
 
   private void next() {
@@ -527,7 +551,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       }
 
 
-      changeMemoryLabels();
+      updateMemoryLabels();
 
     }
     ++index2;

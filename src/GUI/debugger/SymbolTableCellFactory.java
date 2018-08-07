@@ -22,15 +22,9 @@ public class SymbolTableCellFactory<S, T> implements Callback<TreeTableColumn<S,
         super.updateItem(item, empty);
 
         if(observableSymbol != null && getTreeTableRow() != null) {
-          System.out.println(observableSymbol.isChanged());
-
           if(observableSymbol.isChanged()) {
             getTreeTableRow().getStyleClass().add(rowChanged);
           }
-
-          ObservableList<String> os = getTreeTableRow().getStyleClass();
-          for(String s : os) System.out.println(s);
-          System.out.println();
         }
 
         if(item != null) setText(item.toString());
