@@ -5,6 +5,7 @@ import compiler.Symbol;
 import compiler.SymbolTable;
 import compiler.SymbolType;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,7 +20,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import main.*;
+import utils.StringUTILS;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,20 +52,22 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
 
   // symbol table
   @FXML
-  private TreeTableView<SimpleSymbol> symbolTableViewer;
+  private TreeTableView<ObservableSymbol> symbolTableViewer;
   @FXML
-  private TreeTableColumn<SimpleSymbol, String> nameCol;
+  private TreeTableColumn<ObservableSymbol, String> nameCol;
   @FXML
-  private TreeTableColumn<SimpleSymbol, String> scopeIDCol;
+  private TreeTableColumn<ObservableSymbol, String> scopeIDCol;
   @FXML
-  private TreeTableColumn<SimpleSymbol, String> typeCol;
+  private TreeTableColumn<ObservableSymbol, String> typeCol;
   @FXML
-  private TreeTableColumn<SimpleSymbol, Number> sizeCol;
+  private TreeTableColumn<ObservableSymbol, Number> sizeCol;
   @FXML
-  private TreeTableColumn<SimpleSymbol, String> locationCol;
+  private TreeTableColumn<ObservableSymbol, String> locationCol;
   @FXML
-  private TreeTableColumn<SimpleSymbol, Number> valueCol;
-  private TreeItem<SimpleSymbol> root;
+  private TreeTableColumn<ObservableSymbol, Number> valueCol;
+  @FXML
+  private TreeTableColumn<ObservableSymbol, Boolean> changedCol;
+  private TreeItem<ObservableSymbol> root;
 
   // instruction viewer
   @FXML
@@ -70,7 +75,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
   @FXML
   private Button nextButton;
   @FXML
-  private ListView<SimpleInstruction> codeViewer;
+  private ListView<ObservableInstruction> codeViewer;
 
   @FXML
   private VBox middleColumn;
@@ -89,8 +94,9 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
   private int MAX_PAGES;
 
   private Program program;
-  private ObservableList<SimpleInstruction> instructionList = FXCollections.observableArrayList();
-  private HashMap<Integer, SimpleSymbol> symbolHashMap = new HashMap<>();
+  private ObservableList<ObservableInstruction> instructionList = FXCollections.observableArrayList();
+  private HashMap<Integer, ObservableSymbol> symbolHashMap = new HashMap<>();
+  private HashMap<Integer, TreeItem<ObservableSymbol>> locationTreeItemHashMap = new HashMap<>();
 
   private int index = 0;
   private int index2 = 0;
@@ -98,7 +104,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
   private SimpleIntegerProperty selected = new SimpleIntegerProperty(-1);
 
   DebuggerWindowController(Program program) {
-    this.root = new TreeItem<>(new SimpleSymbol("", "", "", 0, 0));
+    this.root = new TreeItem<>(new ObservableSymbol("", "", "", 0, 0));
     this.program = program;
     MAX_PAGES = program.getMemorySize() / 16;
 
@@ -124,49 +130,60 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
         int size = symbol.getSize();
         int loc = symbol.getLocation().getIntValue();
         System.out.println(loc);
-        SimpleSymbol simpleSymbol =
-            new SimpleSymbol(
+        ObservableSymbol observableSymbol =
+            new ObservableSymbol(
                 symbolName, scopeID, type.toString(), size, loc
             );
-        TreeItem<SimpleSymbol> simpleSymbolTreeItem = new TreeItem<>(simpleSymbol);
+        TreeItem<ObservableSymbol> simpleSymbolTreeItem = new TreeItem<>(observableSymbol);
         if (type == ARRAY) {
           for (int i = 0; i < size / 4; ++i) {
             int loc1 = loc + i * 4;
-            SimpleSymbol element = new SimpleSymbol(
+            ObservableSymbol element = new ObservableSymbol(
                 "[" + i + "]", scopeID, VAR.toString(), 4, loc1
             );
-            TreeItem<SimpleSymbol> elementTreeItem = new TreeItem<>(element);
+            TreeItem<ObservableSymbol> elementTreeItem = new TreeItem<>(element);
             simpleSymbolTreeItem.getChildren().add(elementTreeItem);
+            locationTreeItemHashMap.put(loc1, elementTreeItem);
             symbolHashMap.put(loc1, element);
           }
         } else {
-          symbolHashMap.put(loc, simpleSymbol);
+          symbolHashMap.put(loc, observableSymbol);
+          locationTreeItemHashMap.put(loc, simpleSymbolTreeItem);
         }
         root.getChildren().add(simpleSymbolTreeItem);
       }
     }
     nameCol.setCellValueFactory(param -> param.getValue().getValue().nameProperty());
+    nameCol.setCellFactory(new SymbolTableCellFactory<>());
     nameCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(.25));
     scopeIDCol.setCellValueFactory(param -> param.getValue().getValue().scopeIDProperty());
     scopeIDCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(.15));
+    scopeIDCol.setCellFactory(new SymbolTableCellFactory<>());
     typeCol.setCellValueFactory(param -> param.getValue().getValue().typeProperty());
     typeCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(.15));
+    typeCol.setCellFactory(new SymbolTableCellFactory<>());
     sizeCol.setCellValueFactory(param -> param.getValue().getValue().sizeProperty());
     sizeCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(.10));
+    sizeCol.setCellFactory(new SymbolTableCellFactory<>());
     locationCol.setCellValueFactory(param -> param.getValue().getValue().locationProperty());
     locationCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(.15));
+    locationCol.setCellFactory(new SymbolTableCellFactory<>());
     valueCol.setCellValueFactory(param -> param.getValue().getValue().valueProperty());
     valueCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(.20));
+    valueCol.setCellFactory(new SymbolTableCellFactory<>());
+    changedCol.setCellValueFactory(param -> param.getValue().getValue().changedProperty());
+    changedCol.prefWidthProperty().bind(middleColumn.widthProperty().multiply(0));
+    changedCol.setCellFactory(new SymbolTableCellFactory<>());
     this.symbolTableViewer.setRoot(root);
 
     // initialize code viewer
     ArrayList<Instruction> instructions = program.getInstructions();
-    SimpleInstruction.setMaxLocation((instructions.size() - 1) * 4);
+    ObservableInstruction.setMaxLocation((instructions.size() - 1) * 4);
     for (int i = 0; i < instructions.size(); i++) {
       Instruction ins = instructions.get(i);
-      SimpleInstruction simpleInstruction =
-          new SimpleInstruction(i * 4, ins.getOperator().toString(), ins.getStringOperands());
-      instructionList.add(simpleInstruction);
+      ObservableInstruction observableInstruction =
+          new ObservableInstruction(i * 4, ins.getOperator().toString(), ins.getStringOperands());
+      instructionList.add(observableInstruction);
     }
     codeViewer.setItems(instructionList);
     codeViewer.setOnMousePressed(e -> {
@@ -178,7 +195,6 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
 
     // initialize next button
     nextButton.setOnAction(e -> next());
-
     // initialize memory viewer
     for (int i = 0; i < 8; ++i) {
       Label label = new Label();
@@ -241,8 +257,6 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       if (!e.getCharacter().matches("\\d")) e.consume();
     });
     goTo.setOnAction(e -> locator.fireEvent(new ActionEvent()));
-
-
   }
 
   private void changeMemoryLabels() {
@@ -285,6 +299,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
   }
 
   private void next() {
+    nextButton.requestFocus();
     nextButton.setText("Next");
     if (index2 % 2 == 0) {
       R0.getStyleClass().remove("changed");
@@ -335,8 +350,8 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       // refresh value on symbol table
       for (Integer i : symbolHashMap.keySet()) {
         byte[] val = program.accessMemory(i);
-        SimpleSymbol simpleSymbol = symbolHashMap.get(i);
-        simpleSymbol.setBytes(val);
+        ObservableSymbol observableSymbol = symbolHashMap.get(i);
+        observableSymbol.setBytes(val);
       }
 
       // refresh registers
@@ -510,6 +525,7 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       } else {
         SP.getStyleClass().remove("changed");
       }
+
 
       changeMemoryLabels();
 

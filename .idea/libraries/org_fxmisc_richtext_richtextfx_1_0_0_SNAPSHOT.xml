@@ -6,7 +6,7 @@
       <root url="jar://$PROJECT_DIR$/lib/reactfx-2.0-M5.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/undofx-2.0.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/flowless-0.6.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/wellbehavedfx-0.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/wellbehavedfx-0.3.3.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

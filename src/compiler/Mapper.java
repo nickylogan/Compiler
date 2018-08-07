@@ -1,6 +1,6 @@
 package compiler;
 
-import main.StringUTILS;
+import utils.StringUTILS;
 
 import java.util.ArrayList;
 

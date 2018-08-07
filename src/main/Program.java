@@ -18,6 +18,14 @@ public class Program {
   private Computer comp;
   private int initLocation = 0;
 
+  /**
+   * The Program class will be used as an interface between the GUI and the computer.
+   * When a program is ran on the main window, an instance of Program will be created.
+   *
+   * @param instructions a list of computer instructions to be executed
+   * @param symbolTable the list of symbols used in the program, making it debuggable
+   * @param fileName the program file name
+   */
   public Program(@NotNull ArrayList<Instruction> instructions, @NotNull SymbolTable symbolTable, String fileName) {
     this.instructions = instructions;
     this.symbolTable = symbolTable;
@@ -27,14 +35,10 @@ public class Program {
     comp = new Computer();
     comp.powerOn();
     try {
-      comp.codeInjector(fileName, initLocation); // aktifkan modul tool injeksi code, dengan alamat ditetapkan melalui parameter
-    } catch (IOException e) {
-//      e.printStackTrace();
-    }
-    comp.cpu.BREG = initLocation; // base register
-//    while ((curExecution = comp.runInstruction(initLocation)) != OperationCode.HALT) {
-//      System.out.println("Eksekusi opcode ->  " + curExecution);
-//    } // endwhile
+      // activate the code injector module, with an initial location argument.
+      comp.codeInjector(fileName, initLocation);
+    } catch (IOException ignored) { }
+    comp.cpu.BREG = initLocation;
   }
 
   public SymbolTable getSymbolTable() {

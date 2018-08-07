@@ -158,6 +158,15 @@
     -fx-border-width: 0.5 0 0 0.5;
 }
 
+.tree-table-row-cell.row-changed .table-column {
+    -fx-background-color: white;
+    -fx-border-color: #bbb;
+}
+
+.tree-table-row-cell.row-changed .text {
+    -fx-fill: #fb7f65;
+}
+
 .codeViewer {
     -fx-font-family: 'Fira Mono';
     -fx-background-insets: 0;

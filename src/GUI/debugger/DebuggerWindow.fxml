@@ -33,12 +33,14 @@
             </AnchorPane>
             <TreeTableView fx:id="symbolTableViewer" focusTraversable="false" prefHeight="296.0" prefWidth="504.0" showRoot="false" styleClass="symbolTable">
                <columns>
-                  <TreeTableColumn fx:id="nameCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="140.66668701171875" resizable="false" sortable="false" text="name" />
+                  <TreeTableColumn fx:id="nameCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="140.66668701171875" resizable="false" sortable="false" text="name">
+                  </TreeTableColumn>
                   <TreeTableColumn fx:id="scopeIDCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="88.0" resizable="false" sortable="false" text="scopeID" />
                   <TreeTableColumn fx:id="typeCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="56.3333740234375" resizable="false" sortable="false" text="type" />
                   <TreeTableColumn fx:id="sizeCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="57.66668701171875" resizable="false" sortable="false" text="size" />
                   <TreeTableColumn fx:id="locationCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="85.0" resizable="false" sortable="false" text="location" />
                   <TreeTableColumn fx:id="valueCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="78.0" resizable="false" sortable="false" text="value" />
+                  <TreeTableColumn fx:id="changedCol" editable="false" maxWidth="1.7976931348623157E308" prefWidth="78.0" resizable="false" sortable="false" text="value" />
                </columns>
                <columnResizePolicy>
                   <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
 
-public class SimpleInstruction {
+public class ObservableInstruction {
   private SimpleStringProperty location;
   private SimpleStringProperty operator;
   private SimpleStringProperty operand1;
@@ -12,7 +12,7 @@ public class SimpleInstruction {
   private SimpleStringProperty operand3;
   private static int MAX_LOCATION_LEN = 2;
 
-  SimpleInstruction(Integer location, String operator, ArrayList<String> operands) {
+  ObservableInstruction(Integer location, String operator, ArrayList<String> operands) {
     this.location = new SimpleStringProperty("[" + (location < 10 ? "0" : "") + location + "]");
     this.operator = new SimpleStringProperty(operator);
     this.operand1 = new SimpleStringProperty(operands.size() > 0 ? operands.get(0) : "");

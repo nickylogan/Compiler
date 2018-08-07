@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class SimpleSymbol {
+public class ObservableSymbol {
   private SimpleStringProperty name;
   private SimpleStringProperty scopeID;
   private SimpleStringProperty type;
@@ -14,7 +14,7 @@ public class SimpleSymbol {
   private byte[] byteRepresentation;
   private SimpleBooleanProperty changed;
 
-  SimpleSymbol(String name, String scopeID, String type, Integer size, Integer location) {
+  ObservableSymbol(String name, String scopeID, String type, Integer size, Integer location) {
     this.name = new SimpleStringProperty(name);
     this.scopeID = new SimpleStringProperty(scopeID);
     this.type = new SimpleStringProperty(type);
@@ -95,6 +95,10 @@ public class SimpleSymbol {
   }
 
   private void setValue(int value) {
+    if(value == this.value.get())
+      setChanged(false);
+    else
+      setChanged(true);
     this.value.set(value);
   }
 
