@@ -28,5 +28,6 @@ public class Main extends Application {
     mainWindow.setMaximized(true);
     mainWindow.getIcons().add(new Image("GUI/assets/icon.png"));
     mainWindow.show();
+    mainWindow.getController().getAboutMenu().setOnAction(e -> getHostServices().showDocument("https://github.com/Log-baseE/Compiler"));
   }
 }

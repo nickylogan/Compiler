@@ -309,7 +309,8 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       for(int j = 0; j < 4; ++j){
         int oldChangedRow = (location + j - oldPage * COLUMN_SIZE) / COLUMN_SIZE;
         int oldChangedCol = (location + j - oldPage * COLUMN_SIZE) % COLUMN_SIZE;
-        memoryContentLabels[oldChangedRow][oldChangedCol].getStyleClass().remove("changed");
+        if (0 <= oldChangedRow && oldChangedRow < ROW_SIZE && 0 <= oldChangedCol && oldChangedCol < COLUMN_SIZE)
+          memoryContentLabels[oldChangedRow][oldChangedCol].getStyleClass().remove("changed");
       }
     }
     for(int i = 0; i<newChangedList.size(); ++i){
@@ -317,7 +318,8 @@ public class DebuggerWindowController extends BorderPane implements Initializabl
       for(int j = 0; j < 4; ++j) {
         int newChangedRow = (location + j - newPage * COLUMN_SIZE) / COLUMN_SIZE;
         int newChangedCol = (location + j - newPage * COLUMN_SIZE) % COLUMN_SIZE;
-        memoryContentLabels[newChangedRow][newChangedCol].getStyleClass().add("changed");
+        if (0 <= newChangedRow && newChangedRow < ROW_SIZE && 0 <= newChangedCol && newChangedCol < COLUMN_SIZE)
+          memoryContentLabels[newChangedRow][newChangedCol].getStyleClass().add("changed");
       }
     }
   }

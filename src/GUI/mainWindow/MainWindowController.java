@@ -39,18 +39,6 @@ public class MainWindowController extends BorderPane implements Initializable {
   @FXML
   private MenuItem exitMenu;
 
-  //Edit menu items
-  @FXML
-  private MenuItem cutMenu;
-  @FXML
-  private MenuItem copyMenu;
-  @FXML
-  private MenuItem pasteMenu;
-  @FXML
-  private MenuItem duplicateMenu;
-  @FXML
-  private MenuItem deleteMenu;
-
   //Compile menu items
   @FXML
   private MenuItem compileMenu;
@@ -490,26 +478,6 @@ public class MainWindowController extends BorderPane implements Initializable {
 
   public MenuItem getExitMenu() {
     return exitMenu;
-  }
-
-  public MenuItem getCutMenu() {
-    return cutMenu;
-  }
-
-  public MenuItem getCopyMenu() {
-    return copyMenu;
-  }
-
-  public MenuItem getPasteMenu() {
-    return pasteMenu;
-  }
-
-  public MenuItem getDuplicateMenu() {
-    return duplicateMenu;
-  }
-
-  public MenuItem getDeleteMenu() {
-    return deleteMenu;
   }
 
   public MenuItem getRunMenu() {
