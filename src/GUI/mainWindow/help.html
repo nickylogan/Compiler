@@ -1,57 +1,349 @@
 <link rel="stylesheet" href="markdown.css">
-<div class="markdown-body" style="padding: 50px">
-    <h1 id="simplecompiler">SIMPLE COMPILER</h1>
-    <h2 id="syntax">Syntax</h2>
-    <pre><code class="php language-php">// comment syntax
-
-// variable declaration
-var varName
-var arrName[length_in_number]
-
-// initialization
-var varName = arithmetic_expression
-
-// assignment
-varName = arithmetic_expression
-arrName[index_in_number] = arithmetic_expression
-
-// arithmetic expression
-// complex ones are supported, e.g. 5+3*(a+b)
-// supported operators: + - * /
-
-// if without else
-if(condition)
-  // code
-endif
-
-// if with else
-if(condition)
-  // code
-else
-  // code
-endif
-
-// while
-while(condition)
-// code
-endwhile
-
-// boolean expression
-// complex boolean expression supported, e.g.
-// !(a>b)||(a != b-1) && (5+3>=10)
-// supported logical operators: || && !
-// supported comparison operators: < <= > >= == !=
-</code></pre>
-    <h2 id="limitations">Limitations</h2>
+<div class="markdown-body editormd-preview-container editormd-preview-active" previewcontainer="true"
+     style="padding: 0"><h1 id="h1-simple-compiler"><a name="SIMPLE COMPILER" class="reference-link"></a><span
+        class="header-link octicon octicon-link"></span>SIMPLE COMPILER</h1>
+    <p>A simple compiler for a custom language and computer simulator. This project is only made for educational use, to
+        roughly demonstrate how a program code is compiled and ran in the computer. However, the inner workings of the
+        compiler <em>does not</em> represent a real-world compiler — it is just enough to translate a program code into
+        machine code.</p>
+    <h2 id="h2-usage"><a name="Usage" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Usage
+    </h2>
+    <p>To run the program, simply download the provided release and run it. You can also run the following command:</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code
+            class="lang-sh"><span
+            class="com"># Make sure that the jar is present in the current working directory</span></code></li><li
+            class="L1"><code class="lang-sh"><span class="pln">$ java </span><span class="pun">-</span><span
+            class="pln">jar compiler</span><span class="pun">.</span><span class="pln">jar</span></code></li></ol></pre>
+    <p>Instructions to build the project are currently not available.</p>
+    <h2 id="h2-user-interface"><a name="User Interface" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>User Interface</h2>
+    <h3 id="h3-code-editor"><a name="Code editor" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Code editor</h3>
+    <p><img src="https://i.imgur.com/8yB6mPQ.jpg" alt="Code editor interface screenshot"></p>
+    <h4 id="h4--em-menu-bar-em-"><a name="<em>Menu bar</em>" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Menu bar</em></h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Shortcut</th>
+            <th>Menu</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>Ctrl+N</code></td>
+            <td>File &gt;New file</td>
+            <td>New program file</td>
+        </tr>
+        <tr>
+            <td><code>Ctrl+O</code></td>
+            <td>File &gt; Open file</td>
+            <td>Open a program <code>.cpr</code> file</td>
+        </tr>
+        <tr>
+            <td><code>Ctrl+S</code></td>
+            <td>File &gt; Save file</td>
+            <td>Save current program file</td>
+        </tr>
+        <tr>
+            <td><code>Ctrl+Shift+S</code></td>
+            <td>File &gt; Save file as&hellip;</td>
+            <td>Save current program as a <code>.cpr</code> file</td>
+        </tr>
+        <tr>
+            <td><code>Shift+F5</code></td>
+            <td>Compile &gt; Compile code</td>
+            <td>Compile the current program</td>
+        </tr>
+        <tr>
+            <td><code>F5</code></td>
+            <td>Compile &gt; Run code</td>
+            <td>Run the current program (will open debugger)</td>
+        </tr>
+        <tr>
+            <td><code>Alt+1</code></td>
+            <td>View &gt; Instruction tab</td>
+            <td>Toggle instruction tab</td>
+        </tr>
+        <tr>
+            <td><code>Alt+2</code></td>
+            <td>View &gt; Machine code (hex) tab</td>
+            <td>Toggle machine code (hex) tab</td>
+        </tr>
+        <tr>
+            <td><code>Alt+3</code></td>
+            <td>View &gt; Machine code (dec) tab</td>
+            <td>Toggle machine code (dec) tab</td>
+        </tr>
+        <tr>
+            <td><code>F1</code></td>
+            <td>Help &gt; Help</td>
+            <td>Open help menu</td>
+        </tr>
+        <tr>
+            <td>-</td>
+            <td>Help &gt; About</td>
+            <td>Open about</td>
+        </tr>
+        </tbody>
+    </table>
+    <h4 id="h4--em-editor-tabs-em-"><a name="<em>Editor tabs</em>" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Editor tabs</em></h4>
+    <p>The first tab is the code editor. Once the program is compiled, the rest of the tabs will contain the compilation
+        result.</p>
+    <p><img src="https://i.imgur.com/m3uWNui.jpg" alt="Instruction screenshot"><br><br><img
+            src="https://i.imgur.com/GhhEofq.jpg" alt="Machine code hex screenshot"><br><br><img
+            src="https://i.imgur.com/mUo71lx.jpg" alt="Machine code dec screenshot"></p>
+    <h3 id="h3-debugger"><a name="Debugger" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Debugger</h3>
+    <p><img src="https://i.imgur.com/ehRtjpf.jpg" alt="Debugger screenshot" style="max-width: 900px;"></p>
+    <table>
+        <thead>
+        <tr>
+            <th>Number</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Compiled code</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Symbol table</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Locator: will search for the queried location in the memory, and will show it in the memory viewer</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Memory viewer</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Next button: will step to next instruction. <em>Once clicked</em>, holding <code>Enter</code> will fast
+                forward program execution until released.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h2 id="h2-syntax-reference"><a name="Syntax Reference" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Syntax Reference</h2>
+    <h3 id="h3-single-variables"><a name="Single variables" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Single variables</h3>
+    <p>Valid variable identifiers must match the regex <code>[A-Za-z_][A-Za-z0-9_]*</code>. It is important to note that
+        all of these can only contain <strong>4-byte unsigned integers</strong>.</p>
+    <h4 id="h4--em-instantiation-em-"><a name="<em>Instantiation</em>" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Instantiation</em></h4>
+    <p>This tells the program that the given variable exists. Doin so allocates 4 bytes of memory, and adds the
+        identifier to the symbol table.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> </span><span class="str">&lt;identifier&gt;</span></code></li><li
+            class="L1"><code class="lang-php"></code></li><li class="L2"><code class="lang-php"><span class="com">// For example:</span></code></li><li
+            class="L3"><code class="lang-php"><span class="kwd">var</span><span class="pln"> abcd123</span></code></li><li
+            class="L4"><code class="lang-php"><span class="kwd">var</span><span class="pln"> _abc</span></code></li><li
+            class="L5"><code class="lang-php"></code></li><li class="L6"><code class="lang-php"><span class="com">// Invalid syntax:</span></code></li><li
+            class="L7"><code class="lang-php"><span class="kwd">var</span><span class="pln"> </span><span class="lit">123abc</span></code></li></ol></pre>
+    <p>On the current version, shorthand for multiple instantiations is not supported.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="com">// Generates compile error</span></code></li><li class="L1"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> var1</span><span class="pun">,</span><span class="pln"> var2</span><span
+            class="pun">,</span><span class="pln"> var3</span></code></li></ol></pre>
+    <h4 id="h4--em-assignment-and-initialization-em-"><a name="<em>Assignment and initialization</em>"
+                                                         class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Assignment and initialization</em></h4>
+    <p>Once a variable is instantiated, its content can be changed later in the program. An undeclared variable will of
+        course generate a compile error, since it is not found on the symbol table.</p>
+    <p>The usage of <strong>complex arithmetic expressions</strong> on the right-hand side of an assignment is
+        supported.</p>
+    <blockquote>
+        <p>Supported operations in arithmetic: <code>+ - * /</code></p>
+    </blockquote>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="tag">&lt;varname&gt;</span><span class="pln"> = </span><span
+            class="tag">&lt;arithmetic&gt;</span></code></li><li class="L1"><code class="lang-php"></code></li><li
+            class="L2"><code class="lang-php"><span class="pln">var a</span></code></li><li class="L3"><code
+            class="lang-php"><span class="pln">var b</span></code></li><li class="L4"><code class="lang-php"><span
+            class="pln">a = 5 + 7</span></code></li><li class="L5"><code class="lang-php"><span
+            class="pln">b = a + 10</span></code></li></ol></pre>
+    <p>The compiler also supports <strong>variable initialization</strong>.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> </span><span class="str">&lt;varname&gt;</span><span
+            class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span
+            class="str">&lt;arithmetic&gt;</span></code></li><li class="L1"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> c </span><span class="pun">=</span><span class="pln"> </span><span
+            class="lit">10</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> a </span><span
+            class="pun">*</span><span class="pln"> </span><span class="pun">(</span><span class="lit">7</span><span
+            class="pln"> </span><span class="pun">-</span><span class="pln"> b</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">/</span><span class="pln"> </span><span class="lit">2</span><span
+            class="pln">  </span><span class="com">// assuming the variables declared in the previous</span></code></li><li
+            class="L2"><code class="lang-php"><span class="pln">                              </span><span class="com">// example are in the same program</span></code></li></ol></pre>
+    <p>Once a variable is declared, it cannot be redeclared later (this will generate a compile error!).</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> abcd </span><span class="pun">=</span><span
+            class="pln"> </span><span class="lit">5</span></code></li><li class="L1"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> abcd </span><span class="com">// compile error!</span></code></li></ol></pre>
+    <h3 id="h3-arrays"><a name="Arrays" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Arrays</h3>
+    <p>The compiler supports the usage of arrays.</p>
+    <h4 id="h4--em-declaration-em-"><a name="<em>Declaration</em>" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Declaration</em></h4>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> </span><span class="str">&lt;arrname&gt;</span><span class="pun">[&lt;</span><span
+            class="str">length_in_number</span><span class="pun">&gt;]</span></code></li><li class="L1"><code
+            class="lang-php"><span class="com">// For example:</span></code></li><li class="L2"><code
+            class="lang-php"><span class="kwd">var</span><span class="pln"> arr</span><span class="pun">[</span><span
+            class="lit">10</span><span class="pun">]</span></code></li></ol></pre>
+    <p>Array declaration is still limited, causing the following examples to generate compile errors.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="com">// All of these generate compile errors</span></code></li><li class="L1"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> arr</span><span class="pun">[]</span><span
+            class="pln">         </span><span class="com">// length must be specified</span></code></li><li
+            class="L2"><code class="lang-php"><span class="kwd">var</span><span class="pln"> arr</span><span
+            class="pun">[</span><span class="lit">10</span><span class="pln"> </span><span class="pun">+</span><span
+            class="pln"> </span><span class="lit">5</span><span class="pun">]</span><span class="pln">   </span><span
+            class="com">// length should strictly be a number</span></code></li><li class="L3"><code
+            class="lang-php"></code></li><li class="L4"><code class="lang-php"><span class="kwd">var</span><span
+            class="pln"> a </span><span class="pun">=</span><span class="pln"> </span><span class="lit">5</span></code></li><li
+            class="L5"><code class="lang-php"><span class="kwd">var</span><span class="pln"> arr</span><span
+            class="pun">[</span><span class="pln">a</span><span class="pun">]</span><span
+            class="pln">        </span><span
+            class="com">// length cannot be inferred from another variable</span></code></li></ol></pre>
+    <h4 id="h4--em-initialization-and-assignment-limitations-em-"><a
+            name="<em>Initialization and assignment + limitations</em>" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Initialization and assignment + limitations</em></h4>
+    <p>Just like variable assignment, an array element can be assigned with the return value of an <strong>arithmetic
+        expression</strong>. However, accessing an array can only be done using a <strong>strictly numerical
+        index</strong>.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="tag">&lt;arrname&gt;</span><span class="pln">[</span><span class="tag">&lt;index-in-number&gt;</span><span
+            class="pln">] = </span><span class="tag">&lt;arithmetic&gt;</span></code></li><li class="L1"><code
+            class="lang-php"></code></li><li class="L2"><code class="lang-php"><span
+            class="pln">var arr[10]</span></code></li><li class="L3"><code class="lang-php"><span
+            class="pln">var a = 10</span></code></li><li class="L4"><code class="lang-php"><span
+            class="pln">var b = 1</span></code></li><li class="L5"><code class="lang-php"><span class="pln">arr[0] = 10 + 5 * (a - 3 * b + arr[1])</span></code></li><li
+            class="L6"><code class="lang-php"></code></li><li class="L7"><code class="lang-php"><span class="pln">// These will generate compile errors</span></code></li><li
+            class="L8"><code class="lang-php"><span
+            class="pln">arr[1 + 2] = 5  // usage of arithmetic as index</span></code></li><li class="L9"><code
+            class="lang-php"><span
+            class="pln">arr[b] = 5      // usage of variable as index</span></code></li></ol></pre>
+    <p><strong><em>Unfortunately</em></strong>, unlike single variables, <strong>initializing an array</strong> with a
+        list is <strong><em>not</em></strong> supported.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> a</span><span class="pun">[</span><span class="lit">5</span><span
+            class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span
+            class="pun">{</span><span class="lit">1</span><span class="pun">,</span><span class="pln"> </span><span
+            class="lit">2</span><span class="pun">,</span><span class="pln"> </span><span class="lit">3</span><span
+            class="pun">,</span><span class="pln"> </span><span class="lit">4</span><span class="pun">,</span><span
+            class="pln"> </span><span class="lit">5</span><span class="pun">}</span><span class="pln">  </span><span
+            class="com">// not supported</span></code></li></ol></pre>
+    <h4 id="h4--em-accessing-an-element-em-"><a name="<em>Accessing an element</em>" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Accessing an element</em></h4>
+    <p>An array element can be accessed as a part of an arithemtic expression. However, just like before, they can only
+        be accessed with a <strong>strictly numerical index</strong>.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> arr</span><span class="pun">[</span><span class="lit">5</span><span
+            class="pun">]</span></code></li><li class="L1"><code class="lang-php"><span class="kwd">var</span><span
+            class="pln"> b </span><span class="pun">=</span><span class="pln"> </span><span class="lit">3</span></code></li><li
+            class="L2"><code class="lang-php"><span class="pln">arr</span><span class="pun">[</span><span
+            class="lit">0</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span
+            class="pln"> b</span></code></li><li class="L3"><code class="lang-php"><span class="kwd">var</span><span
+            class="pln"> arr</span><span class="pun">[</span><span class="lit">1</span><span class="pun">]</span><span
+            class="pln"> </span><span class="pun">=</span><span class="pln"> arr</span><span class="pun">[</span><span
+            class="lit">0</span><span class="pun">]</span><span class="pln"> </span><span class="pun">*</span><span
+            class="pln"> </span><span class="lit">5</span></code></li><li class="L4"><code class="lang-php"></code></li><li
+            class="L5"><code class="lang-php"><span class="com">// These will generate compile errors</span></code></li><li
+            class="L6"><code class="lang-php"><span class="kwd">var</span><span class="pln"> c </span><span class="pun">=</span><span
+            class="pln"> arr</span><span class="pun">[</span><span class="lit">1</span><span class="pln"> </span><span
+            class="pun">+</span><span class="pln"> </span><span class="lit">2</span><span class="pun">]</span><span
+            class="pln">  </span><span class="com">// usage of arithmetic as index</span></code></li><li
+            class="L7"><code class="lang-php"><span class="kwd">var</span><span class="pln"> d </span><span class="pun">=</span><span
+            class="pln"> arr</span><span class="pun">[</span><span class="pln">arr</span><span class="pun">[</span><span
+            class="lit">0</span><span class="pun">]]</span><span class="pln"> </span><span class="com">// usage of array element as index</span></code></li><li
+            class="L8"><code class="lang-php"><span class="kwd">var</span><span class="pln"> e </span><span class="pun">=</span><span
+            class="pln"> arr</span><span class="pun">[</span><span class="pln">b</span><span class="pun">]</span><span
+            class="pln">      </span><span class="com">// usage of variable as index</span></code></li></ol></pre>
+    <h3 id="h3-control-flow"><a name="Control flow" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Control flow</h3>
+    <p>The compiler supports complex <strong>boolean expressions</strong>. These can be put as a condition for <code>if/else</code>
+        or <code>while</code> statements.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">var</span><span class="pln"> a </span><span class="pun">=</span><span class="pln"> </span><span
+            class="lit">5</span></code></li><li class="L1"><code class="lang-php"><span class="kwd">var</span><span
+            class="pln"> b </span><span class="pun">=</span><span class="pln"> </span><span class="lit">7</span></code></li><li
+            class="L2"><code class="lang-php"></code></li><li class="L3"><code class="lang-php"><span
+            class="pun">!(</span><span class="pln">a </span><span class="pun">+</span><span class="pln"> b </span><span
+            class="pun">&gt;</span><span class="pln"> </span><span class="lit">5</span><span class="pun">)</span><span
+            class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln"> </span><span
+            class="kwd">false</span><span class="pln"> </span><span class="pun">||</span><span class="pln"> </span><span
+            class="pun">(</span><span class="kwd">true</span><span class="pln"> </span><span class="pun">==</span><span
+            class="pln"> </span><span class="kwd">false</span><span class="pun">)</span><span class="pln"> </span><span
+            class="pun">&amp;&amp;</span><span class="pln"> </span><span class="pun">(</span><span
+            class="lit">5</span><span class="pln"> </span><span class="pun">&lt;=</span><span class="pln"> b</span><span
+            class="pun">)</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span
+            class="pln"> </span><span class="pun">(</span><span class="lit">5</span><span class="pln"> </span><span
+            class="pun">!=</span><span class="pln"> </span><span class="lit">6</span><span class="pln"> </span><span
+            class="pun">+</span><span class="pln"> </span><span class="lit">7</span><span
+            class="pun">)</span></code></li></ol></pre>
+    <p>Supported logical operations include:</p>
     <ul>
-        <li><code>else if</code> not supported</li>
+        <li>Logical: negation <code>!</code>, conjunction <code>&amp;&amp;</code>, disjunction <code>||</code></li>
+        <li>Comparison: <code>&lt; &gt; &lt;= &gt;= == !=</code></li>
+    </ul>
+    <h4 id="h4--em-conditional-code-if-else-code-em-"><a name="<em>Conditional - <code>if/else</code></em>"
+                                                         class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Conditional - <code>if/else</code></em></h4>
+    <p>The compiler supports <code>if/else</code> statements.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">if</span><span class="pln"> </span><span class="pun">(&lt;</span><span
+            class="pln">condition</span><span class="pun">&gt;)</span></code></li><li class="L1"><code class="lang-php"><span
+            class="pln">  </span><span class="com">// code</span></code></li><li class="L2"><code class="lang-php"><span
+            class="pln">endif</span></code></li><li class="L3"><code class="lang-php"></code></li><li class="L4"><code
+            class="lang-php"><span class="kwd">if</span><span class="pln"> </span><span class="pun">(&lt;</span><span
+            class="pln">condition</span><span class="pun">&gt;)</span></code></li><li class="L5"><code class="lang-php"><span
+            class="pln">  </span><span class="com">// code</span></code></li><li class="L6"><code class="lang-php"><span
+            class="kwd">else</span></code></li><li class="L7"><code class="lang-php"><span class="pln">  </span><span
+            class="com">// code</span></code></li><li class="L8"><code class="lang-php"><span
+            class="pln">endif</span></code></li></ol></pre>
+    <p><em>Limitation</em>: <code>else if</code> statements not supported</p>
+    <h4 id="h4--em-loops-code-while-code-em-"><a name="<em>Loops - <code>while</code></em>"
+                                                 class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span><em>Loops - <code>while</code></em></h4>
+    <p>The compiler also supports <code>while</code> statements.</p>
+    <pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-php"><span
+            class="kwd">while</span><span class="pun">(&lt;</span><span class="pln">condition</span><span
+            class="pun">&gt;)</span></code></li><li class="L1"><code class="lang-php"><span class="pln">  </span><span
+            class="com">// code</span></code></li><li class="L2"><code class="lang-php"><span
+            class="pln">endwhile</span></code></li></ol></pre>
+    <h3 id="h3-limitations"><a name="Limitations" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Other Limitations</h3>
+    <p>The compiler is very much limited:</p>
+    <ul>
         <li><code>for</code> and <code>do while</code> unsupported</li>
-        <li>array initializer list unsupported</li>
         <li>negative numbers unsupported</li>
         <li>basic operators such as <code>++ -- %</code> unsupported</li>
         <li>functions unsupported</li>
         <li>ternary operator not supported</li>
         <li><code>string</code> unsupported</li>
         <li>all data types are 4 byte <code>int</code></li>
+    </ul>
+    <h2 id="h2-authors"><a name="Authors" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Authors</h2>
+    <ul>
+        <li><a href="https://github.com/Log-baseE/"><strong>Nicky Logan</strong></a></li>
+        <li><a href="https://github.com/haysacks"><strong>Madeleine J.</strong></a></li>
+        <li><a href="https://github.com/Ao-Re"><strong>Nadya F. Bachtiar</strong></a></li>
+        <li><a href="https://github.com/cokpsz/"><strong>Barjuan Davis</strong></a></li>
+    </ul>
+    <p>See the list of contributors for this project <a
+            href="https://github.com/Log-baseE/Compiler/contributors">here</a></p>
+    <h2 id="h2-acknowledgements"><a name="Acknowledgements" class="reference-link"></a><span
+            class="header-link octicon octicon-link"></span>Acknowledgements</h2>
+    <ul>
+        <li><strong>Dr. Sutrisno, S.E., M.Kom.</strong> for the computer simulator code</li>
+        <li>All external dependencies used in this project</li>
     </ul>
 </div>
