@@ -216,12 +216,12 @@ endif
 The compiler also supports `while` statements.
 
 ```php
-while(condition)
+while(<condition>)
   // code
 endwhile
 ```
 
-### Limitations
+### Other Limitations
 
 The compiler is very much limited:
 
