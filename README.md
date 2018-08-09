@@ -50,10 +50,10 @@ The first tab is the code editor. Once the program is compiled, the rest of the 
 | Number | Description                                                                                                                     |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | 1      | Compiled code                                                                                                                   |
-| 2      | Symbol table                                                                                                                    |
-| 3      | Locator: will search for the queried location in the memory, and will show it in the memory viewer                              |
+| 2      | Symbol table                                                                                                                     |
+| 3      | Locator: will search for the queried **decimal** location in the memory, and will show it in the memory viewer                   |
 | 4      | Memory viewer                                                                                                                   |
-| 5      | Next button: will step to next instruction. *Once clicked*, holding `Enter` will fast forward program execution until released. |
+| 5      | Next button: will step to next instruction. *Once clicked*, holding `Enter` will fast forward program execution until released/finished. |
 
 ## Syntax Reference
 
@@ -231,7 +231,7 @@ The compiler is very much limited:
 - functions unsupported
 - ternary operator not supported
 - `string` unsupported
-- all data types are 4 byte `int`
+- all data types are 4 byte unsigned `int`
 
 
 ## Authors
