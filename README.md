@@ -2,6 +2,10 @@
 
 A simple compiler for a custom language and computer simulator. This project is only made for educational use, to roughly demonstrate how a program code is compiled and ran in the computer. However, the inner workings of the compiler *does not* represent a real-world compiler -- it is just enough to translate a program code into machine code.
 
+## Issues
+
+If you ran into any bugs or problems, or even just a question, please [open an issue](https://github.com/Log-baseE/Compiler/issues/new).
+
 ## Usage
 
 To run the program, simply [download](https://github.com/Log-baseE/Compiler/releases/download/v1.0-beta/compiler.jar) the provided release and run it. You can also run the following command:
